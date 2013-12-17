@@ -178,11 +178,6 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    public boolean isGlobal() {
-        return this instanceof Global;
-    }
-
-
     public boolean isBinOp() {
         return this instanceof BinOp;
     }
@@ -227,12 +222,6 @@ public abstract class Node implements java.io.Serializable {
     @NotNull
     public Assign asAssign() {
         return (Assign) this;
-    }
-
-
-    @NotNull
-    public Global asGlobal() {
-        return (Global) this;
     }
 
 

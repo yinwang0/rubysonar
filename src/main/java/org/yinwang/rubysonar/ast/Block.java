@@ -2,7 +2,6 @@ package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.Analyzer;
-import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
@@ -26,18 +25,6 @@ public class Block extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State state) {
-        // find global names and mark them
-        for (Node n : seq) {
-            if (n.isGlobal()) {
-                for (Name name : n.asGlobal().getNames()) {
-                    state.addGlobalName(name.id);
-                    List<Binding> nb = state.lookup(name.id);
-                    if (nb != null) {
-                        Analyzer.self.putRef(name, nb);
-                    }
-                }
-            }
-        }
 
         boolean returned = false;
         Type retType = Analyzer.self.builtins.unknown;
@@ -69,7 +56,7 @@ public class Block extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Block:" + seq + ">";
+        return "(block:" + seq + ")";
     }
 
 

@@ -29,8 +29,6 @@ public class State {
     private State forwarding; // link to the closest non-class scope, for lifting functions out
     @Nullable
     private List<State> supers;
-    @Nullable
-    private Set<String> globalNames;
     private StateType stateType;
     private Type type;
     @NotNull
@@ -58,7 +56,6 @@ public class State {
         this.stateType = s.stateType;
         this.forwarding = s.forwarding;
         this.supers = s.supers;
-        this.globalNames = s.globalNames;
         this.type = s.type;
         this.path = s.path;
     }
@@ -71,7 +68,6 @@ public class State {
         this.stateType = s.stateType;
         this.forwarding = s.forwarding;
         this.supers = s.supers;
-        this.globalNames = s.globalNames;
         this.type = s.type;
         this.path = s.path;
     }
@@ -142,14 +138,6 @@ public class State {
 
     public StateType getStateType() {
         return stateType;
-    }
-
-
-    public void addGlobalName(@NotNull String name) {
-        if (globalNames == null) {
-            globalNames = new HashSet<>();
-        }
-        globalNames.add(name);
     }
 
 

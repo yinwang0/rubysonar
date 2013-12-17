@@ -447,7 +447,6 @@ public class Parser  {
             return new Name(id, NameType.GLOBAL, start, end);
         }
 
-
 //        if (type.equals("symbol")) {
 //            String id = (String) map.get("id");
 //            return new Name(id, start, end);

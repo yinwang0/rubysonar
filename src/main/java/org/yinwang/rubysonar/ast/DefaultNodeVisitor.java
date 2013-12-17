@@ -129,11 +129,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Global n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(If n) {
         return traverseIntoNodes;
     }

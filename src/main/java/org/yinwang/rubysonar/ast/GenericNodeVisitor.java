@@ -103,11 +103,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(Global n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
     public boolean visit(If n) {
         return traverseIntoNodes && dispatch(n);
     }

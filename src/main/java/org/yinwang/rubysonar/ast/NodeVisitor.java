@@ -75,9 +75,6 @@ public interface NodeVisitor {
     public boolean visit(GeneratorExp m);
 
 
-    public boolean visit(Global m);
-
-
     public boolean visit(If m);
 
 
