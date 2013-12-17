@@ -3,21 +3,19 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar._;
 
 
 public class ModuleType extends Type {
 
-    @Nullable
-    private String file;
     @NotNull
     private String name;
     @Nullable
     private String qname;
 
 
-    public ModuleType(@NotNull String name, @Nullable String file, @NotNull Scope parent) {
+    public ModuleType(@NotNull String name, @Nullable String file, @NotNull State parent) {
         this.name = name;
         this.file = file;  // null for builtin modules
         if (file != null) {
@@ -29,7 +27,7 @@ public class ModuleType extends Type {
         if (qname == null) {
             qname = name;
         }
-        setTable(new Scope(parent, Scope.ScopeType.MODULE));
+        setTable(new State(parent, State.StateType.MODULE));
         getTable().setPath(qname);
         getTable().setType(this);
 
@@ -39,25 +37,12 @@ public class ModuleType extends Type {
         }
     }
 
-
-    public void setFile(String file) {
-        this.file = file;
+    public String getName() {
+        return name;
     }
-
-
-    @Nullable
-    public String getFile() {
-        return file;
-    }
-
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public String getName() {
-        return name;
     }
 
 

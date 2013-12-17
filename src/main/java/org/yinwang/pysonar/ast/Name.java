@@ -3,7 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -13,6 +13,7 @@ public class Name extends Node {
 
     @NotNull
     public final String id;  // identifier
+    public NameType type;
 
 
     public Name(String id) {
@@ -23,6 +24,14 @@ public class Name extends Node {
     public Name(@NotNull String id, int start, int end) {
         super(start, end);
         this.id = id;
+        this.type = NameType.LOCAL;
+    }
+
+
+    public Name(@NotNull String id, NameType type, int start, int end) {
+        super(start, end);
+        this.id = id;
+        this.type = type;
     }
 
 
@@ -51,12 +60,12 @@ public class Name extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         List<Binding> b = s.lookup(id);
         if (b != null) {
             Analyzer.self.putRef(this, b);
             Analyzer.self.stats.inc("resolved");
-            return Scope.makeUnion(b);
+            return State.makeUnion(b);
         } else if (id.equals("True") || id.equals("False")) {
             return Analyzer.self.builtins.BaseBool;
         } else {
@@ -79,10 +88,20 @@ public class Name extends Node {
     }
 
 
+    public boolean isInstanceVar() {
+        return type == NameType.INSTANCE;
+    }
+
+
+    public boolean isGlobalVar() {
+        return type == NameType.GLOBAL;
+    }
+
+
     @NotNull
     @Override
     public String toString() {
-        return "<Name:" + start + ":" + id + ">";
+        return "(" + id + ":" + start + ")";
     }
 
 

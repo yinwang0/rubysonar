@@ -3,18 +3,26 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
+import org.yinwang.pysonar._;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
 public abstract class Node implements java.io.Serializable {
 
+    public String file = null;
     public int start = -1;
     public int end = -1;
+
+    public String name;
+    private String sha1;   // input source file sha
+
 
     @Nullable
     protected Node parent = null;
@@ -41,6 +49,11 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
+    public String getSHA1() {
+        return sha1;
+    }
+
+
     @NotNull
     public Node getAstRoot() {
         if (parent == null) {
@@ -55,14 +68,15 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    public boolean bindsName() {
-        return false;
-    }
-
-
     @Nullable
     public String getFile() {
-        return parent != null ? parent.getFile() : null;
+        if (file != null) {
+            return file;
+        } else if (parent != null) {
+            return parent.getFile();
+        } else {
+            return null;
+        }
     }
 
 
@@ -77,7 +91,7 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    public void addChildren(@Nullable List<? extends Node> nodes) {
+    public void addChildren(@Nullable Collection<? extends Node> nodes) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {
@@ -88,13 +102,20 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
+    public void setFile(String file) {
+        this.file = file;
+        this.name = _.moduleName(file);
+        this.sha1 = _.getSHA1(new File(file));
+    }
+
+
     @Nullable
     public Str getDocString() {
         Node body = null;
-        if (this instanceof FunctionDef) {
-            body = ((FunctionDef) this).body;
-        } else if (this instanceof ClassDef) {
-            body = ((ClassDef) this).body;
+        if (this instanceof Function) {
+            body = ((Function) this).body;
+        } else if (this instanceof Class) {
+            body = ((Class) this).body;
         } else if (this instanceof Module) {
             body = ((Module) this).body;
         }
@@ -113,13 +134,13 @@ public abstract class Node implements java.io.Serializable {
 
 
     @NotNull
-    public static Type resolveExpr(@NotNull Node n, Scope s) {
-        return n.resolve(s);
+    public static Type transformExpr(@NotNull Node n, State s) {
+        return n.transform(s);
     }
 
 
     @NotNull
-    abstract public Type resolve(Scope s);
+    protected abstract Type transform(State s);
 
 
     public boolean isCall() {
@@ -152,8 +173,24 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
+    public boolean isAssign() {
+        return this instanceof Assign;
+    }
+
+
     public boolean isGlobal() {
         return this instanceof Global;
+    }
+
+
+    public boolean isBinOp() {
+        return this instanceof BinOp;
+    }
+
+
+    @NotNull
+    public BinOp asBinOp() {
+        return (BinOp) this;
     }
 
 
@@ -170,26 +207,26 @@ public abstract class Node implements java.io.Serializable {
 
 
     @NotNull
-    public ClassDef asClassDef() {
-        return (ClassDef) this;
+    public Class asClassDef() {
+        return (Class) this;
     }
 
 
     @NotNull
-    public FunctionDef asFunctionDef() {
-        return (FunctionDef) this;
-    }
-
-
-    @NotNull
-    public Lambda asLambda() {
-        return (Lambda) this;
+    public Function asFunctionDef() {
+        return (Function) this;
     }
 
 
     @NotNull
     public Name asName() {
         return (Name) this;
+    }
+
+
+    @NotNull
+    public Assign asAssign() {
+        return (Assign) this;
     }
 
 
@@ -215,14 +252,10 @@ public abstract class Node implements java.io.Serializable {
      * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
      */
     @NotNull
-    protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s) {
-        if (nodes == null || nodes.isEmpty()) {
-            return Analyzer.self.builtins.unknown;
-        }
-
+    protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, State s) {
         Type result = Analyzer.self.builtins.unknown;
         for (Node node : nodes) {
-            Type nodeType = resolveExpr(node, s);
+            Type nodeType = transformExpr(node, s);
             result = UnionType.union(result, nodeType);
         }
         return result;
@@ -230,28 +263,18 @@ public abstract class Node implements java.io.Serializable {
 
 
     /**
-     * Resolves each element of a node list in the passed scope.
-     * Node list may be empty or {@code null}.
+     * Resolves each element, also construct a result list.
      */
-    static protected void resolveList(@Nullable List<? extends Node> nodes, Scope s) {
-        if (nodes != null) {
-            for (Node n : nodes) {
-                resolveExpr(n, s);
-            }
-        }
-    }
-
-
     @Nullable
-    static protected List<Type> resolveAndConstructList(@Nullable List<? extends Node> nodes, Scope s) {
+    static protected List<Type> resolveList(@Nullable Collection<? extends Node> nodes, State s) {
         if (nodes == null) {
             return null;
         } else {
-            List<Type> typeList = new ArrayList<>();
+            List<Type> ret = new ArrayList<>();
             for (Node n : nodes) {
-                typeList.add(resolveExpr(n, s));
+                ret.add(transformExpr(n, s));
             }
-            return typeList;
+            return ret;
         }
     }
 
@@ -271,7 +294,7 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    protected void visitNodeList(@Nullable List<? extends Node> nodes, NodeVisitor v) {
+    protected void visitNodes(@Nullable Collection<? extends Node> nodes, NodeVisitor v) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {

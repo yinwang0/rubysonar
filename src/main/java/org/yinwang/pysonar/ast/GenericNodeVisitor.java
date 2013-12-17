@@ -38,11 +38,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(AugAssign n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
     public boolean visit(BinOp n) {
         return traverseIntoNodes && dispatch(n);
     }
@@ -53,37 +48,17 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(BoolOp n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(Break n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
     public boolean visit(Call n) {
         return traverseIntoNodes && dispatch(n);
     }
 
 
-    public boolean visit(ClassDef n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(Compare n) {
+    public boolean visit(Class n) {
         return traverseIntoNodes && dispatch(n);
     }
 
 
     public boolean visit(Comprehension n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(Continue n) {
         return traverseIntoNodes && dispatch(n);
     }
 
@@ -103,7 +78,7 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(ExceptHandler n) {
+    public boolean visit(Handler n) {
         return traverseIntoNodes && dispatch(n);
     }
 
@@ -118,7 +93,7 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(FunctionDef n) {
+    public boolean visit(Function n) {
         return traverseIntoNodes && dispatch(n);
     }
 
@@ -159,11 +134,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
 
 
     public boolean visit(Keyword n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(Lambda n) {
         return traverseIntoNodes && dispatch(n);
     }
 
@@ -239,16 +209,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
 
 
     public boolean visit(Subscript n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(TryExcept n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(TryFinally n) {
         return traverseIntoNodes && dispatch(n);
     }
 

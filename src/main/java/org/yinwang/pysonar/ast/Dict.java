@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.DictType;
 import org.yinwang.pysonar.types.Type;
 
@@ -25,9 +25,9 @@ public class Dict extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        Type keyType = resolveListAsUnion(keys, s);
-        Type valType = resolveListAsUnion(values, s);
+    public Type transform(State s) {
+        Type keyType = resolveUnion(keys, s);
+        Type valType = resolveUnion(values, s);
         return new DictType(keyType, valType);
     }
 
@@ -43,8 +43,8 @@ public class Dict extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             // XXX:  should visit in alternating order
-            visitNodeList(keys, v);
-            visitNodeList(values, v);
+            visitNodes(keys, v);
+            visitNodes(values, v);
         }
     }
 }

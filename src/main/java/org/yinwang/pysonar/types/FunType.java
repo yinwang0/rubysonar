@@ -3,9 +3,10 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.Language;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
-import org.yinwang.pysonar.ast.FunctionDef;
+import org.yinwang.pysonar.ast.Function;
 
 import java.util.*;
 
@@ -14,10 +15,10 @@ public class FunType extends Type {
 
     @NotNull
     public Map<Type, Type> arrows = new HashMap<>();
-    public FunctionDef func;
+    public Function func;
     @Nullable
     public ClassType cls = null;
-    private Scope env;
+    private State env;
     @Nullable
     public Type selfType;                 // self's type for calls
     public List<Type> defaultTypes;       // types for default parameters (evaluated at def time)
@@ -27,7 +28,7 @@ public class FunType extends Type {
     }
 
 
-    public FunType(FunctionDef func, Scope env) {
+    public FunType(Function func, State env) {
         this.func = func;
         this.env = env;
     }
@@ -68,12 +69,12 @@ public class FunType extends Type {
     }
 
 
-    public FunctionDef getFunc() {
+    public Function getFunc() {
         return func;
     }
 
 
-    public Scope getEnv() {
+    public State getEnv() {
         return env;
     }
 
@@ -244,7 +245,7 @@ public class FunType extends Type {
 
             for (Map.Entry<Type, Type> e : arrows.entrySet()) {
                 Type from = e.getKey();
-                if (from.isTupleType()) {
+                if (Analyzer.self.language == Language.PYTHON && from.isTupleType()) {
                     from = simplifySelf(from.asTupleType());
                 }
 

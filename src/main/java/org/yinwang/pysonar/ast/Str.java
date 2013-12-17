@@ -2,13 +2,13 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
 public class Str extends Node {
 
-    private String value;
+    public String value;
 
 
     public Str(@NotNull Object value, int start, int end) {
@@ -17,14 +17,9 @@ public class Str extends Node {
     }
 
 
-    public String getStr() {
-        return value;
-    }
-
-
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         return Analyzer.self.builtins.BaseStr;
     }
 
@@ -32,7 +27,13 @@ public class Str extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Str>";
+        String summary;
+        if (value.length() > 10) {
+            summary = value.substring(0, 10);
+        } else {
+            summary = value;
+        }
+        return "'" + summary + "'";
     }
 
 

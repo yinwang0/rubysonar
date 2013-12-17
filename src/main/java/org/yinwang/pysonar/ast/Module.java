@@ -3,22 +3,15 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar._;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
-import java.io.File;
-
 
 public class Module extends Node {
 
-    public String name;
     public Block body;
-
-    private String file;   // input source file path
-    private String sha1;   // input source file sha1
-
 
     public Module(Block body, int start, int end) {
         super(start, end);
@@ -27,37 +20,12 @@ public class Module extends Node {
     }
 
 
-    public void setFile(String file) {
-        this.file = file;
-        this.name = _.moduleName(file);
-        this.sha1 = _.getSHA1(new File(file));
-    }
-
-
-    public void setFile(@NotNull File path) {
-        file = _.unifyPath(path);
-        name = _.moduleName(file);
-        sha1 = _.getSHA1(path);
-    }
-
-
-    @Override
-    public String getFile() {
-        return file;
-    }
-
-
-    public String getSHA1() {
-        return sha1;
-    }
-
-
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         ModuleType mt = new ModuleType(name, file, Analyzer.self.globaltable);
         s.insert(_.moduleQname(file), this, mt, Binding.Kind.MODULE);
-        resolveExpr(body, mt.getTable());
+        transformExpr(body, mt.getTable());
         return mt;
     }
 

@@ -2,7 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -25,9 +25,9 @@ public class Print extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         if (dest != null) {
-            resolveExpr(dest, s);
+            transformExpr(dest, s);
         }
         if (values != null) {
             resolveList(values, s);
@@ -47,7 +47,7 @@ public class Print extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(dest, v);
-            visitNodeList(values, v);
+            visitNodes(values, v);
         }
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.ast.FunctionDef;
+import org.yinwang.pysonar.ast.Function;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
 import org.yinwang.pysonar.types.Type;
@@ -31,7 +31,7 @@ public class JSONDump {
 
 
     private static Analyzer newAnalyzer(String srcpath, String[] inclpaths) throws Exception {
-        Analyzer idx = new Analyzer();
+        Analyzer idx = new Analyzer(Language.PYTHON);
         for (String inclpath : inclpaths) {
             idx.addPath(inclpath);
         }
@@ -98,14 +98,14 @@ public class JSONDump {
                 }
 
                 if (t != null && t.isFuncType()) {
-                    FunctionDef func = t.asFuncType().getFunc();
+                    Function func = t.asFuncType().getFunc();
 
                     if (func != null) {
                         StringBuilder args = new StringBuilder();
                         args.append("(");
                         boolean first = true;
 
-                        for (Node n : func.getArgs()) {
+                        for (Node n : func.args) {
                             if (!first) {
                                 args.append(", ");
                             }
@@ -113,20 +113,20 @@ public class JSONDump {
                             args.append(n.toDisplay());
                         }
 
-                        if (func.getVararg() != null) {
+                        if (func.vararg != null) {
                             if (!first) {
                                 args.append(", ");
                             }
                             first = false;
-                            args.append("*" + func.getVararg().toDisplay());
+                            args.append("*" + func.vararg.toDisplay());
                         }
 
-                        if (func.getKwarg() != null) {
+                        if (func.kwarg != null) {
                             if (!first) {
                                 args.append(", ");
                             }
                             first = false;
-                            args.append("**" + func.getKwarg().toDisplay());
+                            args.append("**" + func.kwarg.toDisplay());
                         }
 
                         args.append(")");
@@ -178,7 +178,7 @@ public class JSONDump {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", binding.getFileOrUrl());
-                json.writeStringField("body", doc.getStr());
+                json.writeStringField("body", doc.value);
                 json.writeNumberField("start", doc.start);
                 json.writeNumberField("end", doc.end);
                 json.writeEndObject();

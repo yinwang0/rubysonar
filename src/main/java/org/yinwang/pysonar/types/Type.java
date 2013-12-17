@@ -3,7 +3,7 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar._;
 
@@ -16,8 +16,13 @@ import java.util.Set;
 public abstract class Type {
 
     @Nullable
-    public Scope table;
+    public State table;
     public boolean mutated = false;
+
+    public String file = null;
+
+    public State trueState;
+    public State falseState;
 
 
     @NotNull
@@ -28,17 +33,27 @@ public abstract class Type {
     }
 
 
-    public void setTable(@NotNull Scope table) {
+    public void setTable(@NotNull State table) {
         this.table = table;
     }
 
 
     @NotNull
-    public Scope getTable() {
+    public State getTable() {
         if (table == null) {
-            table = new Scope(null, Scope.ScopeType.SCOPE);
+            table = new State(null, State.StateType.SCOPE);
         }
         return table;
+    }
+
+
+    public String getFile() {
+        return file;
+    }
+
+
+    public void setFile(String file) {
+        this.file = file;
     }
 
 
@@ -52,12 +67,18 @@ public abstract class Type {
     }
 
 
-    /**
-     * Returns {@code true} if this Python type is implemented in native code
-     * (i.e., C, Java, C# or some other host language.)
-     */
-    public boolean isNative() {
-        return Analyzer.self.builtins.isNative(this);
+    public boolean isBool() {
+        return this instanceof BoolType;
+    }
+
+
+    public boolean isUndecidedBool() {
+        return isBool() && asBool().getValue() == BoolType.Value.Undecided;
+    }
+
+
+    public BoolType asBool() {
+        return (BoolType) this;
     }
 
 
@@ -92,9 +113,7 @@ public abstract class Type {
 
 
     public boolean isNumType() {
-        return (this == Analyzer.self.builtins.BaseNum ||
-                this == Analyzer.self.builtins.BaseFloat ||
-                this == Analyzer.self.builtins.BaseComplex);
+        return this instanceof NumType;
     }
 
 
@@ -127,6 +146,12 @@ public abstract class Type {
     @NotNull
     public DictType asDictType() {
         return (DictType) this;
+    }
+
+
+    @NotNull
+    public NumType asNumType() {
+        return (NumType) this;
     }
 
 
@@ -178,6 +203,63 @@ public abstract class Type {
     @NotNull
     public UnionType asUnionType() {
         return (UnionType) this;
+    }
+
+
+    public boolean isTrue() {
+        if (this == Analyzer.self.builtins.True) {
+            return true;
+        }
+        if (this == Analyzer.self.builtins.False || this.isUndecidedBool()) {
+            return false;
+        }
+        if (this.isNumType() && (this.asNumType().lt(0) || this.asNumType().gt(0))) {
+            return true;
+        }
+        if (this.isNumType() && this.asNumType().isZero()) {
+            return false;
+        }
+        if (this != Analyzer.self.builtins.None) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean isFalse() {
+        if (this == Analyzer.self.builtins.False) {
+            return true;
+        }
+        if (this == Analyzer.self.builtins.True || this.isUndecidedBool()) {
+            return false;
+        }
+        if (this.isNumType() && this.asNumType().isZero()) {
+            return true;
+        }
+        if (this == Analyzer.self.builtins.None) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public State getTrueState() {
+        return trueState;
+    }
+
+
+    public void setTrueState(State trueState) {
+        this.trueState = trueState;
+    }
+
+
+    public State getFalseState() {
+        return falseState;
+    }
+
+
+    public void setFalseState(State falseState) {
+        this.falseState = falseState;
     }
 
 

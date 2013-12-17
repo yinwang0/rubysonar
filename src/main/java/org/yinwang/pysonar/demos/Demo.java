@@ -3,6 +3,7 @@ package org.yinwang.pysonar.demos;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.FancyProgress;
+import org.yinwang.pysonar.Language;
 import org.yinwang.pysonar._;
 
 import java.io.File;
@@ -71,16 +72,15 @@ public class Demo {
     }
 
 
-    private void start(@NotNull File fileOrDir) throws Exception {
+    private void start(@NotNull File fileOrDir, Language language, boolean debug) throws Exception {
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
         try {
             rootPath = _.unifyPath(rootDir);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             _.die("File not found: " + fileOrDir);
         }
 
-        analyzer = new Analyzer();
+        analyzer = new Analyzer(language, debug);
         _.msg("Loading and analyzing files");
         analyzer.analyze(_.unifyPath(fileOrDir));
         analyzer.finish();
@@ -118,8 +118,7 @@ public class Demo {
                 String html = markup(path);
                 try {
                     _.writeFile(destPath, html);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     _.msg("Failed to write: " + destPath);
                 }
             }
@@ -135,13 +134,12 @@ public class Demo {
 
         try {
             source = _.readFile(path);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             _.die("Failed to read file: " + path);
             return "";
         }
 
-        List<StyleRun> styles = new Styler(analyzer, linker).addStyles(path, source);
+        List<StyleRun> styles = new Styler(analyzer).addStyles(path, source);
         styles.addAll(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();
@@ -195,16 +193,32 @@ public class Demo {
 
 
     public static void main(@NotNull String[] args) throws Exception {
-        if (args.length != 2) {
+        if (args.length < 2 || args.length > 4) {
             usage();
         }
 
-        File fileOrDir = checkFile(args[0]);
-        OUTPUT_DIR = new File(args[1]);
+        boolean debug = false;
+        if (args.length > 3) {
+            if (args[3].equals("--debug")) {
+                debug = true;
+            }
+        }
 
-        new Demo().start(fileOrDir);
+        String language = args[0];
+        Language lang;
+        if (language.equals("python")) {
+            lang = Language.PYTHON;
+        } else if (language.equals("ruby")) {
+            lang = Language.RUBY;
+        } else {
+            _.die("unsupported language: " + language);
+            return;
+        }
 
+        File fileOrDir = checkFile(args[1]);
+        OUTPUT_DIR = new File(args[2]);
+
+        new Demo().start(fileOrDir, lang, debug);
         _.msg(_.getGCStats());
-
     }
 }

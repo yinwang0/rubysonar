@@ -1,26 +1,66 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
+import org.yinwang.pysonar.types.NumType;
 import org.yinwang.pysonar.types.Type;
 
 
 public class Num extends Node {
 
-    public Object n;
+    public double n;
+    public String complex = null;
 
 
     public Num(Object n, int start, int end) {
         super(start, end);
-        this.n = n;
+        if (n instanceof String) {
+            String s = (String) n;
+            Double maybeDouble = getDouble(s);
+            if (maybeDouble != null) {
+                this.n = maybeDouble;
+            } else {
+                this.complex = (String) n;
+            }
+        } else {
+            this.n = (Double) n;
+        }
+    }
+
+
+    public Double getDouble(String s) {
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public Integer getInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return Analyzer.self.builtins.BaseNum;
+    public Type transform(State s) {
+        String typename;
+        if (complex != null) {
+            return new NumType("complex");
+        } else {
+            if (Math.floor(n) == n) {
+                typename = "int";
+            } else {
+                typename = "float";
+
+            }
+            return new NumType(typename, n);
+        }
     }
 
 

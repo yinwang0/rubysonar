@@ -34,17 +34,17 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
+    public boolean visit(Symbol n) {
+        return traverseIntoNodes;
+    }
+
+
     public boolean visit(Assign n) {
         return traverseIntoNodes;
     }
 
 
     public boolean visit(Attribute n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(AugAssign n) {
         return traverseIntoNodes;
     }
 
@@ -59,16 +59,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(BoolOp n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Break n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Bytes n) {
         return traverseIntoNodes;
     }
@@ -79,22 +69,12 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(ClassDef n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Compare n) {
+    public boolean visit(Class n) {
         return traverseIntoNodes;
     }
 
 
     public boolean visit(Comprehension n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Continue n) {
         return traverseIntoNodes;
     }
 
@@ -114,7 +94,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(ExceptHandler n) {
+    public boolean visit(Handler n) {
         return traverseIntoNodes;
     }
 
@@ -139,7 +119,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(FunctionDef n) {
+    public boolean visit(Function n) {
         return traverseIntoNodes;
     }
 
@@ -184,11 +164,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Lambda n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(NList n) {
         return traverseIntoNodes;
     }
@@ -229,6 +204,11 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
+    public boolean visit(Op n) {
+        return traverseIntoNodes;
+    }
+
+
     public boolean visit(Pass n) {
         return traverseIntoNodes;
     }
@@ -254,6 +234,11 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
+    public boolean visit(Control n) {
+        return traverseIntoNodes;
+    }
+
+
     public boolean visit(Slice n) {
         return traverseIntoNodes;
     }
@@ -269,12 +254,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(TryExcept n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(TryFinally n) {
+    public boolean visit(Try n) {
         return traverseIntoNodes;
     }
 
@@ -315,6 +295,11 @@ public class DefaultNodeVisitor implements NodeVisitor {
 
 
     public boolean visit(YieldFrom n) {
+        return traverseIntoNodes;
+    }
+
+
+    public boolean visit(Starred n) {
         return traverseIntoNodes;
     }
 }
