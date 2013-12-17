@@ -1,36 +1,15 @@
 package org.yinwang.rubysonar.ast;
 
 /**
- * A visitor that by default visits every node in the tree.
- * Subclasses can override specific node visiting methods
- * and decide whether to visit the children.
+ * garbage code - to be removed
  */
 public class DefaultNodeVisitor implements NodeVisitor {
 
     protected boolean traverseIntoNodes = true;
 
 
-    /**
-     * Once this is called, all {@code visit} methods will return {@code false}.
-     * If the current node's children are being visited, all remaining top-level
-     * children of the node will be visited (without visiting their children),
-     * and then tree traversal halts. <p>
-     * <p/>
-     * If the traversal should be halted immediately without visiting any further
-     * nodes, the visitor can throw a {@link StopIterationException}.
-     */
     public void stopTraversal() {
         traverseIntoNodes = false;
-    }
-
-
-    public boolean visit(Alias n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Assert n) {
-        return traverseIntoNodes;
     }
 
 
@@ -59,11 +38,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Bytes n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Call n) {
         return traverseIntoNodes;
     }
@@ -74,12 +48,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Comprehension n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Delete n) {
+    public boolean visit(Undef n) {
         return traverseIntoNodes;
     }
 
@@ -89,27 +58,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Ellipsis n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Handler n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Exec n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Expr n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(ExtSlice n) {
         return traverseIntoNodes;
     }
 
@@ -124,27 +73,12 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(GeneratorExp n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(If n) {
         return traverseIntoNodes;
     }
 
 
     public boolean visit(IfExp n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Import n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(ImportFrom n) {
         return traverseIntoNodes;
     }
 
@@ -159,27 +93,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(NList n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Set n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(ListComp n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(SetComp n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(DictComp n) {
+    public boolean visit(Array n) {
         return traverseIntoNodes;
     }
 
@@ -204,22 +118,12 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Pass n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Print n) {
+    public boolean visit(Void n) {
         return traverseIntoNodes;
     }
 
 
     public boolean visit(Raise n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Repr n) {
         return traverseIntoNodes;
     }
 
@@ -274,22 +178,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(With n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Withitem n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Yield n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(YieldFrom n) {
         return traverseIntoNodes;
     }
 

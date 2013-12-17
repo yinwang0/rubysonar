@@ -2,7 +2,7 @@ package org.yinwang.rubysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.Analyzer;
-import org.yinwang.rubysonar.FancyProgress;
+import org.yinwang.rubysonar.Progress;
 import org.yinwang.rubysonar._;
 
 import java.io.File;
@@ -106,7 +106,7 @@ public class Demo {
             }
         }
 
-        FancyProgress progress = new FancyProgress(total, 50);
+        Progress progress = new Progress(total, 50);
 
         for (String path : analyzer.getLoadedFiles()) {
             if (path.startsWith(rootPath)) {

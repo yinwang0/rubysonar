@@ -1,24 +1,14 @@
 package org.yinwang.rubysonar.ast;
 
 /**
- * Preorder-traversal node visitor interface.
+ * garbage code - to be removed
  */
 public interface NodeVisitor {
-    /**
-     * Convenience exception for subclasses.  The caller that initiates
-     * the visit should catch this exception if the subclass is expected
-     * to throw it.
-     */
+
     public static final class StopIterationException extends RuntimeException {
         public StopIterationException() {
         }
     }
-
-
-    public boolean visit(Alias m);
-
-
-    public boolean visit(Assert m);
 
 
     public boolean visit(Assign m);
@@ -39,31 +29,19 @@ public interface NodeVisitor {
     public boolean visit(Control m);
 
 
-    public boolean visit(Bytes m);
-
-
     public boolean visit(Call m);
 
 
     public boolean visit(Class m);
 
 
-    public boolean visit(Comprehension m);
-
-
-    public boolean visit(Delete m);
+    public boolean visit(Undef m);
 
 
     public boolean visit(Dict m);
 
 
-    public boolean visit(Ellipsis m);
-
-
     public boolean visit(Handler m);
-
-
-    public boolean visit(Exec m);
 
 
     public boolean visit(For m);
@@ -72,19 +50,10 @@ public interface NodeVisitor {
     public boolean visit(Function m);
 
 
-    public boolean visit(GeneratorExp m);
-
-
     public boolean visit(If m);
 
 
     public boolean visit(IfExp m);
-
-
-    public boolean visit(Import m);
-
-
-    public boolean visit(ImportFrom m);
 
 
     public boolean visit(Index m);
@@ -93,16 +62,7 @@ public interface NodeVisitor {
     public boolean visit(Keyword m);
 
 
-    public boolean visit(NList m);
-
-
-    public boolean visit(ListComp m);
-
-
-    public boolean visit(SetComp m);
-
-
-    public boolean visit(DictComp m);
+    public boolean visit(Array m);
 
 
     public boolean visit(Module m);
@@ -117,25 +77,13 @@ public interface NodeVisitor {
     public boolean visit(Op m);
 
 
-    public boolean visit(Pass m);
-
-
-    public boolean visit(Print m);
+    public boolean visit(Void m);
 
 
     public boolean visit(Raise m);
 
 
-    public boolean visit(Repr m);
-
-
     public boolean visit(Return m);
-
-
-    public boolean visit(Expr m);
-
-
-    public boolean visit(ExtSlice m);
 
 
     public boolean visit(Slice m);
@@ -162,19 +110,7 @@ public interface NodeVisitor {
     public boolean visit(While m);
 
 
-    public boolean visit(With m);
-
-
-    public boolean visit(Withitem m);
-
-
     public boolean visit(Yield m);
-
-
-    public boolean visit(YieldFrom m);
-
-
-    public boolean visit(Set s);
 
 
     public boolean visit(Starred s);

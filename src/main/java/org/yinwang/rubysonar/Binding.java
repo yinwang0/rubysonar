@@ -2,8 +2,8 @@ package org.yinwang.rubysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.rubysonar.ast.*;
 import org.yinwang.rubysonar.ast.Class;
+import org.yinwang.rubysonar.ast.*;
 import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
@@ -98,18 +98,6 @@ public class Binding implements Comparable<Object> {
         } else {
             bodyStart = node.start;
             bodyEnd = node.end;
-        }
-    }
-
-
-    public Str getDocstring() {
-        Node parent = node.getParent();
-        if ((parent instanceof Function && ((Function) parent).name == node) ||
-                (parent instanceof Class && ((Class) parent).name == node))
-        {
-            return parent.getDocString();
-        } else {
-            return node.getDocString();
         }
     }
 

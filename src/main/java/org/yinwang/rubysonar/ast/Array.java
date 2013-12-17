@@ -8,10 +8,15 @@ import org.yinwang.rubysonar.types.Type;
 import java.util.List;
 
 
-public class Set extends Sequence {
+public class Array extends Node {
 
-    public Set(List<Node> elts, int start, int end) {
-        super(elts, start, end);
+    @NotNull
+    public List<Node> elts;
+
+    public Array(@NotNull List<Node> elts, int start, int end) {
+        super(start, end);
+        this.elts = elts;
+        addChildren(elts);
     }
 
 
@@ -19,15 +24,14 @@ public class Set extends Sequence {
     @Override
     public Type transform(State s) {
         if (elts.size() == 0) {
-            return new ListType();
+            return new ListType();  // list<unknown>
         }
 
-        ListType listType = null;
+        ListType listType = new ListType();
         for (Node elt : elts) {
-            if (listType == null) {
-                listType = new ListType(transformExpr(elt, s));
-            } else {
-                listType.add(transformExpr(elt, s));
+            listType.add(transformExpr(elt, s));
+            if (elt instanceof Str) {
+                listType.addValue(((Str) elt).value);
             }
         }
 

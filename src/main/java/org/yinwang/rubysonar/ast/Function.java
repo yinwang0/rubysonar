@@ -18,14 +18,11 @@ public class Function extends Node {
     public Name name;
     public List<Node> args;
     public List<Node> defaults;
-    @Nullable
-    public List<Type> defaultTypes;
     public Name vararg;  // *args
     public Name kwarg;   // **kwarg
     public Name blockarg = null;   // block arg of Ruby
     public List<Node> afterRest = null;   // after rest arg of Ruby
     public Node body;
-    private List<Node> decoratorList;
     public boolean called = false;
     public boolean isLamba = false;
 
@@ -58,7 +55,6 @@ public class Function extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        resolveList(decoratorList, s);
         FunType fun = new FunType(this, s);
         fun.getTable().setParent(s);
         fun.getTable().setPath(s.extendPath(name.id));

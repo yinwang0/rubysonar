@@ -6,9 +6,9 @@ import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 
 
-public class Pass extends Node {
+public class Void extends Node {
 
-    public Pass(int start, int end) {
+    public Void(int start, int end) {
         super(start, end);
     }
 
@@ -23,7 +23,7 @@ public class Pass extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Pass>";
+        return "(void)";
     }
 
 

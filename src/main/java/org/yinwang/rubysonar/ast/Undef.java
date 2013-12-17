@@ -5,27 +5,29 @@ import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 
-
-/**
- * Expression statement.
- */
-public class Expr extends Node {
-
-    public Node value;
+import java.util.List;
 
 
-    public Expr(Node n, int start, int end) {
+public class Undef extends Node {
+
+    public List<Node> targets;
+
+
+    public Undef(List<Node> elts, int start, int end) {
         super(start, end);
-        this.value = n;
-        addChildren(n);
+        this.targets = elts;
+        addChildren(elts);
     }
 
 
     @NotNull
     @Override
-    public Type transform(State s) {
-        if (value != null) {
-            transformExpr(value, s);
+    public Type transform(@NotNull State s) {
+        for (Node n : targets) {
+            transformExpr(n, s);
+            if (n instanceof Name) {
+                s.remove(n.asName().id);
+            }
         }
         return Analyzer.self.builtins.Cont;
     }
@@ -34,14 +36,14 @@ public class Expr extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Expr:" + value + ">";
+        return "(undef:" + targets + ")";
     }
 
 
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNode(value, v);
+            visitNodes(targets, v);
         }
     }
 }

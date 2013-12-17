@@ -172,17 +172,15 @@ public class JSONDump {
         if (!seenDocs.contains(path)) {
             seenDocs.add(path);
 
-            Str doc = binding.getDocstring();
-
-            if (doc != null) {
-                json.writeStartObject();
-                json.writeStringField("sym", path);
-                json.writeStringField("file", binding.getFileOrUrl());
-                json.writeStringField("body", doc.value);
-                json.writeNumberField("start", doc.start);
-                json.writeNumberField("end", doc.end);
-                json.writeEndObject();
-            }
+//            if (doc != null) {
+//                json.writeStartObject();
+//                json.writeStringField("sym", path);
+//                json.writeStringField("file", binding.getFileOrUrl());
+//                json.writeStringField("body", doc.value);
+//                json.writeNumberField("start", doc.start);
+//                json.writeNumberField("end", doc.end);
+//                json.writeEndObject();
+//            }
         }
     }
 

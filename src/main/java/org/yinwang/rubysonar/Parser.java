@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.ast.*;
 import org.yinwang.rubysonar.ast.Class;
+import org.yinwang.rubysonar.ast.Void;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -25,7 +26,7 @@ public class Parser  {
     @Nullable
     Process rubyProcess;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static final String dumpPythonResource = "org/yinwang/pysonar/ruby/dump_ruby.rb";
+    private static final String dumpPythonResource = "org/yinwang/rubysonar/ruby/dump_ruby.rb";
     private String exchangeFile;
     private String endMark;
     private String jsonizer;
@@ -224,7 +225,7 @@ public class Parser  {
         }
 
         if (type.equals("void")) {
-            return new Pass(start, end);
+            return new Void(start, end);
         }
 
 
@@ -264,7 +265,7 @@ public class Parser  {
 
         if (type.equals("undef")) {
             List<Node> targets = convertList(map.get("names"));
-            return new Delete(targets, start, end);
+            return new Undef(targets, start, end);
         }
 
         if (type.equals("hash")) {
@@ -317,19 +318,19 @@ public class Parser  {
             if (elts == null) {
                 elts = Collections.emptyList();
             }
-            return new NList(elts, start, end);
+            return new Array(elts, start, end);
         }
 
         if (type.equals("args")) {
             List<Node> elts = convertList(map.get("positional"));
             if (elts != null) {
-                return new NList(elts, start, end);
+                return new Array(elts, start, end);
             } else {
                 elts = convertList(map.get("star"));
                 if (elts != null) {
-                    return new NList(elts, start, end);
+                    return new Array(elts, start, end);
                 } else {
-                    return new NList(Collections.<Node>emptyList(), start, end);
+                    return new Array(Collections.<Node>emptyList(), start, end);
                 }
             }
         }
@@ -340,7 +341,7 @@ public class Parser  {
             List<Node> elts = new ArrayList<>();
             elts.add(from);
             elts.add(to);
-            return new NList(elts, start, end);
+            return new Array(elts, start, end);
         }
 
         if (type.equals("star")) { // f(*[1, 2, 3, 4])
