@@ -1,7 +1,12 @@
-## PySonar2 - a deep static analyzer for Python
+## RubySonar - a deep static analyzer for Ruby
 
-PySonar2 is a static analyzer for Python, which does interprocedural analysis to
-infer types. To understand its properties, please refer to my blog posts:
+(For the ease of development, RubySonar is recently separated from PySonar2's
+`ruby` branch and become its own repository. The code is still in development
+and can't yet be put into serious use.)
+
+RubySonar is a static analyzer for Ruby, which does interprocedural analysis to
+infer types. RubySonar is modeled after PySonar2. To understand PySonar2's
+properties, please refer to my blog posts:
 
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
@@ -14,60 +19,29 @@ infer types. To understand its properties, please refer to my blog posts:
 
 
 
-### If the build is broken
-
-I haven't yet set up releases, so I push working copies of the builds that I
-don't see problems so far to the `target` directory as a "stable" version. If
-the current build is broken or buggy, please grab that snapshot instead. And of
-course, filing an issue is appreciated.
-
-
-
 ### System Requirements
 
-* Python 2.7.x is recommended (Python <= 2.5 does not work, Python 2.6 works for
-  some people but not all)
+* irb
 
-* Python 3.x if you have Python3 files
-
-PySonar2 uses CPython interpreter to parse Python code, so please make sure you
-have `python` or `python3` installed and pointed to by the `PATH` environment
-variable. If you have them in different names, please make symbol links.
-
-`PYTHONPATH` environment variable is used for locating the Python standard
-libraries. It is important to point it to the correct Python library, for
-example
-
-    export PYTHONPATH=/usr/lib/python2.7
-
-If this is not set up correctly, you may find suboptimal results.
+RubySonar uses the `irb` interpreter to parse Ruby code, so please make sure you
+have it installed and pointed to by the `PATH` environment variable.
 
 
 
 ### How to use
 
-PySonar2 is mainly designed as a library for Python IDEs and other developer
-tools, so its interface may not be as appealing as an end-user tool, but for
-your understanding of the library's capabilities, a reasonably nice demo program
-has been built (all features added by Steve Yegge, all bugs added by Yin Wang).
+RubySonar is mainly designed as a library for IDEs and other developer tools, so
+its interface may not be as appealing as an end-user tool, but for your
+understanding of the library's capabilities, a reasonably nice demo program has
+been built.
 
-Now you can build a simple "code-browser" of the Python 2.7 standard library
-with the following command line:
+You can build a simple "code-browser" of your ruby code with the following
+command line:
 
-    java -jar target/pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html
+    java -jar target/rubysonar-0.1-SNAPSHOT.jar /path/to/project ./html
 
 This will take a few minutes. You should find some interactive HTML files inside
 the _html_ directory after this process.
-
-
-
-### Memory Usage
-
-PySonar2 doesn't need much memory to do analysis. 1.5Gb is probably enough for
-analyzing a medium sized project such as Python's standard library or Django.
-But for generating the HTML files, you may need quite some memory (~2.5Gb for
-Python 2.7 standard lib). This is due to the highlighting code is putting all
-code and their HTML tags into the memory.
 
 
 
