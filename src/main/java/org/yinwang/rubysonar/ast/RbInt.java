@@ -2,7 +2,6 @@ package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.State;
-import org.yinwang.rubysonar._;
 import org.yinwang.rubysonar.types.IntType;
 import org.yinwang.rubysonar.types.Type;
 
@@ -73,9 +72,4 @@ public class RbInt extends Node {
         v.visit(this);
     }
 
-
-    public static void main(String[] args) {
-        RbInt x = new RbInt("879745927945872395479372345727459235923495729457", 0, 0);
-        _.msg("x=" + x);
-    }
 }
