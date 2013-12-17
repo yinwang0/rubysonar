@@ -453,9 +453,14 @@ public class Parser  {
 //            return new Name(id, start, end);
 //        }
 
-        if (type.equals("int") || type.equals("float")) {
-            Object n = map.get("value");
-            return new Num(n, start, end);
+        if (type.equals("int")) {
+            String n = (String) map.get("value");
+            return new RbInt(n, start, end);
+        }
+
+        if (type.equals("float")) {
+            String n = (String) map.get("value");
+            return new RbFloat(n, start, end);
         }
 
         _.die("[please report parser bug]: unexpected ast node: " + type);

@@ -108,7 +108,12 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Num n) {
+    public boolean visit(RbInt n) {
+        return traverseIntoNodes;
+    }
+
+
+    public boolean visit(RbFloat n) {
         return traverseIntoNodes;
     }
 

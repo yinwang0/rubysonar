@@ -59,9 +59,8 @@ public class Builtins {
     public InstanceType unknown;
     public InstanceType None;
     public InstanceType Cont;
-    public NumType BaseNum; // BaseNum models int, float and long
-    public NumType BaseFloat; // BaseNum models int, float and long
-    public NumType BaseComplex;
+    public IntType BaseNum; // BaseNum models int, float and long
+    public FloatType BaseFloat; // BaseNum models int, float and long
     public InstanceType BaseBool;
     public BoolType True;
     public BoolType False;
@@ -361,9 +360,8 @@ public class Builtins {
         BaseArray = newClass("array", bt);
         BaseDict = newClass("dict", bt, Object);
         ClassType numClass = newClass("int", bt, Object);
-        BaseNum = new NumType("int");
-        BaseFloat = new NumType("float");
-        BaseComplex = new NumType("complex");
+        BaseNum = new IntType();
+        BaseFloat = new FloatType();
         BaseBool = new InstanceType(newClass("bool", bt, numClass));
         True = new BoolType(BoolType.Value.True);
         False = new BoolType(BoolType.Value.False);
@@ -383,7 +381,6 @@ public class Builtins {
         buildArrayType();
         buildListType();
         buildDictType();
-        buildNumTypes();
         buildStrType();
         buildModuleType();
         buildFileType();
@@ -551,70 +548,6 @@ public class Builtins {
     }
 
 
-    void buildNumTypes() {
-        State bft = BaseFloat.getTable();
-        String[] float_methods_num = {
-                "__abs__", "__add__", "__coerce__", "__div__", "__divmod__",
-                "__eq__", "__float__", "__floordiv__", "__format__",
-                "__ge__", "__getformat__", "__gt__", "__int__",
-                "__le__", "__long__", "__lt__", "__mod__", "__mul__", "__ne__",
-                "__neg__", "__new__", "__nonzero__", "__pos__", "__pow__",
-                "__radd__", "__rdiv__", "__rdivmod__", "__rfloordiv__", "__rmod__",
-                "__rmul__", "__rpow__", "__rsub__", "__rtruediv__", "__setformat__",
-                "__sub__", "__truediv__", "__trunc__", "as_integer_ratio",
-                "fromhex", "is_integer"
-        };
-        for (String m : float_methods_num) {
-            bft.insert(m, numUrl(), newFunc(BaseFloat), METHOD);
-        }
-        State bnt = BaseNum.getTable();
-        String[] num_methods_num = {
-                "__abs__", "__add__", "__and__",
-                "__class__", "__cmp__", "__coerce__", "__delattr__", "__div__",
-                "__divmod__", "__doc__", "__float__", "__floordiv__",
-                "__getattribute__", "__getnewargs__", "__hash__", "__hex__",
-                "__index__", "__init__", "__int__", "__invert__", "__long__",
-                "__lshift__", "__mod__", "__mul__", "__neg__", "__new__",
-                "__nonzero__", "__oct__", "__or__", "__pos__", "__pow__",
-                "__radd__", "__rand__", "__rdiv__", "__rdivmod__",
-                "__reduce__", "__reduce_ex__", "__repr__", "__rfloordiv__",
-                "__rlshift__", "__rmod__", "__rmul__", "__ror__", "__rpow__",
-                "__rrshift__", "__rshift__", "__rsub__", "__rtruediv__",
-                "__rxor__", "__setattr__", "__str__", "__sub__", "__truediv__",
-                "__xor__"
-        };
-        for (String m : num_methods_num) {
-            bnt.insert(m, numUrl(), newFunc(BaseNum), METHOD);
-        }
-        bnt.insert("__getnewargs__", numUrl(), newFunc(newTuple(BaseNum)), METHOD);
-        bnt.insert("hex", numUrl(), newFunc(BaseStr), METHOD);
-        bnt.insert("conjugate", numUrl(), newFunc(BaseComplex), METHOD);
-
-        State bct = BaseComplex.getTable();
-        String[] complex_methods = {
-                "__abs__", "__add__", "__div__", "__divmod__",
-                "__float__", "__floordiv__", "__format__", "__getformat__", "__int__",
-                "__long__", "__mod__", "__mul__", "__neg__", "__new__",
-                "__pos__", "__pow__", "__radd__", "__rdiv__", "__rdivmod__",
-                "__rfloordiv__", "__rmod__", "__rmul__", "__rpow__", "__rsub__",
-                "__rtruediv__", "__sub__", "__truediv__", "conjugate"
-        };
-        for (String c : complex_methods) {
-            bct.insert(c, numUrl(), newFunc(BaseComplex), METHOD);
-        }
-        String[] complex_methods_num = {
-                "__eq__", "__ge__", "__gt__", "__le__", "__lt__", "__ne__",
-                "__nonzero__", "__coerce__"
-        };
-        for (String cn : complex_methods_num) {
-            bct.insert(cn, numUrl(), newFunc(BaseNum), METHOD);
-        }
-        bct.insert("__getnewargs__", numUrl(), newFunc(newTuple(BaseComplex)), METHOD);
-        bct.insert("imag", numUrl(), BaseNum, ATTRIBUTE);
-        bct.insert("real", numUrl(), BaseNum, ATTRIBUTE);
-    }
-
-
     void buildStrType() {
         BaseStr.getTable().insert("__getslice__", newDataModelUrl("object.__getslice__"),
                 newFunc(BaseStr), METHOD);
@@ -779,7 +712,6 @@ public class Builtins {
 
             addClass("None", newLibUrl("constants"), None);
             addFunction("bool", newLibUrl("functions", "bool"), BaseBool);
-            addFunction("complex", newLibUrl("functions", "complex"), BaseComplex);
             addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
             addFunction("file", newLibUrl("functions", "file"), BaseFileInst);
             addFunction("int", newLibUrl("functions", "int"), BaseNum);
@@ -1022,8 +954,6 @@ public class Builtins {
             addFunction("phase", liburl("conversions-to-and-from-polar-coordinates"), BaseNum);
             addFunction("polar", liburl("conversions-to-and-from-polar-coordinates"),
                     newTuple(BaseNum, BaseNum));
-            addFunction("rect", liburl("conversions-to-and-from-polar-coordinates"),
-                    BaseComplex);
 
             for (String plf : list("exp", "log", "log10", "sqrt")) {
                 addFunction(plf, liburl("power-and-logarithmic-functions"), BaseNum);
@@ -1031,10 +961,6 @@ public class Builtins {
 
             for (String tf : list("acos", "asin", "atan", "cos", "sin", "tan")) {
                 addFunction(tf, liburl("trigonometric-functions"), BaseNum);
-            }
-
-            for (String hf : list("acosh", "asinh", "atanh", "cosh", "sinh", "tanh")) {
-                addFunction(hf, liburl("hyperbolic-functions"), BaseComplex);
             }
 
             for (String cf : list("isinf", "isnan")) {

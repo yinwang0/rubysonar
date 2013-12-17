@@ -55,7 +55,6 @@ public class Analyzer {
         self = this;
         this.suffix = ".rb";
         builtins = new Builtins();
-        builtins.init();
         addPythonPath();
         createCacheDir();
         getAstCache();
@@ -366,12 +365,6 @@ public class Analyzer {
 
 
     @Nullable
-    public ModuleType getBuiltinModule(@NotNull String qname) {
-        return builtins.get(qname);
-    }
-
-
-    @Nullable
     public String makeQname(@NotNull List<Name> names) {
         if (names.isEmpty()) {
             return "";
@@ -421,14 +414,6 @@ public class Analyzer {
         }
 
         String qname = makeQname(name);
-
-        Type mt = getBuiltinModule(qname);
-        if (mt != null) {
-            state.insert(name.get(0).id,
-                    new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
-                    mt, Binding.Kind.SCOPE);
-            return mt;
-        }
 
         // If there are more than one segment
         // load the packages first

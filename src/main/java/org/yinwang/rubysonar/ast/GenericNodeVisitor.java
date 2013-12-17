@@ -100,7 +100,12 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(Num n) {
+    public boolean visit(RbInt n) {
+        return traverseIntoNodes && dispatch(n);
+    }
+
+
+    public boolean visit(RbFloat n) {
         return traverseIntoNodes && dispatch(n);
     }
 

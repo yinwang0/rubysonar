@@ -4,84 +4,66 @@ package org.yinwang.rubysonar.types;
 import org.yinwang.rubysonar.Analyzer;
 
 
-public class NumType extends Type {
-    public String typename;
+public class FloatType extends Type {
     private double upper = Double.POSITIVE_INFINITY;
     private double lower = Double.NEGATIVE_INFINITY;
 
 
-    public NumType(String typename) {
-        this.typename = typename;
+    public FloatType() {
     }
 
 
-    public NumType(String typename, double value) {
-        this.typename = typename;
+    public FloatType(double value) {
         this.lower = this.upper = value;
     }
 
 
-    public NumType(String typename, double lower, double upper) {
-        this.typename = typename;
+    public FloatType(double lower, double upper) {
         this.lower = lower;
         this.upper = upper;
     }
 
 
-    public NumType(NumType other) {
-        this.typename = other.typename;
+    public FloatType(FloatType other) {
         this.lower = other.lower;
         this.upper = other.upper;
     }
 
 
-    public static String mixName(String name1, String name2) {
-        if (name1.equals("float") || name2.equals("float")) {
-            return "float";
-        } else {
-            return "int";
-        }
-    }
-
-
-    public static NumType add(NumType a, NumType b) {
-        String typename = mixName(a.typename, b.typename);
+    public static FloatType add(FloatType a, FloatType b) {
         double lower = a.lower + b.lower;
         double upper = a.upper + b.upper;
-        return new NumType(typename, lower, upper);
+        return new FloatType(lower, upper);
     }
 
 
-    public static NumType sub(NumType a, NumType b) {
-        String typename = mixName(a.typename, b.typename);
+    public static FloatType sub(FloatType a, FloatType b) {
         double lower = a.lower - b.upper;
         double upper = a.upper - b.lower;
-        return new NumType(typename, lower, upper);
+        return new FloatType(lower, upper);
     }
 
 
-    public NumType negate() {
-        return new NumType(typename, -upper, -lower);
+    public FloatType negate() {
+        return new FloatType(-upper, -lower);
     }
 
 
-    public static NumType mul(NumType a, NumType b) {
-        String typename = mixName(a.typename, b.typename);
+    public static FloatType mul(FloatType a, FloatType b) {
         double lower = a.lower * b.lower;
         double upper = a.upper * b.upper;
-        return new NumType(typename, lower, upper);
+        return new FloatType(lower, upper);
     }
 
 
-    public static NumType div(NumType a, NumType b) {
-        String typename = mixName(a.typename, b.typename);
+    public static FloatType div(FloatType a, FloatType b) {
         double lower = a.lower / b.upper;
         double upper = a.upper / b.lower;
-        return new NumType(typename, lower, upper);
+        return new FloatType(lower, upper);
     }
 
 
-    public boolean lt(NumType other) {
+    public boolean lt(FloatType other) {
         return isFeasible() && this.upper < other.lower;
     }
 
@@ -91,7 +73,7 @@ public class NumType extends Type {
     }
 
 
-    public boolean gt(NumType other) {
+    public boolean gt(FloatType other) {
         return isFeasible() && this.lower > other.upper;
     }
 
@@ -101,7 +83,7 @@ public class NumType extends Type {
     }
 
 
-    public boolean eq(NumType other) {
+    public boolean eq(FloatType other) {
         return isActualValue() && other.isActualValue() && this.lower == other.lower;
     }
 
@@ -168,13 +150,13 @@ public class NumType extends Type {
 
 //    @Override
 //    public boolean equals(Object other) {
-//        return other instanceof NumType;
+//        return other instanceof FloatType;
 //    }
 
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        StringBuilder sb = new StringBuilder(typename);
+        StringBuilder sb = new StringBuilder("float");
 
         if (Analyzer.self.debug) {
             if (lower == upper) {

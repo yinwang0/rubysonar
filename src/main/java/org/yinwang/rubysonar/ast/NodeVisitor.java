@@ -71,7 +71,10 @@ public interface NodeVisitor {
     public boolean visit(Name m);
 
 
-    public boolean visit(Num m);
+    public boolean visit(RbInt m);
+
+
+    public boolean visit(RbFloat m);
 
 
     public boolean visit(Op m);

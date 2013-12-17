@@ -83,7 +83,7 @@ class Styler extends DefaultNodeVisitor {
 
 
     @Override
-    public boolean visit(Num n) {
+    public boolean visit(RbInt n) {
         addStyle(n, StyleRun.Type.NUMBER);
         return true;
     }
@@ -95,7 +95,7 @@ class Styler extends DefaultNodeVisitor {
         if (TRISTRING_PREFIX.matcher(s).lookingAt()) {
             addStyle(n.start, n.end - n.start, StyleRun.Type.DOC_STRING);
             docOffsets.add(n.start);  // don't re-highlight as a string
-//            highlightDocString(n);
+//            highlightDocString(value);
         }
         return true;
     }

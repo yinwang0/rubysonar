@@ -5,7 +5,7 @@ import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.BoolType;
-import org.yinwang.rubysonar.types.NumType;
+import org.yinwang.rubysonar.types.FloatType;
 import org.yinwang.rubysonar.types.Type;
 
 
@@ -44,14 +44,14 @@ public class BinOp extends Node {
             }
 
             if (ltype.isTrue() && rtype.isTrue()) {
-                return Analyzer.self.builtins.True;
+                return new BoolType(BoolType.Value.True);
             } else if (ltype.isFalse() || rtype.isFalse()) {
-                return Analyzer.self.builtins.False;
+                return new BoolType(BoolType.Value.False);
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
                 State falseState = State.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
                 return new BoolType(rtype.asBool().getS1(), falseState);
             } else {
-                return Analyzer.self.builtins.BaseBool;
+                return new BoolType(BoolType.Value.Undecided);
             }
         }
 
@@ -63,14 +63,14 @@ public class BinOp extends Node {
             }
 
             if (ltype.isTrue() || rtype.isTrue()) {
-                return Analyzer.self.builtins.True;
+                return new BoolType(BoolType.Value.True);
             } else if (ltype.isFalse() && rtype.isFalse()) {
-                return Analyzer.self.builtins.False;
+                return new BoolType(BoolType.Value.False);
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
                 State trueState = State.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
                 return new BoolType(trueState, rtype.asBool().getS2());
             } else {
-                return Analyzer.self.builtins.BaseBool;
+                return new BoolType(BoolType.Value.Undecided);
             }
         }
 
@@ -87,35 +87,35 @@ public class BinOp extends Node {
 
         // try to figure out actual result
         if (ltype.isNumType() && rtype.isNumType()) {
-            NumType leftNum = ltype.asNumType();
-            NumType rightNum = rtype.asNumType();
+            FloatType leftNum = ltype.asNumType();
+            FloatType rightNum = rtype.asNumType();
 
             if (op == Op.Add) {
-                return NumType.add(leftNum, rightNum);
+                return FloatType.add(leftNum, rightNum);
             }
 
             if (op == Op.Sub) {
-                return NumType.sub(leftNum, rightNum);
+                return FloatType.sub(leftNum, rightNum);
             }
 
             if (op == Op.Mul) {
-                return NumType.mul(leftNum, rightNum);
+                return FloatType.mul(leftNum, rightNum);
             }
 
             if (op == Op.Div) {
-                return NumType.div(leftNum, rightNum);
+                return FloatType.div(leftNum, rightNum);
             }
 
             // comparison
             if (op == Op.Lt || op == Op.Gt) {
                 Node leftNode = left;
-                NumType trueType, falseType;
+                FloatType trueType, falseType;
                 Op op1 = op;
 
                 if (!left.isName()) {
                     leftNode = right;
 
-                    NumType tmpNum = rightNum;
+                    FloatType tmpNum = rightNum;
                     rightNum = leftNum;
                     leftNum = tmpNum;
 
@@ -134,11 +134,11 @@ public class BinOp extends Node {
 
                         if (leftNode.isName()) {
                             // true branch: if l < r, then l's upper bound is r's upper bound
-                            trueType = new NumType(leftNum);
+                            trueType = new FloatType(leftNum);
                             trueType.setUpper(rightNum.getUpper());
 
                             // false branch: if l > r, then l's lower bound is r's lower bound
-                            falseType = new NumType(leftNum);
+                            falseType = new FloatType(leftNum);
                             falseType.setLower(rightNum.getLower());
                             String id = leftNode.asName().id;
 
@@ -164,11 +164,11 @@ public class BinOp extends Node {
 
                         if (leftNode.isName()) {
                             // true branch: if l > r, then l's lower bound is r's lower bound
-                            trueType = new NumType(leftNum);
+                            trueType = new FloatType(leftNum);
                             trueType.setLower(rightNum.getLower());
 
                             // false branch: if l < r, then l's upper bound is r's upper bound
-                            falseType = new NumType(leftNum);
+                            falseType = new FloatType(leftNum);
                             falseType.setUpper(rightNum.getUpper());
                             String id = leftNode.asName().id;
 

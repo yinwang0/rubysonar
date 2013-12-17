@@ -113,7 +113,7 @@ public abstract class Type {
 
 
     public boolean isNumType() {
-        return this instanceof NumType;
+        return this instanceof FloatType;
     }
 
 
@@ -150,8 +150,8 @@ public abstract class Type {
 
 
     @NotNull
-    public NumType asNumType() {
-        return (NumType) this;
+    public FloatType asNumType() {
+        return (FloatType) this;
     }
 
 
