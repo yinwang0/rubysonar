@@ -41,8 +41,7 @@ public class Slice extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Slice:" + lower + ":" + step + ":" + upper + ">";
+        return "(slice:" + lower + ":" + step + ":" + upper + ")";
     }
-
 
 }

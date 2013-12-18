@@ -34,7 +34,7 @@ public class Module extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(module:" + file + ")";
+        return "(module:" + name + ")";
     }
 
 }

@@ -38,5 +38,4 @@ public class Symbol extends Node {
         return id;
     }
 
-
 }

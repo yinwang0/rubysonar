@@ -32,8 +32,7 @@ public class Yield extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(yield:" + start + ":" + value + ")";
+        return "(yield " + value + ")";
     }
-
 
 }

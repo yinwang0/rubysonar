@@ -62,7 +62,7 @@ public class Try extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Try:" + handlers + ":" + body + ":" + orelse + ">";
+        return "(try:" + handlers + ":" + body + ":" + orelse + ")";
     }
 
 

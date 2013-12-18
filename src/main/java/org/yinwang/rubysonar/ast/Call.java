@@ -296,8 +296,7 @@ public class Call extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(call:" + func + ":" + args + ":" + start + ")";
+        return "(call:" + func + ":" + args + ")";
     }
-
 
 }

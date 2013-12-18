@@ -117,8 +117,7 @@ public class Attribute extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Attribute:" + start + ":" + target + "." + getAttributeName() + ">";
+        return "(" + target + "." + getAttributeName() + ")";
     }
-
 
 }

@@ -18,14 +18,14 @@ public class Control extends Node {
 
     @NotNull
     @Override
-    public String toString() {
-        return "(" + command + ")";
+    public Type transform(State s) {
+        return Type.NIL;
     }
 
 
     @NotNull
     @Override
-    public Type transform(State s) {
-        return Type.NIL;
+    public String toString() {
+        return "(" + command + ")";
     }
 }

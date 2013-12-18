@@ -43,8 +43,7 @@ public class Array extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(array:" + start + ":" + elts + ")";
+        return "(array:" + elts + ")";
     }
-
 
 }

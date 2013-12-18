@@ -31,5 +31,4 @@ public class RbFloat extends Node {
         return "(float:" + value + ")";
     }
 
-
 }

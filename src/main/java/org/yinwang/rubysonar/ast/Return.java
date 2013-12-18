@@ -31,8 +31,7 @@ public class Return extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Return:" + value + ">";
+        return "(return:" + value + ")";
     }
-
 
 }

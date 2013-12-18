@@ -43,16 +43,15 @@ public class Keyword extends Node {
 
     @NotNull
     @Override
-    public String toString() {
-        return "<Keyword:" + arg + ":" + value + ">";
+    public String toDisplay() {
+        return arg;
     }
 
 
     @NotNull
     @Override
-    public String toDisplay() {
-        return arg;
+    public String toString() {
+        return "(keyword:" + arg + ":" + value + ")";
     }
-
 
 }

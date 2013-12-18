@@ -46,7 +46,7 @@ public class Handler extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(handler:" + start + ":" + exceptions + ":" + binder + ")";
+        return "(handler:" + exceptions + ":" + binder + ")";
     }
 
 

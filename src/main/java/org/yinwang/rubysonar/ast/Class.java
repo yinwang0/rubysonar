@@ -91,8 +91,7 @@ public class Class extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(class:" + name.id + ":" + start + ")";
+        return "(class:" + name.id + ")";
     }
-
 
 }

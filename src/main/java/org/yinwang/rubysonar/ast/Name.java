@@ -100,15 +100,15 @@ public class Name extends Node {
 
     @NotNull
     @Override
-    public String toString() {
-        return "(" + id + ":" + start + ")";
+    public String toDisplay() {
+        return id;
     }
 
 
     @NotNull
     @Override
-    public String toDisplay() {
-        return id;
+    public String toString() {
+        return "(" + id + ":" + start + ")";
     }
 
 

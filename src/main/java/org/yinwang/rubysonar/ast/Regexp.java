@@ -24,4 +24,10 @@ public class Regexp extends Node {
     }
 
 
+    @NotNull
+    @Override
+    public String toString() {
+        return "(regexp:" + pattern + end + ")";
+    }
+
 }

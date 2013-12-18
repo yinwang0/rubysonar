@@ -78,7 +78,7 @@ public class If extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(if:" + start + ":" + test + ":" + body + ":" + orelse + ")";
+        return "(if:" + test + ":" + body + ":" + orelse + ")";
     }
 
 

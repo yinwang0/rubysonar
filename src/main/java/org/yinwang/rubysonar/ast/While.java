@@ -43,8 +43,7 @@ public class While extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<While:" + test + ":" + body + ":" + orelse + ":" + start + ">";
+        return "(while:" + test + ":" + body + ":" + orelse + ")";
     }
-
 
 }

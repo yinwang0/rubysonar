@@ -95,13 +95,6 @@ public class Function extends Node {
     }
 
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "(func:" + start + ":" + name + ")";
-    }
-
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Function) {
@@ -110,6 +103,13 @@ public class Function extends Node {
         } else {
             return false;
         }
+    }
+
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "(func:" + name + ")";
     }
 
 }
