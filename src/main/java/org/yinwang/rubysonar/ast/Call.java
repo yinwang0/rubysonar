@@ -6,9 +6,8 @@ import org.yinwang.rubysonar.*;
 import org.yinwang.rubysonar.types.*;
 
 import java.util.*;
-import java.util.Set;
 
-import static org.yinwang.rubysonar.Binding.Kind.*;
+import static org.yinwang.rubysonar.Binding.Kind.PARAMETER;
 
 
 public class Call extends Node {
@@ -70,7 +69,7 @@ public class Call extends Node {
 
         if (fun.isUnionType()) {
             Set<Type> types = fun.asUnionType().getTypes();
-            Type retType = Analyzer.self.builtins.unknown;
+            Type retType = Type.UNKNOWN;
             for (Type ft : types) {
                 Type t = resolveCall(ft, pos, hash, kw, star, block);
                 retType = UnionType.union(retType, t);
@@ -97,7 +96,7 @@ public class Call extends Node {
             return new InstanceType(fun, this, pos);
         } else {
             addWarning("calling non-function and non-class: " + fun);
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
     }
 
@@ -123,7 +122,7 @@ public class Call extends Node {
             return func.getReturnType();
         } else if (call != null && Analyzer.self.inStack(call)) {
             func.setSelfType(null);
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
 
         if (call != null) {
@@ -216,7 +215,7 @@ public class Call extends Node {
                 {
                     aType = star.asTupleType().get(j++);
                 } else {
-                    aType = Analyzer.self.builtins.unknown;
+                    aType = Type.UNKNOWN;
                     if (call != null) {
                         Analyzer.self.putProblem(args.get(i),
                                 "unable to bind argument:" + args.get(i));
@@ -233,12 +232,12 @@ public class Call extends Node {
                 Binder.bind(
                         funcTable,
                         restKw,
-                        new DictType(Analyzer.self.builtins.BaseStr, hashType),
+                        new DictType(Type.UNKNOWN_STR, hashType),
                         Binding.Kind.PARAMETER);
             } else {
                 Binder.bind(funcTable,
                         restKw,
-                        Analyzer.self.builtins.unknown,
+                        Type.UNKNOWN,
                         Binding.Kind.PARAMETER);
             }
         }
@@ -263,7 +262,7 @@ public class Call extends Node {
             } else {
                 Binder.bind(funcTable,
                         rest,
-                        Analyzer.self.builtins.unknown,
+                        Type.UNKNOWN,
                         Binding.Kind.PARAMETER);
             }
         }
@@ -276,32 +275,6 @@ public class Call extends Node {
     }
 
 
-    static void bindMethodAttrs(@NotNull FunType cl) {
-        if (cl.getTable().parent != null) {
-            Type cls = cl.getTable().parent.getType();
-            if (cls != null && cls.isClassType()) {
-                addReadOnlyAttr(cl, "im_class", cls, CLASS);
-                addReadOnlyAttr(cl, "__class__", cls, CLASS);
-                addReadOnlyAttr(cl, "im_self", cls, ATTRIBUTE);
-                addReadOnlyAttr(cl, "__self__", cls, ATTRIBUTE);
-            }
-        }
-    }
-
-
-    static void addReadOnlyAttr(@NotNull FunType fun,
-                                String name,
-                                @NotNull Type type,
-                                Binding.Kind kind)
-    {
-        Node loc = Builtins.newDataModelUrl("the-standard-type-hierarchy");
-        Binding b = new Binding(name, loc, type, kind);
-        fun.getTable().update(name, b);
-        b.markSynthetic();
-        b.markStatic();
-        b.markReadOnly();
-    }
-
 
     static boolean missingReturn(@NotNull Type toType) {
         boolean hasNone = false;
@@ -309,7 +282,7 @@ public class Call extends Node {
 
         if (toType.isUnionType()) {
             for (Type t : toType.asUnionType().getTypes()) {
-                if (t == Analyzer.self.builtins.None || t == Analyzer.self.builtins.Cont) {
+                if (t == Type.NIL || t == Type.CONT) {
                     hasNone = true;
                 } else {
                     hasOther = true;

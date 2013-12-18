@@ -34,14 +34,14 @@ public class Raise extends Node {
         if (traceback != null) {
             transformExpr(traceback, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Raise:" + traceback + ":" + exceptionType + ">";
+        return "(raise:" + traceback + ":" + exceptionType + ")";
     }
 
 

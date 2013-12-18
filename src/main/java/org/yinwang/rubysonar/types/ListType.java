@@ -17,14 +17,12 @@ public class ListType extends Type {
 
 
     public ListType() {
-        this(Analyzer.self.builtins.unknown);
+        this(Type.UNKNOWN);
     }
 
 
     public ListType(Type elt0) {
         eltType = elt0;
-        getTable().addSuper(Analyzer.self.builtins.BaseList.getTable());
-        getTable().setPath(Analyzer.self.builtins.BaseList.getTable().getPath());
     }
 
 

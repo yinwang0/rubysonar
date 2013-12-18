@@ -30,11 +30,6 @@ public class ModuleType extends Type {
         setTable(new State(parent, State.StateType.MODULE));
         getTable().setPath(qname);
         getTable().setType(this);
-
-        // null during bootstrapping of built-in types
-        if (Analyzer.self.builtins != null) {
-            getTable().addSuper(Analyzer.self.builtins.BaseModule.getTable());
-        }
     }
 
     public String getName() {

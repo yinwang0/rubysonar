@@ -70,11 +70,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(IfExp n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
     public boolean visit(Index n) {
         return traverseIntoNodes && dispatch(n);
     }
@@ -136,11 +131,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
 
 
     public boolean visit(Subscript n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(Tuple n) {
         return traverseIntoNodes && dispatch(n);
     }
 

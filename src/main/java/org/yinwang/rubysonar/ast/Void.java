@@ -16,7 +16,7 @@ public class Void extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

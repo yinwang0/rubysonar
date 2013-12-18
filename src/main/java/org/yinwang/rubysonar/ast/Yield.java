@@ -25,7 +25,7 @@ public class Yield extends Node {
         if (value != null) {
             return new ListType(transformExpr(value, s));
         } else {
-            return Analyzer.self.builtins.None;
+            return Type.NIL;
         }
     }
 
@@ -33,7 +33,7 @@ public class Yield extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Yield:" + start + ":" + value + ">";
+        return "(yield:" + start + ":" + value + ")";
     }
 
 

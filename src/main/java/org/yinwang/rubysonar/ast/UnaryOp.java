@@ -30,7 +30,7 @@ public class UnaryOp extends Node {
                 return valueType;
             } else {
                 Analyzer.self.putProblem(this, "+ can't be applied to type: " + valueType);
-                return Analyzer.self.builtins.BaseNum;
+                return Type.UNKNOWN_INT;
             }
         }
 
@@ -39,16 +39,16 @@ public class UnaryOp extends Node {
                 return valueType.asIntType().negate();
             } else {
                 Analyzer.self.putProblem(this, "- can't be applied to type: " + valueType);
-                return Analyzer.self.builtins.BaseNum;
+                return Type.UNKNOWN_INT;
             }
         }
 
         if (op == Op.Not) {
             if (valueType.isTrue()) {
-                return Analyzer.self.builtins.False;
+                return Type.FALSE;
             }
             if (valueType.isFalse()) {
-                return Analyzer.self.builtins.True;
+                return Type.TRUE;
             }
             if (valueType.isUndecidedBool()) {
                 return valueType.asBool().swap();
@@ -56,7 +56,7 @@ public class UnaryOp extends Node {
         }
 
         Analyzer.self.putProblem(this, "operator " + op + " cannot be applied to type: " + valueType);
-        return Analyzer.self.builtins.unknown;
+        return Type.UNKNOWN;
 
     }
 

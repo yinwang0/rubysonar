@@ -33,7 +33,7 @@ public class Module extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Module:" + file + ">";
+        return "(module:" + file + ")";
     }
 
 

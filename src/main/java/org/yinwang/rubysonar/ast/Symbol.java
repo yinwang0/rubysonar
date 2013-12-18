@@ -28,7 +28,7 @@ public class Symbol extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(sym:" + id + ":" + start + ")";
+        return ":" + id;
     }
 
 

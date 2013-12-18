@@ -21,7 +21,7 @@ public class Regexp extends Node {
     @NotNull
     @Override
     protected Type transform(State s) {
-        return Analyzer.self.builtins.BaseStr;
+        return Type.UNKNOWN_STR;
     }
 
 

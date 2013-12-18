@@ -2,10 +2,11 @@ package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.rubysonar.*;
+import org.yinwang.rubysonar.Analyzer;
+import org.yinwang.rubysonar.Binder;
+import org.yinwang.rubysonar.Binding;
+import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.ClassType;
-import org.yinwang.rubysonar.types.DictType;
-import org.yinwang.rubysonar.types.TupleType;
 import org.yinwang.rubysonar.types.Type;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class Class extends Node {
 
     private static int classCounter = 0;
 
+
     @NotNull
     public static String genClassName() {
         classCounter = classCounter + 1;
@@ -76,33 +78,13 @@ public class Class extends Node {
             baseTypes.add(baseType);
         }
 
-        // XXX: Not sure if we should add "bases", "name" and "dict" here. They
-        // must be added _somewhere_ but I'm just not sure if it should be HERE.
-        Builtins builtins = Analyzer.self.builtins;
-        addSpecialAttribute(classType.getTable(), "__bases__", new TupleType(baseTypes));
-        addSpecialAttribute(classType.getTable(), "__name__", builtins.BaseStr);
-        addSpecialAttribute(classType.getTable(), "__dict__",
-                new DictType(builtins.BaseStr, Analyzer.self.builtins.unknown));
-        addSpecialAttribute(classType.getTable(), "__module__", builtins.BaseStr);
-        addSpecialAttribute(classType.getTable(), "__doc__", builtins.BaseStr);
-
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.
         Binder.bind(s, name, classType, Binding.Kind.CLASS);
         if (body != null) {
             transformExpr(body, classType.getTable());
         }
-        return Analyzer.self.builtins.Cont;
-    }
-
-
-    private void addSpecialAttribute(@NotNull State s, String name, Type proptype) {
-        Binding b = new Binding(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);
-        s.update(name, b);
-        b.markSynthetic();
-        b.markStatic();
-        b.markReadOnly();
-
+        return Type.CONT;
     }
 
 

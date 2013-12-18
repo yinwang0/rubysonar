@@ -1,7 +1,6 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
@@ -40,17 +39,17 @@ public class If extends Node {
         if (body != null) {
             type1 = transformExpr(body, s1);
         } else {
-            type1 = Analyzer.self.builtins.Cont;
+            type1 = Type.CONT;
         }
 
         if (orelse != null) {
             type2 = transformExpr(orelse, s2);
         } else {
-            type2 = Analyzer.self.builtins.Cont;
+            type2 = Type.CONT;
         }
 
-        boolean cont1 = UnionType.contains(type1, Analyzer.self.builtins.Cont);
-        boolean cont2 = UnionType.contains(type2, Analyzer.self.builtins.Cont);
+        boolean cont1 = UnionType.contains(type1, Type.CONT);
+        boolean cont2 = UnionType.contains(type2, Type.CONT);
 
         // decide which branch affects the downstream state
         if (conditionType.isTrue() && cont1) {
@@ -66,9 +65,9 @@ public class If extends Node {
         }
 
         // determine return type
-        if (conditionType == Analyzer.self.builtins.True) {
+        if (conditionType == Type.TRUE) {
             return type1;
-        } else if (conditionType == Analyzer.self.builtins.False) {
+        } else if (conditionType == Type.FALSE) {
             return type2;
         } else {
             return UnionType.union(type1, type2);
@@ -79,7 +78,7 @@ public class If extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<If:" + start + ":" + test + ":" + body + ":" + orelse + ">";
+        return "(if:" + start + ":" + test + ":" + body + ":" + orelse + ")";
     }
 
 

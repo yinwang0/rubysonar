@@ -78,11 +78,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(IfExp n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Index n) {
         return traverseIntoNodes;
     }
@@ -159,11 +154,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
 
 
     public boolean visit(Try n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Tuple n) {
         return traverseIntoNodes;
     }
 

@@ -35,8 +35,6 @@ public class FunType extends Type {
 
     public FunType(Type from, Type to) {
         addMapping(from, to);
-        getTable().addSuper(Analyzer.self.builtins.BaseFunction.getTable());
-        getTable().setPath(Analyzer.self.builtins.BaseFunction.getTable().getPath());
     }
 
 
@@ -63,7 +61,7 @@ public class FunType extends Type {
         if (!arrows.isEmpty()) {
             return arrows.values().iterator().next();
         } else {
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
     }
 
@@ -126,17 +124,6 @@ public class FunType extends Type {
     }
 
 
-    static Type removeNoneReturn(@NotNull Type toType) {
-        if (toType.isUnionType()) {
-            Set<Type> types = new HashSet<>(toType.asUnionType().getTypes());
-            types.remove(Analyzer.self.builtins.Cont);
-            return UnionType.newUnion(types);
-        } else {
-            return toType;
-        }
-    }
-
-
     @Override
     public int hashCode() {
         return "FunType".hashCode();
@@ -153,7 +140,7 @@ public class FunType extends Type {
             return true;
         }
 
-        if (type1.isUnknownType() || type1 == Analyzer.self.builtins.None || type1.equals(type2)) {
+        if (type1.isUnknownType() || type1 == Type.NIL || type1.equals(type2)) {
             return true;
         }
 

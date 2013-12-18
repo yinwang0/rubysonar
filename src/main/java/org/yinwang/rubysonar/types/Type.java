@@ -74,7 +74,8 @@ public abstract class Type {
 
 
     public boolean isUndecidedBool() {
-        return isBool() && asBool().getValue() == BoolType.Value.Undecided;
+        return isBool() && asBool().getValue() == BoolType.Value.Undecided &&
+                asBool().getS1() != null && asBool().getS2() != null;
     }
 
 
@@ -129,7 +130,7 @@ public abstract class Type {
 
 
     public boolean isStrType() {
-        return this == Analyzer.self.builtins.BaseStr;
+        return this == UNKNOWN_STR;
     }
 
 
@@ -144,7 +145,7 @@ public abstract class Type {
 
 
     public boolean isUnknownType() {
-        return this == Analyzer.self.builtins.unknown;
+        return this == Type.UNKNOWN;
     }
 
 
@@ -224,10 +225,10 @@ public abstract class Type {
 
 
     public boolean isTrue() {
-        if (this == Analyzer.self.builtins.True) {
+        if (this == TRUE) {
             return true;
         }
-        if (this == Analyzer.self.builtins.False || this.isUndecidedBool()) {
+        if (this == FALSE || this.isUndecidedBool()) {
             return false;
         }
         if (this.isIntType() && (this.asIntType().lt(BigInteger.ZERO) || this.asIntType().gt(BigInteger.ZERO))) {
@@ -242,7 +243,7 @@ public abstract class Type {
         if (this.isFloatType() && this.asFloatType().isZero()) {
             return false;
         }
-        if (this != Analyzer.self.builtins.None) {
+        if (this != NIL) {
             return true;
         }
         return false;
@@ -250,10 +251,10 @@ public abstract class Type {
 
 
     public boolean isFalse() {
-        if (this == Analyzer.self.builtins.False) {
+        if (this == FALSE) {
             return true;
         }
-        if (this == Analyzer.self.builtins.True || this.isUndecidedBool()) {
+        if (this == TRUE || this.isUndecidedBool()) {
             return false;
         }
         if (this.isIntType() && this.asIntType().isZero()) {
@@ -262,7 +263,7 @@ public abstract class Type {
         if (this.isFloatType() && this.asFloatType().isZero()) {
             return true;
         }
-        if (this == Analyzer.self.builtins.None) {
+        if (this == NIL) {
             return true;
         }
         return false;
@@ -337,4 +338,14 @@ public abstract class Type {
         return printType(new CyclicTypeRecorder());
     }
 
+
+    public static InstanceType UNKNOWN = new InstanceType(new ClassType("unknown", null, null));
+    public static InstanceType CONT = new InstanceType(new ClassType("cont", null, null));
+    public static InstanceType NIL = new InstanceType(new ClassType("nil", null, null));
+    public static StrType UNKNOWN_STR = new StrType(null);
+    public static IntType UNKNOWN_INT = new IntType();
+    public static FloatType UNKNOWN_FLOAT = new FloatType();
+    public static BoolType UNKNOWN_BOOL = new BoolType(BoolType.Value.Undecided);
+    public static BoolType TRUE = new BoolType(BoolType.Value.True);
+    public static BoolType FALSE = new BoolType(BoolType.Value.False);
 }

@@ -27,15 +27,15 @@ public class Block extends Node {
     public Type transform(@NotNull State state) {
 
         boolean returned = false;
-        Type retType = Analyzer.self.builtins.unknown;
+        Type retType = Type.UNKNOWN;
 
         for (Node n : seq) {
             Type t = transformExpr(n, state);
             if (!returned) {
                 retType = UnionType.union(retType, t);
-                if (!UnionType.contains(t, Analyzer.self.builtins.Cont)) {
+                if (!UnionType.contains(t, Type.CONT)) {
                     returned = true;
-                    retType = UnionType.remove(retType, Analyzer.self.builtins.Cont);
+                    retType = UnionType.remove(retType, Type.CONT);
                 }
             } else if (state.getStateType() != State.StateType.GLOBAL &&
                     state.getStateType() != State.StateType.MODULE)

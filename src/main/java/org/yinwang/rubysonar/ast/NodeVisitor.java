@@ -53,9 +53,6 @@ public interface NodeVisitor {
     public boolean visit(If m);
 
 
-    public boolean visit(IfExp m);
-
-
     public boolean visit(Index m);
 
 
@@ -99,9 +96,6 @@ public interface NodeVisitor {
 
 
     public boolean visit(Try m);
-
-
-    public boolean visit(Tuple m);
 
 
     public boolean visit(UnaryOp m);

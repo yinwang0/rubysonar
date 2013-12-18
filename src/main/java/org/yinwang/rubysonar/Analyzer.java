@@ -41,7 +41,6 @@ public class Analyzer {
     public String cacheDir;
     public Set<String> failedToParse = new HashSet<>();
     public Stats stats = new Stats();
-    public Builtins builtins;
     private Logger logger;
     private Progress loadingProgress = null;
 
@@ -54,7 +53,6 @@ public class Analyzer {
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         self = this;
         this.suffix = ".rb";
-        builtins = new Builtins();
         addPythonPath();
         createCacheDir();
         getAstCache();

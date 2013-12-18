@@ -1,7 +1,6 @@
 package org.yinwang.rubysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Analyzer;
 
 
 public class DictType extends Type {
@@ -13,8 +12,6 @@ public class DictType extends Type {
     public DictType(Type key0, Type val0) {
         keyType = key0;
         valueType = val0;
-        getTable().addSuper(Analyzer.self.builtins.BaseDict.getTable());
-        getTable().setPath(Analyzer.self.builtins.BaseDict.getTable().getPath());
     }
 
 
