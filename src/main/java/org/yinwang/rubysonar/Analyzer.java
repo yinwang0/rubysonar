@@ -3,7 +3,6 @@ package org.yinwang.rubysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.ast.Call;
-import org.yinwang.rubysonar.ast.Name;
 import org.yinwang.rubysonar.ast.Node;
 import org.yinwang.rubysonar.ast.Url;
 import org.yinwang.rubysonar.types.FunType;
@@ -279,13 +278,11 @@ public class Analyzer {
         File f = new File(path);
 
         if (!f.canRead()) {
-            finer("\nfile not not found or cannot be read: " + path);
             return null;
         }
 
         Type module = getCachedModule(path);
         if (module != null) {
-            finer("\nusing cached module " + path + " [succeeded]");
             return module;
         }
 
@@ -321,7 +318,6 @@ public class Analyzer {
 
     @Nullable
     private Type parseAndResolve(String file) {
-        finer("Analyzing: " + file);
         loadingProgress.tick();
 
         try {
@@ -331,9 +327,7 @@ public class Analyzer {
                 failedToParse.add(file);
                 return null;
             } else {
-                finer("resolving: " + file);
                 Type type = Node.transformExpr(ast, moduleTable);
-                finer("[success]");
                 loadedFiles.add(file);
                 return type;
             }
@@ -369,49 +363,17 @@ public class Analyzer {
     }
 
 
-    /**
-     * Returns the syntax tree for {@code file}. <p>
-     */
     @Nullable
     public Node getAstForFile(String file) {
         return getAstCache().getAST(file);
     }
 
 
-    @Nullable
-    public String makeQname(@NotNull List<Name> names) {
-        if (names.isEmpty()) {
-            return "";
-        }
-
-        String ret = "";
-
-        for (int i = 0; i < names.size() - 1; i++) {
-            ret += names.get(i).id + ".";
-        }
-
-        ret += names.get(names.size() - 1).id;
-        return ret;
-    }
-
-
-    /**
-     * Find the path that contains modname. Used to find the starting point of locating a qname.
-     *
-     * @param headName first module name segment
-     */
     public String locateModule(String headName) {
         List<String> loadPath = getLoadPath();
 
         for (String p : loadPath) {
-            File startDir = new File(p, headName);
-            File initFile = new File(_.joinPath(startDir, "__init__.py").getPath());
-
-            if (initFile.exists()) {
-                return p;
-            }
-
-            File startFile = new File(startDir + suffix);
+            File startFile = _.makePath(p, headName, suffix);
             if (startFile.exists()) {
                 return p;
             }
@@ -421,70 +383,6 @@ public class Analyzer {
     }
 
 
-    @Nullable
-    public Type loadModule(@NotNull List<Name> name, @NotNull State state) {
-        if (name.isEmpty()) {
-            return null;
-        }
-
-        String qname = makeQname(name);
-
-        // If there are more than one segment
-        // load the packages first
-        Type prev = null;
-        String startPath = locateModule(name.get(0).id);
-
-        if (startPath == null) {
-            return null;
-        }
-
-        File path = new File(startPath);
-
-        for (int i = 0; i < name.size(); i++) {
-            path = new File(path, name.get(i).id);
-            File initFile = new File(_.joinPath(path, "__init__.py").getPath());
-
-            if (initFile.exists()) {
-                Type mod = loadFile(initFile.getPath());
-                if (mod == null) {
-                    return null;
-                }
-
-                if (prev != null) {
-                    prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                } else {
-                    state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                }
-
-                prev = mod;
-
-            } else if (i == name.size() - 1) {
-                File startFile = new File(path + suffix);
-                if (startFile.exists()) {
-                    Type mod = loadFile(startFile.getPath());
-                    if (mod == null) {
-                        return null;
-                    }
-                    if (prev != null) {
-                        prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                    } else {
-                        state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                    }
-                    prev = mod;
-                } else {
-                    return null;
-                }
-            }
-        }
-        return prev;
-    }
-
-
-    /**
-     * Load all Python source files recursively if the given fullname is a
-     * directory; otherwise just load a file.  Looks at file extension to
-     * determine whether to load a given file.
-     */
     public void loadFileRecursive(String fullname) {
         int count = countFileRecursive(fullname);
         if (loadingProgress == null) {
@@ -505,7 +403,7 @@ public class Analyzer {
     }
 
 
-    // count number of .py files
+    // count number of files that need processing
     public int countFileRecursive(String fullname) {
         File file_or_dir = new File(fullname);
         int sum = 0;
@@ -632,35 +530,9 @@ public class Analyzer {
     }
 
 
-    public void severe(String msg) {
-        log(Level.SEVERE, msg);
-    }
-
-
-    public void warn(String msg) {
-        log(Level.WARNING, msg);
-    }
-
-
-    public void info(String msg) {
-        log(Level.INFO, msg);
-    }
-
-
-    public void fine(String msg) {
-        log(Level.FINE, msg);
-    }
-
-
-    public void finer(String msg) {
-        log(Level.FINER, msg);
-    }
-
-
     @NotNull
     @Override
     public String toString() {
-        return "<Analyzer:locs=" + references.size() + ":probs="
-                + semanticErrors.size() + ":files=" + loadedFiles.size() + ">";
+        return "(analyzer:locs=" + references.size() + ":files=" + loadedFiles.size() + ")";
     }
 }
