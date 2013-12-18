@@ -50,12 +50,4 @@ public class Handler extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(binder, v);
-            visitNodes(exceptions, v);
-            visitNode(body, v);
-        }
-    }
 }

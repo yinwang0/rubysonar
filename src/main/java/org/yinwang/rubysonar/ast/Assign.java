@@ -50,11 +50,4 @@ public class Assign extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(target, v);
-            visitNode(value, v);
-        }
-    }
 }

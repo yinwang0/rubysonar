@@ -1,7 +1,6 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binder;
 import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
@@ -53,13 +52,4 @@ public class For extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(target, v);
-            visitNode(iter, v);
-            visitNode(body, v);
-            visitNode(orelse, v);
-        }
-    }
 }

@@ -197,11 +197,4 @@ public class BinOp extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(left, v);
-            visitNode(right, v);
-        }
-    }
 }

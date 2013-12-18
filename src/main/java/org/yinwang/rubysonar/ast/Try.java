@@ -1,7 +1,6 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
@@ -65,12 +64,4 @@ public class Try extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(handlers, v);
-            visitNode(body, v);
-            visitNode(orelse, v);
-        }
-    }
 }

@@ -121,11 +121,4 @@ public class Attribute extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(target, v);
-            visitNode(attr, v);
-        }
-    }
 }

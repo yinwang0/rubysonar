@@ -2,7 +2,6 @@ package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.DictType;
 import org.yinwang.rubysonar.types.Type;
@@ -102,11 +101,4 @@ public class Subscript extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-            visitNode(slice, v);
-        }
-    }
 }

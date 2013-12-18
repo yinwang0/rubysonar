@@ -45,12 +45,4 @@ public class Slice extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(lower, v);
-            visitNode(step, v);
-            visitNode(upper, v);
-        }
-    }
 }

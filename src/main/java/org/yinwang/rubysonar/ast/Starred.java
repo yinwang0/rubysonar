@@ -31,10 +31,4 @@ public class Starred extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

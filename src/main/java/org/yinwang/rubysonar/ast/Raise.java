@@ -1,7 +1,6 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 
@@ -45,12 +44,4 @@ public class Raise extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(exceptionType, v);
-            visitNode(inst, v);
-            visitNode(traceback, v);
-        }
-    }
 }

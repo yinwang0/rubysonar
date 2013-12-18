@@ -39,8 +39,4 @@ public class Symbol extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

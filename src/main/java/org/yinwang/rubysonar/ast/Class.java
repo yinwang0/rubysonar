@@ -95,12 +95,4 @@ public class Class extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(name, v);
-            visitNodes(bases, v);
-            visitNode(body, v);
-        }
-    }
 }

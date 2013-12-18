@@ -46,10 +46,4 @@ public class Array extends Node {
     }
 
 
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(elts, v);
-        }
-    }
 }

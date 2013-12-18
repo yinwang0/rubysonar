@@ -1,7 +1,6 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binder;
 import org.yinwang.rubysonar.Binding;
@@ -100,19 +99,6 @@ public class Function extends Node {
     @Override
     public String toString() {
         return "(func:" + start + ":" + name + ")";
-    }
-
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(name, v);
-            visitNodes(args, v);
-            visitNodes(defaults, v);
-            visitNode(kwarg, v);
-            visitNode(vararg, v);
-            visitNode(body, v);
-        }
     }
 
 
