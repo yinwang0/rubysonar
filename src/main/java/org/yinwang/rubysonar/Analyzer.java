@@ -68,6 +68,7 @@ public class Analyzer {
         this.debug = debug;
     }
 
+
     private void copyModels() {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
         String dest = _.locateTmp("models");
@@ -78,6 +79,7 @@ public class Analyzer {
         }
         addPath(dest);
     }
+
 
     // main entry to the analyzer
     public void analyze(String path) {

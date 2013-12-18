@@ -2,7 +2,6 @@ package org.yinwang.rubysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar._;
 
@@ -32,9 +31,11 @@ public class ModuleType extends Type {
         getTable().setType(this);
     }
 
+
     public String getName() {
         return name;
     }
+
 
     public void setName(String name) {
         this.name = name;

@@ -1,7 +1,6 @@
 package org.yinwang.rubysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Analyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;

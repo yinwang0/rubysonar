@@ -28,7 +28,7 @@ public class Subscript extends Node {
     @Override
     public Type transform(State s) {
         Type vt = transformExpr(value, s);
-        Type st = slice == null? null : transformExpr(slice, s);
+        Type st = slice == null ? null : transformExpr(slice, s);
 
         if (vt.isUnionType()) {
             Type retType = Type.UNKNOWN;

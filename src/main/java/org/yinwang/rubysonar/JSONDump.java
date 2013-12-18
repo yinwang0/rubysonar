@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.ast.Function;
 import org.yinwang.rubysonar.ast.Node;
-import org.yinwang.rubysonar.ast.Str;
 import org.yinwang.rubysonar.types.Type;
 
 import java.io.*;
@@ -294,12 +293,10 @@ public class JSONDump {
             docOut.flush();
             symOut.flush();
             refOut.flush();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.err.println("Could not find file: " + e);
             return;
-        }
-        finally {
+        } finally {
             if (docOut != null) {
                 docOut.close();
             }

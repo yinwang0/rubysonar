@@ -275,7 +275,6 @@ public class Call extends Node {
     }
 
 
-
     static boolean missingReturn(@NotNull Type toType) {
         boolean hasNone = false;
         boolean hasOther = false;

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Parser  {
+public class Parser {
 
     private static final String RUBY_EXE = "irb";
     private static final int TIMEOUT = 5000;
