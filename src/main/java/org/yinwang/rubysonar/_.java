@@ -1,15 +1,23 @@
 package org.yinwang.rubysonar;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.*;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 
 /**
@@ -32,6 +40,12 @@ public class _ {
             return tmp;
         }
         return tmp + sep;
+    }
+
+
+    public static String locateTmp(String file) {
+        String tmpDir = getSystemTempDir();
+        return makePathString(tmpDir, "rubysonar", file + "." + Analyzer.self.sid);
     }
 
 
@@ -182,6 +196,51 @@ public class _ {
             sb.append(new String(bytes, 0, nRead));
         }
         return sb.toString();
+    }
+
+
+    public static void copyResourcesRecursively(URL originUrl, File destination) throws Exception {
+        URLConnection urlConnection = originUrl.openConnection();
+        if (urlConnection instanceof JarURLConnection) {
+            copyJarResourcesRecursively(destination, (JarURLConnection) urlConnection);
+        } else if (urlConnection instanceof FileURLConnection) {
+            FileUtils.copyDirectory(new File(originUrl.getPath()), destination);
+        } else {
+            die("Unsupported URL type: " + urlConnection);
+        }
+    }
+
+
+    public static void copyJarResourcesRecursively(File destination, JarURLConnection jarConnection) {
+        JarFile jarFile;
+        try {
+            jarFile = jarConnection.getJarFile();
+        } catch (Exception e) {
+            _.die("Failed to get jar file)");
+            return;
+        }
+
+        Enumeration<JarEntry> em = jarFile.entries();
+        while (em.hasMoreElements()) {
+            JarEntry entry = em.nextElement();
+            if (entry.getName().startsWith(jarConnection.getEntryName())) {
+                String fileName = StringUtils.removeStart(entry.getName(), jarConnection.getEntryName());
+                InputStream entryInputStream = null;
+                try {
+                    entryInputStream = jarFile.getInputStream(entry);
+                    FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
+                } catch (Exception e) {
+                    die("Failed to copy resource: " + fileName);
+                } finally {
+                    if (entryInputStream != null) {
+                        try {
+                            entryInputStream.close();
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

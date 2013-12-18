@@ -11,6 +11,7 @@ import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,9 @@ import java.util.logging.Logger;
 public class Analyzer {
 
     // global static instance of the analyzer itself
+    public static String MODEL_LOCATION = "org/yinwang/rubysonar/models";
     public static Analyzer self;
+    public String sid = _.newSessionId();
     public boolean debug = false;
 
     public State moduleTable = new State(null, State.StateType.GLOBAL);
@@ -54,6 +57,7 @@ public class Analyzer {
         self = this;
         this.suffix = ".rb";
         addPythonPath();
+        copyModels();
         createCacheDir();
         getAstCache();
     }
@@ -64,6 +68,16 @@ public class Analyzer {
         this.debug = debug;
     }
 
+    private void copyModels() {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
+        String dest = _.locateTmp("models");
+        try {
+            _.copyResourcesRecursively(resource, new File(dest));
+        } catch (Exception e) {
+            _.die("Failed to copy models. Please check permissions of writing to: " + dest);
+        }
+        addPath(dest);
+    }
 
     // main entry to the analyzer
     public void analyze(String path) {

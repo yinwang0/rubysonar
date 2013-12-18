@@ -34,16 +34,12 @@ public class Parser  {
 
 
     public Parser() {
-        String tmpDir = _.getSystemTempDir();
-        String sid = _.newSessionId();
-
-        exchangeFile = _.makePathString(tmpDir, "rubysonar", "json." + sid);
-        endMark = _.makePathString(tmpDir, "rubysonar", "end." + sid);
-        jsonizer = _.makePathString(tmpDir, "rubysonar", "dump_ruby." + sid);
-        parserLog = _.makePathString(tmpDir, "rubysonar", "parser_log." + sid);
+        exchangeFile = _.locateTmp("json");
+        endMark = _.locateTmp("end");
+        jsonizer = _.locateTmp("dump_ruby");
+        parserLog = _.locateTmp("parser_log");
 
         startRubyProcesses();
-
         if (rubyProcess != null) {
             _.msg("Started: " + RUBY_EXE);
         }
