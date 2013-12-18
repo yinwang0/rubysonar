@@ -327,7 +327,7 @@ public class Analyzer {
                 failedToParse.add(file);
                 return null;
             } else {
-                Type type = Node.transformExpr(ast, moduleTable);
+                Type type = Node.transformExpr(ast, globaltable);
                 loadedFiles.add(file);
                 return type;
             }
@@ -369,13 +369,13 @@ public class Analyzer {
     }
 
 
-    public String locateModule(String headName) {
+    public Type requireFile(String headName) {
         List<String> loadPath = getLoadPath();
 
         for (String p : loadPath) {
-            File startFile = _.makePath(p, headName, suffix);
-            if (startFile.exists()) {
-                return p;
+            String trial = _.makePathString(p, headName + suffix);
+            if (new File(trial).exists()) {
+                return loadFile(trial);
             }
         }
 

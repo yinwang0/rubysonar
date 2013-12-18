@@ -14,8 +14,9 @@ public class Module extends Node {
     public Block body;
 
 
-    public Module(Block body, int start, int end) {
+    public Module(Name name, Block body, int start, int end) {
         super(start, end);
+        this.name = name.id;
         this.body = body;
         addChildren(this.body);
     }
@@ -25,7 +26,7 @@ public class Module extends Node {
     @Override
     public Type transform(@NotNull State s) {
         ModuleType mt = new ModuleType(name, file, Analyzer.self.globaltable);
-        s.insert(_.moduleQname(file), this, mt, Binding.Kind.MODULE);
+        s.insert(name, this, mt, Binding.Kind.MODULE);
         transformExpr(body, mt.getTable());
         return mt;
     }

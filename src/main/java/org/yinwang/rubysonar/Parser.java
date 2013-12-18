@@ -96,8 +96,9 @@ public class Parser {
         }
 
         if (type.equals("module")) {
-            Block b = (Block) convert(map.get("body"));
-            Module m = new Module(b, start, end);
+            Name name = (Name) convert(map.get("name"));
+            Block body = (Block) convert(map.get("body"));
+            Module m = new Module(name, body, start, end);
             try {
                 m.setFile(_.unifyPath((String) map.get("filename")));
             } catch (Exception e) {
@@ -669,10 +670,8 @@ public class Parser {
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process rubyProcess) {
-        _.msg("parsing: " + filename);
+//        _.msg("parsing: " + filename);
 
-        File exchange = new File(exchangeFile);
-        File marker = new File(endMark);
         cleanTemp();
 
         String s1 = _.escapeWindowsPath(filename);
@@ -686,6 +685,8 @@ public class Parser {
         }
 
         long waitStart = System.currentTimeMillis();
+        File marker = new File(endMark);
+
         while (!marker.exists()) {
             if (System.currentTimeMillis() - waitStart > TIMEOUT) {
                 _.msg("\nTimed out while parsing: " + filename);

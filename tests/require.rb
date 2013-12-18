@@ -1,11 +1,6 @@
-x = 45234523452345
-y = 43523453245234
-z = x * y
+require './required'
 
-if z < 1968762666548578471597373730
-  w = 42
-else
-  w = 'hi'
-end
+obj = M1::Class1.new
 
-puts w
+obj.foo(2)
+

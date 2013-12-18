@@ -45,6 +45,18 @@ public class Call extends Node {
     @Override
     public Type transform(State s) {
 
+        if (func.isName()) {
+            Name fn = func.asName();
+            if (fn.id.equals("require")) {
+                Node arg1 = args.get(0);
+                if (arg1 instanceof Str) {
+                    Analyzer.self.requireFile(((Str) arg1).value);
+                    return Type.TRUE;
+                }
+                return Type.FALSE;
+            }
+        }
+
         // Ruby's Class.new
         if (func instanceof Attribute) {
             Attribute afun = (Attribute) func;

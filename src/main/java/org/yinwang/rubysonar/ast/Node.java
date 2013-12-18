@@ -104,7 +104,6 @@ public abstract class Node implements java.io.Serializable {
 
     public void setFile(String file) {
         this.file = file;
-        this.name = _.moduleName(file);
         this.sha1 = _.getSHA1(new File(file));
     }
 
@@ -211,11 +210,6 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    /**
-     * Utility method to resolve every node in {@code nodes} and
-     * return the union of their types.  If {@code nodes} is empty or
-     * {@code null}, returns a new {@link org.yinwang.rubysonar.types.UnknownType}.
-     */
     @NotNull
     protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, State s) {
         Type result = Type.UNKNOWN;
@@ -227,9 +221,6 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    /**
-     * Resolves each element, also construct a result list.
-     */
     @Nullable
     static protected List<Type> resolveList(@Nullable Collection<? extends Node> nodes, State s) {
         if (nodes == null) {
