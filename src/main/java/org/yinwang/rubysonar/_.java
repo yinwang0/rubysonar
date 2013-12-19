@@ -428,7 +428,12 @@ public class _ {
 
 
     public static String unifyPath(File file) {
-        return file.getAbsolutePath();
+        try {
+            return file.getCanonicalPath();
+        } catch (Exception e) {
+            die("failed to get canonical path");
+            return "";  // unreacheable
+        }
     }
 
 
