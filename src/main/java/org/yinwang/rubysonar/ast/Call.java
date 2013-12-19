@@ -46,14 +46,31 @@ public class Call extends Node {
     public Type transform(State s) {
         if (func.isName()) {
             Name fn = func.asName();
+
+            // handle 'require' and 'load'
             if (fn.id.equals("require") || fn.id.equals("load")) {
-                Node arg1 = args.get(0);
-                if (arg1 instanceof Str) {
-                    Analyzer.self.requireFile(((Str) arg1).value);
-                    return Type.TRUE;
+                if (args.size() > 0) {
+                    Node arg1 = args.get(0);
+                    if (arg1 instanceof Str) {
+                        Analyzer.self.requireFile(((Str) arg1).value);
+                        return Type.TRUE;
+                    }
                 }
+                Analyzer.self.putProblem(this, "failed to require file");
                 return Type.FALSE;
             }
+
+            // handle 'include'
+            if (fn.id.equals("include")) {
+                if (args.size() > 0) {
+                    Node arg1 = args.get(0);
+                    Type mod = transformExpr(arg1, s);
+                    s.putAll(mod.getTable());
+                    return Type.TRUE;
+                }
+                Analyzer.self.putProblem(this, "failed to include module");
+            }
+            return Type.FALSE;
         }
 
         // Ruby's Class.new
