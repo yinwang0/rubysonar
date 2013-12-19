@@ -83,14 +83,14 @@ public class Binding implements Comparable<Object> {
         start = node.start;
         end = node.end;
 
-        Node parent = node.getParent();
+        Node parent = node.parent;
         if ((parent instanceof Function && ((Function) parent).name == node) ||
-                (parent instanceof Class && ((Class) parent).name == node))
+                (parent instanceof Class && ((Class) parent).locator == node))
         {
             bodyStart = parent.start;
             bodyEnd = parent.end;
         } else if (node instanceof Module) {
-            name = ((Module) node).name;
+            name = ((Module) node).name.id;
             start = 0;
             end = 0;
             bodyStart = node.start;

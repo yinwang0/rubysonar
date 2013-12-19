@@ -96,7 +96,7 @@ public class Parser {
         }
 
         if (type.equals("module")) {
-            Name name = (Name) convert(map.get("name"));
+            Node name = convert(map.get("name"));
             Block body = (Block) convert(map.get("body"));
             Module m = new Module(name, body, start, end);
             try {
@@ -243,21 +243,10 @@ public class Parser {
         }
 
         if (type.equals("class")) {
-            Node binder = convert(map.get("name"));
-            Name name = null;
-            if (binder instanceof Attribute) {
-                name = ((Attribute) binder).attr;
-            } else if (binder instanceof Name) {
-                name = (Name) binder;
-            }
-
+            Node locator = convert(map.get("name"));
             Node base = convert(map.get("super"));
-            List<Node> bases = new ArrayList<>();
-            if (base != null) {
-                bases.add(base);
-            }
             Node body = convert(map.get("body"));
-            return new Class(name, bases, body, start, end);
+            return new Class(locator, base, body, start, end);
         }
 
         if (type.equals("undef")) {

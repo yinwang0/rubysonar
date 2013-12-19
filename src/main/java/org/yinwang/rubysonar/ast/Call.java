@@ -44,7 +44,6 @@ public class Call extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-
         if (func.isName()) {
             Name fn = func.asName();
             if (fn.id.equals("require")) {
@@ -244,7 +243,7 @@ public class Call extends Node {
                 Binder.bind(
                         funcTable,
                         restKw,
-                        new DictType(Type.UNKNOWN_STR, hashType),
+                        new DictType(Type.STR, hashType),
                         Binding.Kind.PARAMETER);
             } else {
                 Binder.bind(funcTable,

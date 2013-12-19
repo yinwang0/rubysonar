@@ -9,30 +9,34 @@ import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.ClassType;
 import org.yinwang.rubysonar.types.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class Class extends Node {
+    private static int classCounter = 0;
 
     @Nullable
+    public Node locator;
     public Name name;
-    public List<Node> bases;
+    public Node base;
     public Node body;
 
 
-    public Class(@Nullable Name name, List<Node> bases, Node body, int start, int end) {
+    public Class(@Nullable Node locator, Node base, Node body, int start, int end) {
         super(start, end);
-        if (name != null) {
-            this.name = name;
+
+        // set name
+        if (locator instanceof Attribute) {
+            this.name = ((Attribute) locator).attr;
+        } else if (locator instanceof Name) {
+            this.name = (Name) locator;
         } else {
             this.name = new Name(genClassName(), start, start + 1);
             addChildren(this.name);
         }
-        this.bases = bases;
+
+        this.locator = locator;
+        this.base = base;
         this.body = body;
-        addChildren(name, this.body);
-        addChildren(bases);
+        addChildren(this.locator, this.body, this.base);
     }
 
 
@@ -43,12 +47,9 @@ public class Class extends Node {
 
 
     @NotNull
-    public Name getName() {
-        return name;
+    public Node getLocator() {
+        return locator;
     }
-
-
-    private static int classCounter = 0;
 
 
     @NotNull
@@ -61,21 +62,25 @@ public class Class extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        ClassType classType = new ClassType(getName().id, s);
-        List<Type> baseTypes = new ArrayList<>();
-        for (Node base : bases) {
+        if (locator != null) {
+            Type existing = transformExpr(locator, s);
+            if (existing instanceof ClassType) {
+                if (body != null) {
+                    transformExpr(body, existing.table);
+                }
+                return Type.CONT;
+            }
+        }
+
+        ClassType classType = new ClassType(name.id, s);
+
+        if (base != null) {
             Type baseType = transformExpr(base, s);
             if (baseType.isClassType()) {
                 classType.addSuper(baseType);
-            } else if (baseType.isUnionType()) {
-                for (Type b : baseType.asUnionType().getTypes()) {
-                    classType.addSuper(b);
-                    break;
-                }
             } else {
                 Analyzer.self.putProblem(base, base + " is not a class");
             }
-            baseTypes.add(baseType);
         }
 
         // Bind ClassType to name here before resolving the body because the

@@ -27,7 +27,7 @@ public class Url extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Type.UNKNOWN_STR;
+        return Type.STR;
     }
 
 

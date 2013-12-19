@@ -19,13 +19,9 @@ public abstract class Node implements java.io.Serializable {
     public String file = null;
     public int start = -1;
     public int end = -1;
-
-    public String name;
-    private String sha1;   // input source file sha
-
-
-    @Nullable
-    protected Node parent = null;
+    public String path;
+    public String sha1;   // input source file sha
+    public Node parent = null;
 
 
     public Node() {
@@ -40,17 +36,6 @@ public abstract class Node implements java.io.Serializable {
 
     public void setParent(Node parent) {
         this.parent = parent;
-    }
-
-
-    @Nullable
-    public Node getParent() {
-        return parent;
-    }
-
-
-    public String getSHA1() {
-        return sha1;
     }
 
 

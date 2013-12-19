@@ -2,7 +2,10 @@ package org.yinwang.rubysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.rubysonar.ast.Attribute;
+import org.yinwang.rubysonar.ast.Name;
 import org.yinwang.rubysonar.ast.Node;
+import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
 
@@ -26,8 +29,6 @@ public class State {
     @Nullable
     public State parent;      // all are non-null except global table
     @Nullable
-    private State forwarding; // link to the closest non-class scope, for lifting functions out
-    @Nullable
     private List<State> supers;
     private StateType stateType;
     private Type type;
@@ -38,12 +39,6 @@ public class State {
     public State(@Nullable State parent, StateType type) {
         this.parent = parent;
         this.stateType = type;
-
-        if (type == StateType.CLASS) {
-            this.forwarding = parent == null ? null : parent.getForwarding();
-        } else {
-            this.forwarding = this;
-        }
     }
 
 
@@ -54,7 +49,6 @@ public class State {
         }
         this.parent = s.parent;
         this.stateType = s.stateType;
-        this.forwarding = s.forwarding;
         this.supers = s.supers;
         this.type = s.type;
         this.path = s.path;
@@ -66,7 +60,6 @@ public class State {
         this.table = s.table;
         this.parent = s.parent;
         this.stateType = s.stateType;
-        this.forwarding = s.forwarding;
         this.supers = s.supers;
         this.type = s.type;
         this.path = s.path;
@@ -111,15 +104,6 @@ public class State {
 
     public void setParent(@Nullable State parent) {
         this.parent = parent;
-    }
-
-
-    public State getForwarding() {
-        if (forwarding != null) {
-            return forwarding;
-        } else {
-            return this;
-        }
     }
 
 
@@ -291,6 +275,31 @@ public class State {
                     return null;
                 }
             }
+        }
+    }
+
+
+    public ModuleType lookupOrCreateModule(Node locator, String file) {
+        Type existing = Node.transformExpr(locator, this);
+        if (existing.isModuleType()) {
+            return existing.asModuleType();
+        } else if (locator instanceof Name) {
+            List<Binding> bs = lookupAttr(((Name) locator).id);
+            if (bs != null && bs.size() > 0 && bs.get(0).getType().isModuleType()) {
+                return bs.get(0).getType().asModuleType();
+            } else {
+                ModuleType mt = new ModuleType(((Name) locator).id, file, this);
+                this.insert(((Name) locator).id, locator, mt, Binding.Kind.MODULE);
+                return mt;
+            }
+        } else if (locator instanceof Attribute) {
+            ModuleType mod = lookupOrCreateModule(((Attribute) locator).target, file);
+            ModuleType mod2 = new ModuleType(((Attribute) locator).attr.id, file, mod.table);
+            mod.table.insert(((Attribute) locator).attr.id, ((Attribute) locator).attr, mod2, Binding.Kind.MODULE);
+            return mod2;
+        } else {
+            _.die("illegal locator: " + locator);
+            return new ModuleType("bad", null, this);   // unreacheable
         }
     }
 

@@ -20,7 +20,7 @@ public class Regexp extends Node {
     @NotNull
     @Override
     protected Type transform(State s) {
-        return Type.UNKNOWN_STR;
+        return Type.STR;
     }
 
 
