@@ -46,7 +46,7 @@ public class Call extends Node {
     public Type transform(State s) {
         if (func.isName()) {
             Name fn = func.asName();
-            if (fn.id.equals("require")) {
+            if (fn.id.equals("require") || fn.id.equals("load")) {
                 Node arg1 = args.get(0);
                 if (arg1 instanceof Str) {
                     Analyzer.self.requireFile(((Str) arg1).value);
