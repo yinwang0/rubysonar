@@ -20,7 +20,6 @@ public abstract class Node implements java.io.Serializable {
     public int end = -1;
     public String name;
     public String path;
-    public String sha1;   // input source file sha
     public Node parent = null;
 
 
@@ -78,7 +77,6 @@ public abstract class Node implements java.io.Serializable {
 
     public void setFile(String file) {
         this.file = file;
-        this.sha1 = _.getSHA(file);
     }
 
 

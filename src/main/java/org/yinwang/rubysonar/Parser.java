@@ -85,27 +85,13 @@ public class Parser {
 
 
         if (type.equals("program")) {
-            Node b = convert(map.get("body"));
-            String file = (String) map.get("filename");
-            if (file != null) {
-                b.setFile(_.unifyPath(file));
-            } else {
-                _.die("program should contain a filename field, please check the parser");
-            }
-
-            return b;
+            return convert(map.get("body"));
         }
 
         if (type.equals("module")) {
             Node name = convert(map.get("name"));
             Block body = (Block) convert(map.get("body"));
-            Module m = new Module(name, body, file, start, end);
-            try {
-                m.setFile(_.unifyPath((String) map.get("filename")));
-            } catch (Exception e) {
-
-            }
-            return m;
+            return new Module(name, body, file, start, end);
         }
 
         if (type.equals("block")) {
