@@ -59,15 +59,15 @@ public class JSONDump {
             return;
         }
 
-        String name = binding.getName();
+        String name = binding.name;
         boolean isExported = !(
-                Binding.Kind.VARIABLE == binding.getKind() ||
-                        Binding.Kind.PARAMETER == binding.getKind() ||
-                        Binding.Kind.SCOPE == binding.getKind() ||
-                        Binding.Kind.ATTRIBUTE == binding.getKind() ||
+                Binding.Kind.VARIABLE == binding.kind ||
+                        Binding.Kind.PARAMETER == binding.kind ||
+                        Binding.Kind.SCOPE == binding.kind ||
+                        Binding.Kind.ATTRIBUTE == binding.kind ||
                         (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%")));
 
-        String path = binding.getQname().replace('.', '/').replace("%20", ".");
+        String path = binding.qname.replace('.', '/').replace("%20", ".");
 
         if (!seenDef.contains(path)) {
             seenDef.add(path);
@@ -80,17 +80,17 @@ public class JSONDump {
             json.writeNumberField("defStart", binding.bodyStart);
             json.writeNumberField("defEnd", binding.bodyEnd);
             json.writeBooleanField("exported", isExported);
-            json.writeStringField("kind", binding.getKind().toString());
+            json.writeStringField("kind", binding.kind.toString());
 
-            if (Binding.Kind.FUNCTION == binding.getKind() ||
-                    Binding.Kind.METHOD == binding.getKind() ||
-                    Binding.Kind.CONSTRUCTOR == binding.getKind())
+            if (Binding.Kind.FUNCTION == binding.kind ||
+                    Binding.Kind.METHOD == binding.kind ||
+                    Binding.Kind.CONSTRUCTOR == binding.kind)
             {
                 json.writeObjectFieldStart("funcData");
 
                 // get args expression
                 String argExpr = null;
-                Type t = binding.getType();
+                Type t = binding.type;
 
                 if (t.isUnionType()) {
                     t = t.asUnionType().firstUseful();
@@ -134,7 +134,7 @@ public class JSONDump {
                     }
                 }
 
-                String typeExpr = binding.getType().toString();
+                String typeExpr = binding.type.toString();
 
                 json.writeNullField("params");
 
@@ -150,7 +150,7 @@ public class JSONDump {
 
     private static void writeRefJson(Node ref, Binding binding, JsonGenerator json) throws IOException {
         if (binding.file != null) {
-            String path = binding.getQname().replace(".", "/").replace("%20", ".");
+            String path = binding.qname.replace(".", "/").replace("%20", ".");
 
             if (binding.start >= 0 && ref.start >= 0) {
                 json.writeStartObject();
@@ -166,7 +166,7 @@ public class JSONDump {
 
 
     private static void writeDocJson(Binding binding, Analyzer idx, JsonGenerator json) throws Exception {
-        String path = binding.getQname().replace('.', '/').replace("%20", ".");
+        String path = binding.qname.replace('.', '/').replace("%20", ".");
 
         if (!seenDocs.contains(path)) {
             seenDocs.add(path);
@@ -231,7 +231,7 @@ public class JSONDump {
                 }
             }
 
-            for (Node ref : b.getRefs()) {
+            for (Node ref : b.refs) {
                 if (ref.file != null) {
                     String key = ref.file + ":" + ref.start;
                     if (!seenRef.contains(key) && shouldEmit(ref.file, srcpath)) {

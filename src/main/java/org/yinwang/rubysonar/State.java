@@ -285,8 +285,8 @@ public class State {
             return existing.asModuleType();
         } else if (locator instanceof Name) {
             List<Binding> bs = lookupAttr(((Name) locator).id);
-            if (bs != null && bs.size() > 0 && bs.get(0).getType().isModuleType()) {
-                return bs.get(0).getType().asModuleType();
+            if (bs != null && bs.size() > 0 && bs.get(0).type.isModuleType()) {
+                return bs.get(0).type.asModuleType();
             } else {
                 ModuleType mt = new ModuleType(((Name) locator).id, file, this);
                 this.insert(((Name) locator).id, locator, mt, Binding.Kind.MODULE);
@@ -335,7 +335,7 @@ public class State {
     public static Type makeUnion(List<Binding> bs) {
         Type t = Type.UNKNOWN;
         for (Binding b : bs) {
-            t = UnionType.union(t, b.getType());
+            t = UnionType.union(t, b.type);
         }
         return t;
     }

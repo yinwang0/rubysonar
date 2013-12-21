@@ -100,13 +100,13 @@ public class Binder {
             List<Binding> ents = iterType.getTable().lookupAttr("__iter__");
             if (ents != null) {
                 for (Binding ent : ents) {
-                    if (ent == null || !ent.getType().isFuncType()) {
+                    if (ent == null || !ent.type.isFuncType()) {
                         if (!iterType.isUnknownType()) {
                             Analyzer.self.putProblem(iter, "not an iterable type: " + iterType);
                         }
                         bind(s, target, Type.UNKNOWN, kind);
                     } else {
-                        bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
+                        bind(s, target, ent.type.asFuncType().getReturnType(), kind);
                     }
                 }
             } else {

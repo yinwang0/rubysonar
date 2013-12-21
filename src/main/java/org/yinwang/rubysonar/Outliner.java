@@ -259,8 +259,8 @@ public class Outliner {
         for (Binding nb : entries) {
             List<Entry> kids = null;
 
-            if (nb.getKind() == Binding.Kind.CLASS) {
-                Type realType = nb.getType();
+            if (nb.kind == Binding.Kind.CLASS) {
+                Type realType = nb.type;
                 if (realType.isUnionType()) {
                     for (Type t : realType.asUnionType().getTypes()) {
                         if (t.isClassType()) {
@@ -274,8 +274,8 @@ public class Outliner {
 
             Entry kid = kids != null ? new Branch() : new Leaf();
             kid.setOffset(nb.start);
-            kid.setQname(nb.getQname());
-            kid.setKind(nb.getKind());
+            kid.setQname(nb.qname);
+            kid.setKind(nb.kind);
 
             if (kids != null) {
                 kid.setChildren(kids);

@@ -27,15 +27,15 @@ public class Binding implements Comparable<Object> {
 
 
     @NotNull
-    private String name;     // unqualified name
+    public String name;     // unqualified name
     @NotNull
     public Node node;
     @NotNull
-    private String qname;    // qualified name
-    private Type type;       // inferred type
+    public String qname;    // qualified name
+    public Type type;       // inferred type
     public Kind kind;        // name usage context
 
-    private Set<Node> refs;
+    public Set<Node> refs;
 
     public int start = -1;
     public int end = -1;
@@ -52,6 +52,7 @@ public class Binding implements Comparable<Object> {
         this.type = type;
         this.kind = kind;
         this.node = node;
+        refs = new LinkedHashSet<>(1);
 
         if (node instanceof Url) {
             String url = ((Url) node).getURL();
@@ -95,59 +96,19 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    @NotNull
-    public String getName() {
-        return name;
-    }
-
-
     public void setQname(@NotNull String qname) {
         this.qname = qname;
     }
 
 
-    @NotNull
-    public String getQname() {
-        return qname;
-    }
-
-
     public void addRef(Node ref) {
-        getRefs().add(ref);
-    }
-
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-
-    public Type getType() {
-        return type;
-    }
-
-
-    public void setKind(Kind kind) {
-        this.kind = kind;
-    }
-
-
-    public Kind getKind() {
-        return kind;
-    }
-
-
-    public Set<Node> getRefs() {
-        if (refs == null) {
-            refs = new LinkedHashSet<>(1);
-        }
-        return refs;
+        refs.add(ref);
     }
 
 
     @NotNull
     public String getFirstFile() {
-        Type bt = getType();
+        Type bt = type;
         if (bt instanceof ModuleType) {
             String file = bt.asModuleType().getFile();
             return file != null ? file : "<built-in module>";
@@ -180,7 +141,7 @@ public class Binding implements Comparable<Object> {
         sb.append(":type=").append(type);
         sb.append(":qname=").append(qname);
         sb.append(":refs=");
-        if (getRefs().size() > 10) {
+        if (refs.size() > 10) {
             sb.append("[");
             sb.append(refs.iterator().next());
             sb.append(", ...(");

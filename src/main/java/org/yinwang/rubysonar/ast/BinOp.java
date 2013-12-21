@@ -144,8 +144,8 @@ public class BinOp extends Node {
 
                             for (Binding b : s.lookup(id)) {
                                 Node loc = b.node;
-                                s1.update(id, new Binding(id, loc, trueType, b.getKind()));
-                                s2.update(id, new Binding(id, loc, falseType, b.getKind()));
+                                s1.update(id, new Binding(id, loc, trueType, b.kind));
+                                s2.update(id, new Binding(id, loc, falseType, b.kind));
                             }
                         }
                         return new BoolType(s1, s2);
@@ -174,8 +174,8 @@ public class BinOp extends Node {
 
                             for (Binding b : s.lookup(id)) {
                                 Node loc = b.node;
-                                s1.update(id, new Binding(id, loc, trueType, b.getKind()));
-                                s2.update(id, new Binding(id, loc, falseType, b.getKind()));
+                                s1.update(id, new Binding(id, loc, trueType, b.kind));
+                                s2.update(id, new Binding(id, loc, falseType, b.kind));
                             }
                         }
                         return new BoolType(s1, s2);

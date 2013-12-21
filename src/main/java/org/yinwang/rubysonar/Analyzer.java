@@ -446,12 +446,12 @@ public class Analyzer {
 
         // mark unused variables
         for (Binding b : allBindings) {
-            if (!b.getType().isClassType() &&
-                    !b.getType().isFuncType() &&
-                    !b.getType().isModuleType()
-                    && b.getRefs().isEmpty())
+            if (!b.type.isClassType() &&
+                    !b.type.isFuncType() &&
+                    !b.type.isModuleType()
+                    && b.refs.isEmpty())
             {
-                Analyzer.self.putProblem(b.node, "Unused variable: " + b.getName());
+                Analyzer.self.putProblem(b.node, "Unused variable: " + b.name);
             }
         }
 
@@ -505,7 +505,7 @@ public class Analyzer {
         int nDef = 0, nXRef = 0;
         for (Binding b : getAllBindings()) {
             nDef += 1;
-            nXRef += b.getRefs().size();
+            nXRef += b.refs.size();
         }
 
         sb.append("\n- number of definitions: " + nDef);
