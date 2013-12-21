@@ -11,8 +11,6 @@ import org.yinwang.rubysonar.types.Type;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Analyzer {
@@ -21,28 +19,35 @@ public class Analyzer {
 
     // global static instance of the analyzer itself
     public static Analyzer self;
+
     public String sid = _.newSessionId();
-    public List<String> loadedFiles = new ArrayList<>();
-    public State globaltable = new State(null, State.StateType.GLOBAL);
-    public List<Binding> allBindings = new ArrayList<>();
-    private Map<Node, List<Binding>> references = new LinkedHashMap<>();
-    public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public String cwd = null;
     public int nCalled = 0;
-    public boolean multilineFunType = false;
+
+    public State globaltable = new State(null, State.StateType.GLOBAL);
+
+    public List<String> loadedFiles = new ArrayList<>();
+    public List<Binding> allBindings = new ArrayList<>();
+    private Map<Node, List<Binding>> references = new LinkedHashMap<>();
+
+    public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
+    public Set<String> failedToParse = new HashSet<>();
+
+
     public List<String> path = new ArrayList<>();
     private Set<FunType> uncalled = new HashSet<>();
     private Set<Object> callStack = new HashSet<>();
     private Set<Object> importStack = new HashSet<>();
 
     private AstCache astCache;
-    public String cacheDir;
-    public Set<String> failedToParse = new HashSet<>();
     public Stats stats = new Stats();
-    private Logger logger;
     private Progress loadingProgress = null;
 
     public String projectDir;
+    public String cacheDir;
+    public String modelDir;
+
+    public boolean multilineFunType = false;
     public String suffix;
 
     public Map<String, Object> options;
@@ -61,7 +66,6 @@ public class Analyzer {
             this.options = new HashMap<>();
         }
         stats.putInt("startTime", System.currentTimeMillis());
-        logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         this.suffix = ".rb";
         addEnvPath();
         copyModels();
@@ -83,8 +87,11 @@ public class Analyzer {
     private void copyModels() {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
         String dest = _.locateTmp("models");
+        this.modelDir = dest;
+
         try {
             _.copyResourcesRecursively(resource, new File(dest));
+            _.msg("copied models to: " + modelDir);
         } catch (Exception e) {
             _.die("Failed to copy models. Please check permissions of writing to: " + dest);
         }
@@ -260,8 +267,6 @@ public class Analyzer {
 
     @Nullable
     public Type loadFile(String path) {
-//        Util.msg("loading: " + path);
-
         path = _.unifyPath(path);
         File f = new File(path);
 
@@ -492,13 +497,6 @@ public class Analyzer {
 
     public void registerBinding(@NotNull Binding b) {
         allBindings.add(b);
-    }
-
-
-    public void log(Level level, String msg) {
-        if (logger.isLoggable(level)) {
-            logger.log(level, msg);
-        }
     }
 
 
