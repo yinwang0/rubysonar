@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
-import org.yinwang.rubysonar._;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
 
@@ -35,6 +34,7 @@ public abstract class Node implements java.io.Serializable {
 
 
     public void setParent(Node parent) {
+
         this.parent = parent;
     }
 
@@ -45,11 +45,6 @@ public abstract class Node implements java.io.Serializable {
             return this;
         }
         return parent.getAstRoot();
-    }
-
-
-    public int length() {
-        return end - start;
     }
 
 
