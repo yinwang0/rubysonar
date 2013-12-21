@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Represents a simple style run for purposes of source highlighting.
  */
-public class StyleRun implements Comparable<StyleRun> {
+public class Style implements Comparable<Style> {
 
     public enum Type {
         KEYWORD,
@@ -49,7 +49,7 @@ public class StyleRun implements Comparable<StyleRun> {
     public List<String> highlight;   // for hover highlight
 
 
-    public StyleRun(Type type, int offset, int length) {
+    public Style(Type type, int offset, int length) {
         this.type = type;
         this.offset = offset;
         this.length = length;
@@ -73,10 +73,10 @@ public class StyleRun implements Comparable<StyleRun> {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof StyleRun)) {
+        if (!(o instanceof Style)) {
             return false;
         }
-        StyleRun other = (StyleRun) o;
+        Style other = (Style) o;
         return other.type == this.type
                 && other.offset == this.offset
                 && other.length == this.length
@@ -94,7 +94,7 @@ public class StyleRun implements Comparable<StyleRun> {
     }
 
 
-    public int compareTo(@NotNull StyleRun other) {
+    public int compareTo(@NotNull Style other) {
         if (this.equals(other)) {
             return 0;
         }
