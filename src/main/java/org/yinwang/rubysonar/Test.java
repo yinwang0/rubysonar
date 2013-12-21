@@ -66,7 +66,7 @@ public class Test {
 
                 List<Map<String, Object>> dests = new ArrayList<>();
                 for (Binding b : e.getValue()) {
-                    String destFile = b.getFile();
+                    String destFile = b.file;
                     if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
                         destFile = _.projRelPath(destFile);
                         Map<String, Object> dest = new LinkedHashMap<>();
@@ -144,8 +144,8 @@ public class Test {
         }
 
         for (Binding b : bs) {
-            if (((b.getFile() == null && file == null) ||
-                    (b.getFile() != null && file != null && b.getFile().equals(file))) &&
+            if (((b.file == null && file == null) ||
+                    (b.file != null && file != null && b.file.equals(file))) &&
                     b.start == start && b.end == end)
             {
                 return true;

@@ -251,7 +251,7 @@ public class Outliner {
 
         Set<Binding> entries = new TreeSet<>();
         for (Binding b : state.values()) {
-            if (path.equals(b.getFile())) {
+            if (path.equals(b.file)) {
                 entries.add(b);
             }
         }

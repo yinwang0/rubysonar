@@ -74,7 +74,7 @@ public class JSONDump {
             json.writeStartObject();
             json.writeStringField("name", name);
             json.writeStringField("path", path);
-            json.writeStringField("file", binding.getFileOrUrl());
+            json.writeStringField("file", binding.file);
             json.writeNumberField("identStart", binding.start);
             json.writeNumberField("identEnd", binding.end);
             json.writeNumberField("defStart", binding.bodyStart);
@@ -149,7 +149,7 @@ public class JSONDump {
 
 
     private static void writeRefJson(Node ref, Binding binding, JsonGenerator json) throws IOException {
-        if (binding.getFile() != null) {
+        if (binding.file != null) {
             String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
             if (binding.start >= 0 && ref.start >= 0) {
@@ -224,8 +224,8 @@ public class JSONDump {
         }
 
         for (Binding b : idx.getAllBindings()) {
-            if (b.getFile() != null) {
-                if (shouldEmit(b.getFile(), srcpath)) {
+            if (b.file != null) {
+                if (shouldEmit(b.file, srcpath)) {
                     writeSymJson(b, symJson);
                     writeDocJson(b, idx, docJson);
                 }

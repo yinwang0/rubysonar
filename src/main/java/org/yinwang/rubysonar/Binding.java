@@ -16,7 +16,7 @@ public class Binding implements Comparable<Object> {
     public enum Kind {
         ATTRIBUTE,    // attr accessed with "." on some other object
         CLASS,        // class definition
-        CONSTRUCTOR,  // __init__ functions in classes
+        CONSTRUCTOR,  // initialize functions in classes
         FUNCTION,     // plain function
         METHOD,       // static or instance method
         MODULE,       // file
@@ -43,7 +43,7 @@ public class Binding implements Comparable<Object> {
     public int bodyEnd = -1;
 
     @Nullable
-    private String fileOrUrl;
+    public String file;
 
 
     public Binding(@NotNull String id, @NotNull Node node, @NotNull Type type, @NotNull Kind kind) {
@@ -56,12 +56,12 @@ public class Binding implements Comparable<Object> {
         if (node instanceof Url) {
             String url = ((Url) node).getURL();
             if (url.startsWith("file://")) {
-                fileOrUrl = url.substring("file://".length());
+                file = url.substring("file://".length());
             } else {
-                fileOrUrl = url;
+                file = url;
             }
         } else {
-            fileOrUrl = node.file;
+            file = node.file;
             if (node instanceof Name) {
                 name = node.asName().id;
             }
@@ -153,29 +153,12 @@ public class Binding implements Comparable<Object> {
             return file != null ? file : "<built-in module>";
         }
 
-        String file = getFile();
+        String file = this.file;
         if (file != null) {
             return file;
         }
 
         return "<built-in binding>";
-    }
-
-
-    @Nullable
-    public String getFile() {
-        return isURL() ? null : fileOrUrl;
-    }
-
-
-    @Nullable
-    public String getFileOrUrl() {
-        return fileOrUrl;
-    }
-
-
-    public boolean isURL() {
-        return fileOrUrl != null && fileOrUrl.startsWith("http://");
     }
 
 
@@ -219,14 +202,14 @@ public class Binding implements Comparable<Object> {
             Binding b = (Binding) obj;
             return (start == b.start &&
                     end == b.end &&
-                    _.same(fileOrUrl, b.fileOrUrl));
+                    _.same(file, b.file));
         }
     }
 
 
     @Override
     public int hashCode() {
-        return ("" + fileOrUrl + start).hashCode();
+        return ("" + file + start).hashCode();
     }
 
 }

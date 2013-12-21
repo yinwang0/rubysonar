@@ -100,7 +100,7 @@ class Linker {
         style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = qname;
-        addFileStyle(binding.getFile(), style);
+        addFileStyle(binding.file, style);
     }
 
 
@@ -124,7 +124,7 @@ class Linker {
         for (Node r : refs) {
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
-        addFileStyle(binding.getFile(), style);
+        addFileStyle(binding.file, style);
     }
 
 
@@ -254,7 +254,7 @@ class Linker {
 
 
     private void addSemanticStyle(@NotNull Binding binding, Style.Type type) {
-        String path = binding.getFile();
+        String path = binding.file;
         if (path != null) {
             addFileStyle(path, new Style(type, binding.start, binding.end));
         }
@@ -276,7 +276,7 @@ class Linker {
         if (binding.getType().isModuleType()) {
             destPath = binding.getType().asModuleType().getFile();
         } else {
-            destPath = binding.getFile();
+            destPath = binding.file;
         }
 
         if (destPath == null) {
