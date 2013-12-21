@@ -153,7 +153,7 @@ class StyleApplier {
      */
     @NotNull
     public String apply() {
-        buffer = new StringBuilder(source.length() * SOURCE_BUF_MULTIPLIER);
+        buffer = new StringBuilder();
 
         for (Tag tag : tags) {
             tag.insert();
