@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.State;
+import org.yinwang.rubysonar._;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
 
@@ -209,11 +210,9 @@ public abstract class Node implements java.io.Serializable {
             return false;
         } else {
             Node node = (Node) obj;
-            String file = this.file;
-            return (start == node.start &&
-                    end == node.end &&
-                    (file == null && node.file == null) ||
-                    (file != null && node.file != null && file.equals(node.file)));
+            return (this.start == node.start &&
+                    this.end == node.end &&
+                    _.same(this.file, node.file));
         }
     }
 
