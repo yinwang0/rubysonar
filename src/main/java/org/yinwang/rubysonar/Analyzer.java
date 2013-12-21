@@ -6,7 +6,6 @@ import org.yinwang.rubysonar.ast.Call;
 import org.yinwang.rubysonar.ast.Node;
 import org.yinwang.rubysonar.ast.Url;
 import org.yinwang.rubysonar.types.FunType;
-import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
 import java.io.File;
@@ -18,19 +17,16 @@ import java.util.logging.Logger;
 
 public class Analyzer {
 
-    // global static instance of the analyzer itself
     public static String MODEL_LOCATION = "org/yinwang/rubysonar/models";
+
+    // global static instance of the analyzer itself
     public static Analyzer self;
     public String sid = _.newSessionId();
-    public boolean debug = false;
-
-    public State moduleTable = new State(null, State.StateType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
     public State globaltable = new State(null, State.StateType.GLOBAL);
     public List<Binding> allBindings = new ArrayList<>();
     private Map<Node, List<Binding>> references = new LinkedHashMap<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
-    public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
     public int nCalled = 0;
     public boolean multilineFunType = false;
@@ -191,26 +187,6 @@ public class Analyzer {
     }
 
 
-    @Nullable
-    ModuleType getCachedModule(String file) {
-        Type t = moduleTable.lookupType(_.moduleQname(file));
-        if (t == null) {
-            return null;
-        } else if (t.isUnionType()) {
-            for (Type tt : t.asUnionType().getTypes()) {
-                if (tt.isModuleType()) {
-                    return (ModuleType) tt;
-                }
-            }
-            return null;
-        } else if (t.isModuleType()) {
-            return (ModuleType) t;
-        } else {
-            return null;
-        }
-    }
-
-
     public List<Diagnostic> getDiagnosticsForFile(String file) {
         List<Diagnostic> errs = semanticErrors.get(file);
         if (errs != null) {
@@ -272,11 +248,6 @@ public class Analyzer {
     }
 
 
-    List<Diagnostic> getParseErrs(String file) {
-        return getFileErrs(file, parseErrors);
-    }
-
-
     List<Diagnostic> getFileErrs(String file, @NotNull Map<String, List<Diagnostic>> map) {
         List<Diagnostic> msgs = map.get(file);
         if (msgs == null) {
@@ -298,11 +269,6 @@ public class Analyzer {
             return null;
         }
 
-        Type module = getCachedModule(path);
-        if (module != null) {
-            return module;
-        }
-
         // detect circular import
         if (Analyzer.self.inImportStack(path)) {
             return null;
@@ -320,16 +286,6 @@ public class Analyzer {
         Analyzer.self.popImportStack(path);
 
         return type;
-    }
-
-
-    private boolean isInLoadPath(File dir) {
-        for (String s : getLoadPath()) {
-            if (new File(s).equals(dir)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 
@@ -439,7 +395,6 @@ public class Analyzer {
 
 
     public void finish() {
-//        progress.end();
         _.msg("\nFinished loading files. " + nCalled + " functions were called.");
         _.msg("Analyzing uncalled functions");
         applyUncalled();
@@ -550,6 +505,10 @@ public class Analyzer {
     @NotNull
     @Override
     public String toString() {
-        return "(analyzer:locs=" + references.size() + ":files=" + loadedFiles.size() + ")";
+        return "(analyzer:" +
+                "[" + allBindings.size() + " bindings] " +
+                "[" + references.size() + " refs] " +
+                "[" + loadedFiles.size() + " files] " +
+                ")";
     }
 }
