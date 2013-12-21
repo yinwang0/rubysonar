@@ -26,10 +26,6 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    private boolean isStatic = false;         // static fields/methods
-    private boolean isSynthetic = false;      // auto-generated bindings
-    private boolean isBuiltin = false;        // not from a source file
-
     @NotNull
     private String name;     // unqualified name
     @NotNull
@@ -41,7 +37,6 @@ public class Binding implements Comparable<Object> {
 
     private Set<Node> refs;
 
-    // fields from Def
     public int start = -1;
     public int end = -1;
     public int bodyStart = -1;
@@ -142,26 +137,6 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public void markStatic() {
-        isStatic = true;
-    }
-
-
-    public boolean isStatic() {
-        return isStatic;
-    }
-
-
-    public boolean isSynthetic() {
-        return isSynthetic;
-    }
-
-
-    public boolean isBuiltin() {
-        return isBuiltin;
-    }
-
-
     public Set<Node> getRefs() {
         if (refs == null) {
             refs = new LinkedHashSet<>(1);
@@ -190,12 +165,6 @@ public class Binding implements Comparable<Object> {
     @Nullable
     public String getFile() {
         return isURL() ? null : fileOrUrl;
-    }
-
-
-    @Nullable
-    public String getURL() {
-        return isURL() ? fileOrUrl : null;
     }
 
 

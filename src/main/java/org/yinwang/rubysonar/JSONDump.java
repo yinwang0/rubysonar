@@ -152,13 +152,13 @@ public class JSONDump {
         if (binding.getFile() != null) {
             String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
-            if (binding.start >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
+            if (binding.start >= 0 && ref.start >= 0) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", ref.file);
                 json.writeNumberField("start", ref.start);
                 json.writeNumberField("end", ref.end);
-                json.writeBooleanField("builtin", binding.isBuiltin());
+                json.writeBooleanField("builtin", false);
                 json.writeEndObject();
             }
         }

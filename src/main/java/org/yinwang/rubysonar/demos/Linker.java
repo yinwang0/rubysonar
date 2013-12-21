@@ -272,10 +272,6 @@ class Linker {
     @Nullable
     private String toURL(@NotNull Binding binding, String filename) {
 
-        if (binding.isBuiltin()) {
-            return binding.getURL();
-        }
-
         String destPath;
         if (binding.getType().isModuleType()) {
             destPath = binding.getType().asModuleType().getFile();
