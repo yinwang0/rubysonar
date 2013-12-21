@@ -28,8 +28,6 @@ public class Binding implements Comparable<Object> {
 
     private boolean isStatic = false;         // static fields/methods
     private boolean isSynthetic = false;      // auto-generated bindings
-    private boolean isReadonly = false;       // non-writable attributes
-    private boolean isDeprecated = false;     // documented as deprecated
     private boolean isBuiltin = false;        // not from a source file
 
     @NotNull
@@ -154,18 +152,8 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public void markSynthetic() {
-        isSynthetic = true;
-    }
-
-
     public boolean isSynthetic() {
         return isSynthetic;
-    }
-
-
-    public void markReadOnly() {
-        isReadonly = true;
     }
 
 
@@ -234,11 +222,11 @@ public class Binding implements Comparable<Object> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<Binding:");
-        sb.append(":qname=").append(qname);
-        sb.append(":type=").append(type);
+        sb.append("(binding:");
         sb.append(":kind=").append(kind);
         sb.append(":node=").append(node);
+        sb.append(":type=").append(type);
+        sb.append(":qname=").append(qname);
         sb.append(":refs=");
         if (getRefs().size() > 10) {
             sb.append("[");
