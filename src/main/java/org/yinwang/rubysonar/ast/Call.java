@@ -70,7 +70,6 @@ public class Call extends Node {
                 }
                 Analyzer.self.putProblem(this, "failed to include module");
             }
-            return Type.FALSE;
         }
 
         // Ruby's Class.new
