@@ -38,8 +38,8 @@ public class Style implements Comparable<Style> {
 
 
     public Type type;
-    private int offset;     // file offset
-    private int length;     // style run length
+    public int offset;
+    public int length;
 
     public String message;  // optional hover text
     @Nullable
@@ -56,18 +56,8 @@ public class Style implements Comparable<Style> {
     }
 
 
-    public int start() {
-        return offset;
-    }
-
-
     public int end() {
         return offset + length;
-    }
-
-
-    public int length() {
-        return length;
     }
 
 
