@@ -10,8 +10,8 @@ public class Regexp extends Node {
     public Node end;
 
 
-    public Regexp(Node pattern, Node regexpEnd, int start, int end) {
-        super(start, end);
+    public Regexp(Node pattern, Node regexpEnd, String file, int start, int end) {
+        super(file, start, end);
         this.pattern = pattern;
         this.end = regexpEnd;
     }

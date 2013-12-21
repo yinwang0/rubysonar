@@ -16,9 +16,10 @@ import java.util.List;
 
 public abstract class Node implements java.io.Serializable {
 
-    public String file = null;
+    public String file;
     public int start = -1;
     public int end = -1;
+    public String name;
     public String path;
     public String sha1;   // input source file sha
     public Node parent = null;
@@ -28,7 +29,8 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    public Node(int start, int end) {
+    public Node(String file, int start, int end) {
+        this.file = file;
         this.start = start;
         this.end = end;
     }
@@ -50,18 +52,6 @@ public abstract class Node implements java.io.Serializable {
 
     public int length() {
         return end - start;
-    }
-
-
-    @Nullable
-    public String getFile() {
-        if (file != null) {
-            return file;
-        } else if (parent != null) {
-            return parent.getFile();
-        } else {
-            return null;
-        }
     }
 
 
@@ -220,8 +210,31 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
+    // nodes are equal if they are from the same file and same starting point
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Node)) {
+            return false;
+        } else {
+            Node node = (Node) obj;
+            String file = this.file;
+            return (start == node.start &&
+                    end == node.end &&
+                    (file == null && node.file == null) ||
+                    (file != null && node.file != null && file.equals(node.file)));
+        }
+    }
+
+
     public String toDisplay() {
         return "";
+    }
+
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "(node:" + file + ":" + name + ":" + start + ")";
     }
 
 }

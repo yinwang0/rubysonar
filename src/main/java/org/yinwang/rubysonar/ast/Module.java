@@ -14,8 +14,8 @@ public class Module extends Node {
     public Block body;
 
 
-    public Module(Node locator, Block body, int start, int end) {
-        super(start, end);
+    public Module(Node locator, Block body, String file, int start, int end) {
+        super(file, start, end);
         this.locator = locator;
         this.body = body;
         if (locator instanceof Attribute) {

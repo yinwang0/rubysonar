@@ -17,7 +17,7 @@ public class Ref implements Comparable<Object> {
 
 
     public Ref(@NotNull Node node) {
-        file = node.getFile();
+        file = node.file;
         start = node.start;
 
         if (node instanceof Name) {

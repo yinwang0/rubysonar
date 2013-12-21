@@ -13,8 +13,8 @@ public class RbInt extends Node {
     public BigInteger value;
 
 
-    public RbInt(String s, int start, int end) {
-        super(start, end);
+    public RbInt(String s, String file, int start, int end) {
+        super(file, start, end);
 
         s = s.replaceAll("_", "");
         int sign = 1;

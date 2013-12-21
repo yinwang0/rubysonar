@@ -13,7 +13,7 @@ public class Symbol extends Node {
 
 
     public Symbol(@NotNull String id, int start, int end) {
-        super(start, end);
+        super(null, start, end);
         this.id = id;
     }
 

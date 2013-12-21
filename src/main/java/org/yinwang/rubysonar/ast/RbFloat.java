@@ -11,8 +11,8 @@ public class RbFloat extends Node {
     public double value;
 
 
-    public RbFloat(String s, int start, int end) {
-        super(start, end);
+    public RbFloat(String s, String file, int start, int end) {
+        super(file, start, end);
         s = s.replaceAll("_", "");
         this.value = Double.parseDouble(s);
     }

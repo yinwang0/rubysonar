@@ -234,7 +234,7 @@ public class Analyzer {
 
 
     public void putProblem(@NotNull Node loc, String msg) {
-        String file = loc.getFile();
+        String file = loc.file;
         if (file != null) {
             addFileErr(file, loc.start, loc.end, msg);
         }

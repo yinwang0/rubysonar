@@ -14,8 +14,8 @@ public class Array extends Node {
     public List<Node> elts;
 
 
-    public Array(@NotNull List<Node> elts, int start, int end) {
-        super(start, end);
+    public Array(@NotNull List<Node> elts, String file, int start, int end) {
+        super(file, start, end);
         this.elts = elts;
         addChildren(elts);
     }

@@ -7,8 +7,8 @@ import org.yinwang.rubysonar.types.Type;
 
 public class Void extends Node {
 
-    public Void(int start, int end) {
-        super(start, end);
+    public Void(String file, int start, int end) {
+        super(file, start, end);
     }
 
 

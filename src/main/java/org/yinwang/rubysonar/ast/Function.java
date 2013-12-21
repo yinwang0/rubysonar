@@ -27,15 +27,15 @@ public class Function extends Node {
 
 
     public Function(Name name, List<Node> args, Node body, List<Node> defaults,
-                    Name vararg, Name kwarg, int start, int end)
+                    Name vararg, Name kwarg, String file, int start, int end)
     {
-        super(start, end);
+        super(file, start, end);
         if (name != null) {
             this.name = name;
         } else {
             isLamba = true;
             String fn = genLambdaName();
-            this.name = new Name(fn, start, start + "lambda".length());
+            this.name = new Name(fn, file, start, start + "lambda".length());
             addChildren(this.name);
         }
 
@@ -99,7 +99,7 @@ public class Function extends Node {
     public boolean equals(Object obj) {
         if (obj instanceof Function) {
             Function fo = (Function) obj;
-            return (fo.getFile().equals(getFile()) && fo.start == start);
+            return (fo.file.equals(file) && fo.start == start);
         } else {
             return false;
         }

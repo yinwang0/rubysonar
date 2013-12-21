@@ -31,6 +31,7 @@ public class Parser {
     private String endMark;
     private String jsonizer;
     private String parserLog;
+    private String file;
 
 
     public Parser() {
@@ -98,7 +99,7 @@ public class Parser {
         if (type.equals("module")) {
             Node name = convert(map.get("name"));
             Block body = (Block) convert(map.get("body"));
-            Module m = new Module(name, body, start, end);
+            Module m = new Module(name, body, file, start, end);
             try {
                 m.setFile(_.unifyPath((String) map.get("filename")));
             } catch (Exception e) {
@@ -109,7 +110,7 @@ public class Parser {
 
         if (type.equals("block")) {
             List<Node> stmts = convertList(map.get("stmts"));
-            return new Block(stmts, start, end);
+            return new Block(stmts, file, start, end);
         }
 
         if (type.equals("def") || type.equals("lambda")) {
@@ -131,7 +132,7 @@ public class Parser {
             Name vararg = var == null ? null : var;
             Name kw = (Name) convert(argsMap.get("rest_kw"));
             Name kwarg = kw == null ? null : kw;
-            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, start, end);
+            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, file, start, end);
             ret.afterRest = convertList(argsMap.get("after_rest"));
             ret.blockarg = (Name) convert(argsMap.get("block"));
             return ret;
@@ -151,6 +152,7 @@ public class Parser {
                         if (node.isAssign() && node.asAssign().target.isName()) {
                             kws.add(new Keyword(node.asAssign().target.asName().id,
                                     node.asAssign().value,
+                                    file,
                                     node.start,
                                     node.end));
                         } else {
@@ -159,10 +161,10 @@ public class Parser {
                     }
                 }
 
-                ret = new Call(func, pos, kws, null, null, start, end);
+                ret = new Call(func, pos, kws, null, null, file, start, end);
             } else {
                 // call with no arguments
-                ret = new Call(func, null, null, null, null, start, end);
+                ret = new Call(func, null, null, null, null, file, start, end);
             }
 
             Node blockarg = convert(map.get("block_arg"));
@@ -176,7 +178,7 @@ public class Parser {
         if (type.equals("attribute")) {
             Node value = convert(map.get("value"));
             Name attr = (Name) convert(map.get("attr"));
-            return new Attribute(value, attr, start, end);
+            return new Attribute(value, attr, file, start, end);
         }
 
         if (type.equals("binary")) {
@@ -186,72 +188,72 @@ public class Parser {
 
             // desugar complex operators
             if (op == Op.NotEqual) {
-                Node eq = new BinOp(Op.Equal, left, right, start, end);
-                return new UnaryOp(Op.Not, eq, start, end);
+                Node eq = new BinOp(Op.Equal, left, right, file, start, end);
+                return new UnaryOp(Op.Not, eq, file, start, end);
             }
 
             if (op == Op.NotMatch) {
-                Node eq = new BinOp(Op.Match, left, right, start, end);
-                return new UnaryOp(Op.Not, eq, start, end);
+                Node eq = new BinOp(Op.Match, left, right, file, start, end);
+                return new UnaryOp(Op.Not, eq, file, start, end);
             }
 
             if (op == Op.LtE) {
-                Node lt = new BinOp(Op.Lt, left, right, start, end);
-                Node eq = new BinOp(Op.Eq, left, right, start, end);
-                return new BinOp(Op.Or, lt, eq, start, end);
+                Node lt = new BinOp(Op.Lt, left, right, file, start, end);
+                Node eq = new BinOp(Op.Eq, left, right, file, start, end);
+                return new BinOp(Op.Or, lt, eq, file, start, end);
             }
 
             if (op == Op.GtE) {
-                Node gt = new BinOp(Op.Gt, left, right, start, end);
-                Node eq = new BinOp(Op.Eq, left, right, start, end);
-                return new BinOp(Op.Or, gt, eq, start, end);
+                Node gt = new BinOp(Op.Gt, left, right, file, start, end);
+                Node eq = new BinOp(Op.Eq, left, right, file, start, end);
+                return new BinOp(Op.Or, gt, eq, file, start, end);
             }
 
             if (op == Op.NotIn) {
-                Node in = new BinOp(Op.In, left, right, start, end);
-                return new UnaryOp(Op.Not, in, start, end);
+                Node in = new BinOp(Op.In, left, right, file, start, end);
+                return new UnaryOp(Op.Not, in, file, start, end);
             }
 
             if (op == Op.NotEq) {
-                Node in = new BinOp(Op.Eq, left, right, start, end);
-                return new UnaryOp(Op.Not, in, start, end);
+                Node in = new BinOp(Op.Eq, left, right, file, start, end);
+                return new UnaryOp(Op.Not, in, file, start, end);
             }
 
-            return new BinOp(op, left, right, start, end);
+            return new BinOp(op, left, right, file, start, end);
 
         }
 
         if (type.equals("void")) {
-            return new Void(start, end);
+            return new Void(file, start, end);
         }
 
 
         if (type.equals("break")) {
-            return new Control("break", start, end);
+            return new Control("break", file, start, end);
         }
 
         if (type.equals("retry")) {
-            return new Control("retry", start, end);
+            return new Control("retry", file, start, end);
         }
 
         if (type.equals("redo")) {
-            return new Control("redo", start, end);
+            return new Control("redo", file, start, end);
         }
 
         if (type.equals("continue")) {
-            return new Control("continue", start, end);
+            return new Control("continue", file, start, end);
         }
 
         if (type.equals("class")) {
             Node locator = convert(map.get("name"));
             Node base = convert(map.get("super"));
             Node body = convert(map.get("body"));
-            return new Class(locator, base, body, start, end);
+            return new Class(locator, base, body, file, start, end);
         }
 
         if (type.equals("undef")) {
             List<Node> targets = convertList(map.get("names"));
-            return new Undef(targets, start, end);
+            return new Undef(targets, file, start, end);
         }
 
         if (type.equals("hash")) {
@@ -269,34 +271,34 @@ public class Parser {
                     }
                 }
             }
-            return new Dict(keys, values, start, end);
+            return new Dict(keys, values, file, start, end);
         }
 
         if (type.equals("rescue")) {
             List<Node> exceptions = convertList(map.get("exceptions"));
             Node binder = convert(map.get("binder"));
             Block body = (Block) convert(map.get("body"));
-            return new Handler(exceptions, binder, body, start, end);
+            return new Handler(exceptions, binder, body, file, start, end);
         }
 
         if (type.equals("for")) {
             Node target = convert(map.get("target"));
             Node iter = convert(map.get("iter"));
             Block body = (Block) convert(map.get("body"));
-            return new For(target, iter, body, null, start, end);
+            return new For(target, iter, body, null, file, start, end);
         }
 
         if (type.equals("if")) {
             Node test = convert(map.get("test"));
             Node body = convert(map.get("body"));
             Node orelse = convert(map.get("else"));
-            return new If(test, body, orelse, start, end);
+            return new If(test, body, orelse, file, start, end);
         }
 
         if (type.equals("keyword")) {
             String arg = (String) map.get("arg");
             Node value = convert(map.get("value"));
-            return new Keyword(arg, value, start, end);
+            return new Keyword(arg, value, file, start, end);
         }
 
         if (type.equals("array")) {
@@ -304,19 +306,19 @@ public class Parser {
             if (elts == null) {
                 elts = Collections.emptyList();
             }
-            return new Array(elts, start, end);
+            return new Array(elts, file, start, end);
         }
 
         if (type.equals("args")) {
             List<Node> elts = convertList(map.get("positional"));
             if (elts != null) {
-                return new Array(elts, start, end);
+                return new Array(elts, file, start, end);
             } else {
                 elts = convertList(map.get("star"));
                 if (elts != null) {
-                    return new Array(elts, start, end);
+                    return new Array(elts, file, start, end);
                 } else {
-                    return new Array(Collections.<Node>emptyList(), start, end);
+                    return new Array(Collections.<Node>emptyList(), file, start, end);
                 }
             }
         }
@@ -327,34 +329,34 @@ public class Parser {
             List<Node> elts = new ArrayList<>();
             elts.add(from);
             elts.add(to);
-            return new Array(elts, start, end);
+            return new Array(elts, file, start, end);
         }
 
         if (type.equals("star")) { // f(*[1, 2, 3, 4])
             Node value = convert(map.get("value"));
-            return new Starred(value, start, end);
+            return new Starred(value, file, start, end);
         }
 
         // another name for Name in Python3 func parameters?
         if (type.equals("arg")) {
             String id = (String) map.get("arg");
-            return new Name(id, start, end);
+            return new Name(id, file, start, end);
         }
 
         if (type.equals("return")) {
             Node value = convert(map.get("value"));
-            return new Return(value, start, end);
+            return new Return(value, file, start, end);
         }
 
         if (type.equals("string")) {
             String s = (String) map.get("id");
-            return new Str(s, start, end);
+            return new Str(s, file, start, end);
         }
 
         if (type.equals("regexp")) {
             Node pattern = convert(map.get("pattern"));
             Node regexp_end = convert(map.get("regexp_end"));
-            return new Regexp(pattern, regexp_end, start, end);
+            return new Regexp(pattern, regexp_end, file, start, end);
         }
 
         // Ruby's subscript is Python's Slice with step size 1
@@ -366,21 +368,21 @@ public class Parser {
                 List<Node> s = convertList(sliceObj);
                 if (s.size() == 1) {
                     Node node = s.get(0);
-                    Index idx = new Index(node, node.start, node.end);
-                    return new Subscript(value, idx, start, end);
+                    Index idx = new Index(node, file, node.start, node.end);
+                    return new Subscript(value, idx, file, start, end);
                 } else if (s.size() == 2) {
                     Slice slice = new Slice(s.get(0), null, s.get(1), s.get(0).start, s.get(1).end);
-                    return new Subscript(value, slice, start, end);
+                    return new Subscript(value, slice, file, start, end);
                 } else {
                     // failed to parse the subscript part
                     // cheat by returning the value
                     return value;
                 }
             } else if (sliceObj == null) {
-                return new Subscript(value, null, start, end);
+                return new Subscript(value, null, file, start, end);
             } else {
                 Node sliceNode = convert(sliceObj);
-                return new Subscript(value, sliceNode, start, end);
+                return new Subscript(value, sliceNode, file, start, end);
             }
         }
 
@@ -388,65 +390,65 @@ public class Parser {
             Block body = (Block) convert(map.get("body"));
             Block orelse = (Block) convert(map.get("else"));
             Block finalbody = (Block) convert(map.get("ensure"));
-            return new Try(null, body, orelse, finalbody, start, end);
+            return new Try(null, body, orelse, finalbody, file, start, end);
         }
 
         if (type.equals("unary")) {
             Op op = convertOp(map.get("op"));
             Node operand = convert(map.get("operand"));
-            return new UnaryOp(op, operand, start, end);
+            return new UnaryOp(op, operand, file, start, end);
         }
 
         if (type.equals("while")) {
             Node test = convert(map.get("test"));
             Node body = convert(map.get("body"));
-            return new While(test, body, null, start, end);
+            return new While(test, body, null, file, start, end);
         }
 
         if (type.equals("yield")) {
             Node value = convert(map.get("value"));
-            return new Yield(value, start, end);
+            return new Yield(value, file, start, end);
         }
 
         if (type.equals("assign")) {
             Node target = convert(map.get("target"));
             Node value = convert(map.get("value"));
-            return new Assign(target, value, start, end);
+            return new Assign(target, value, file, start, end);
         }
 
         if (type.equals("name")) {
             String id = (String) map.get("id");
-            return new Name(id, start, end);
+            return new Name(id, file, start, end);
         }
 
         if (type.equals("cvar")) {
             String id = (String) map.get("id");
-            return new Name(id, NameType.CLASS, start, end);
+            return new Name(id, NameType.CLASS, file, start, end);
         }
 
         if (type.equals("ivar")) {
             String id = (String) map.get("id");
-            return new Name(id, NameType.INSTANCE, start, end);
+            return new Name(id, NameType.INSTANCE, file, start, end);
         }
 
         if (type.equals("gvar")) {
             String id = (String) map.get("id");
-            return new Name(id, NameType.GLOBAL, start, end);
+            return new Name(id, NameType.GLOBAL, file, start, end);
         }
 
 //        if (type.equals("symbol")) {
 //            String id = (String) map.get("id");
-//            return new Name(id, start, end);
+//            return new Name(id, file, start, end);
 //        }
 
         if (type.equals("int")) {
             String n = (String) map.get("value");
-            return new RbInt(n, start, end);
+            return new RbInt(n, file, start, end);
         }
 
         if (type.equals("float")) {
             String n = (String) map.get("value");
-            return new RbFloat(n, start, end);
+            return new RbFloat(n, file, start, end);
         }
 
         _.die("[please report parser bug]: unexpected ast node: " + type);
@@ -646,6 +648,7 @@ public class Parser {
 
     @Nullable
     public Node parseFile(String filename) {
+        file = filename;
         Node node = parseFileInner(filename, rubyProcess);
         if (node != null) {
             return node;
