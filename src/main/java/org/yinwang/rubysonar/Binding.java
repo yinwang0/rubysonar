@@ -222,11 +222,6 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public int getLength() {
-        return end - start;
-    }
-
-
     /**
      * Bindings can be sorted by their location for outlining purposes.
      */

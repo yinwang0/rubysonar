@@ -2,14 +2,12 @@ package org.yinwang.rubysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.rubysonar._;
 
 import java.util.List;
 
 
-/**
- * Represents a simple style run for purposes of source highlighting.
- */
-public class StyleRun implements Comparable<StyleRun> {
+public class Style implements Comparable<Style> {
 
     public enum Type {
         KEYWORD,
@@ -38,8 +36,8 @@ public class StyleRun implements Comparable<StyleRun> {
 
 
     public Type type;
-    private int offset;     // file offset
-    private int length;     // style run length
+    public int start;     // file start
+    public int end;     // style run length
 
     public String message;  // optional hover text
     @Nullable
@@ -49,68 +47,43 @@ public class StyleRun implements Comparable<StyleRun> {
     public List<String> highlight;   // for hover highlight
 
 
-    public StyleRun(Type type, int offset, int length) {
+    public Style(Type type, int start, int end) {
         this.type = type;
-        this.offset = offset;
-        this.length = length;
-    }
-
-
-    public int start() {
-        return offset;
-    }
-
-
-    public int end() {
-        return offset + length;
-    }
-
-
-    public int length() {
-        return length;
+        this.start = start;
+        this.end = end;
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof StyleRun)) {
+        if (!(o instanceof Style)) {
             return false;
         }
-        StyleRun other = (StyleRun) o;
+        Style other = (Style) o;
         return other.type == this.type
-                && other.offset == this.offset
-                && other.length == this.length
-                && equalFields(other.message, this.message)
-                && equalFields(other.url, this.url);
+                && other.start == this.start
+                && other.end == this.end
+                && _.equal(other.message, this.message)
+                && _.equal(other.url, this.url);
     }
 
 
-    private boolean equalFields(@Nullable Object o1, @Nullable Object o2) {
-        if (o1 == null) {
-            return o2 == null;
-        } else {
-            return o1.equals(o2);
-        }
-    }
-
-
-    public int compareTo(@NotNull StyleRun other) {
+    public int compareTo(@NotNull Style other) {
         if (this.equals(other)) {
             return 0;
-        }
-        if (this.offset < other.offset) {
+        } else if (this.start < other.start) {
             return -1;
-        }
-        if (other.offset < this.offset) {
+        } else if (this.start > other.start) {
             return 1;
+        } else {
+            return this.hashCode() - other.hashCode();
         }
-        return this.hashCode() - other.hashCode();
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "[" + type + " start=" + offset + " len=" + length + "]";
+        return "[" + type + " start=" + start + " len=" + end + "]";
     }
 }
