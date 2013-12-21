@@ -63,7 +63,7 @@ public class Analyzer {
         stats.putInt("startTime", System.currentTimeMillis());
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         this.suffix = ".rb";
-        addPythonPath();
+        addEnvPath();
         copyModels();
         createCacheDir();
         getAstCache();
@@ -126,8 +126,8 @@ public class Analyzer {
     }
 
 
-    private void addPythonPath() {
-        String path = System.getenv("PYTHONPATH");
+    private void addEnvPath() {
+        String path = System.getenv("RUBYLIB");
         if (path != null) {
             String[] segments = path.split(":");
             for (String p : segments) {
