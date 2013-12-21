@@ -10,12 +10,15 @@ import java.util.TreeSet;
 
 
 /**
- * Turns a list of {@link Style}s into HTML spans.
+ * Turns a list of {@link StyleRun}s into HTML spans.
  */
 class StyleApplier {
 
+    // Empirically, adding the span tags multiplies length by 6 or more.
+    private static final int SOURCE_BUF_MULTIPLIER = 6;
+
     @NotNull
-    private SortedSet<Tag> tags = new TreeSet<>();
+    private SortedSet<Tag> tags = new TreeSet<Tag>();
 
     private StringBuilder buffer;  // html output buffer
 
@@ -27,7 +30,7 @@ class StyleApplier {
 
     abstract class Tag implements Comparable<Tag> {
         int offset;
-        Style style;
+        StyleRun style;
 
 
         @Override
@@ -55,8 +58,8 @@ class StyleApplier {
 
 
     class StartTag extends Tag {
-        public StartTag(@NotNull Style style) {
-            offset = style.start;
+        public StartTag(@NotNull StyleRun style) {
+            offset = style.start();
             this.style = style;
         }
 
@@ -114,8 +117,8 @@ class StyleApplier {
 
 
     class EndTag extends Tag {
-        public EndTag(@NotNull Style style) {
-            offset = style.end;
+        public EndTag(@NotNull StyleRun style) {
+            offset = style.end();
             this.style = style;
         }
 
@@ -136,9 +139,9 @@ class StyleApplier {
     }
 
 
-    public StyleApplier(String path, String src, @NotNull List<Style> runs) {
+    public StyleApplier(String path, String src, @NotNull List<StyleRun> runs) {
         source = src;
-        for (Style run : runs) {
+        for (StyleRun run : runs) {
             tags.add(new StartTag(run));
             tags.add(new EndTag(run));
         }
@@ -193,7 +196,7 @@ class StyleApplier {
     }
 
 
-    private String toCSS(@NotNull Style style) {
+    private String toCSS(@NotNull StyleRun style) {
         return style.type.toString().toLowerCase().replace("_", "-");
     }
 }

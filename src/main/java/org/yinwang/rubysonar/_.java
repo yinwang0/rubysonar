@@ -25,18 +25,11 @@ import java.util.jar.JarFile;
  */
 public class _ {
 
+    public static final Charset UTF_8 = Charset.forName("UTF-8");
+
 
     public static String baseFileName(String filename) {
         return new File(filename).getName();
-    }
-
-
-    public static boolean equal(@Nullable Object o1, @Nullable Object o2) {
-        if (o1 == null) {
-            return o2 == null;
-        } else {
-            return o1.equals(o2);
-        }
     }
 
 
@@ -141,7 +134,7 @@ public class _ {
         if (content == null) {
             return null;
         } else {
-            return new String(content, Charset.forName("UTF-8"));
+            return new String(content, UTF_8);
         }
     }
 
