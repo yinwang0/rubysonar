@@ -8,7 +8,6 @@ import org.yinwang.rubysonar._;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -79,7 +78,7 @@ public abstract class Node implements java.io.Serializable {
 
     public void setFile(String file) {
         this.file = file;
-        this.sha1 = _.getSHA1(new File(file));
+        this.sha1 = _.getSHA(file);
     }
 
 
@@ -223,6 +222,12 @@ public abstract class Node implements java.io.Serializable {
                     (file == null && node.file == null) ||
                     (file != null && node.file != null && file.equals(node.file)));
         }
+    }
+
+
+    @Override
+    public int hashCode() {
+        return (file + ":" + start + ":" + end).hashCode();
     }
 
 

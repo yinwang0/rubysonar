@@ -28,7 +28,7 @@ public class Analyzer {
     public List<String> loadedFiles = new ArrayList<>();
     public State globaltable = new State(null, State.StateType.GLOBAL);
     public List<Binding> allBindings = new ArrayList<>();
-    private Map<Ref, List<Binding>> references = new LinkedHashMap<>();
+    private Map<Node, List<Binding>> references = new LinkedHashMap<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
@@ -49,11 +49,23 @@ public class Analyzer {
     public String projectDir;
     public String suffix;
 
+    public Map<String, Object> options;
+
 
     public Analyzer() {
+        this(null);
+    }
+
+
+    public Analyzer(Map<String, Object> options) {
+        self = this;
+        if (options != null) {
+            this.options = options;
+        } else {
+            this.options = new HashMap<>();
+        }
         stats.putInt("startTime", System.currentTimeMillis());
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
-        self = this;
         this.suffix = ".rb";
         addPythonPath();
         copyModels();
@@ -62,9 +74,13 @@ public class Analyzer {
     }
 
 
-    public Analyzer(boolean debug) {
-        this();
-        this.debug = debug;
+    public boolean hasOption(String option) {
+        Object op = options.get(option);
+        if (op != null && op.equals(true)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -82,8 +98,10 @@ public class Analyzer {
 
     // main entry to the analyzer
     public void analyze(String path) {
-        projectDir = _.unifyPath(path);
-        loadFileRecursive(projectDir);
+        String upath = _.unifyPath(path);
+        File f = new File(upath);
+        projectDir = f.isDirectory() ? f.getPath() : f.getParent();
+        loadFileRecursive(upath);
     }
 
 
@@ -204,17 +222,16 @@ public class Analyzer {
 
     public void putRef(@NotNull Node node, @NotNull List<Binding> bs) {
         if (!(node instanceof Url)) {
-            Ref ref = new Ref(node);
-            List<Binding> bindings = references.get(ref);
+            List<Binding> bindings = references.get(node);
             if (bindings == null) {
                 bindings = new ArrayList<>(1);
-                references.put(ref, bindings);
+                references.put(node, bindings);
             }
             for (Binding b : bs) {
                 if (!bindings.contains(b)) {
                     bindings.add(b);
                 }
-                b.addRef(ref);
+                b.addRef(node);
             }
         }
     }
@@ -228,7 +245,7 @@ public class Analyzer {
 
 
     @NotNull
-    public Map<Ref, List<Binding>> getReferences() {
+    public Map<Node, List<Binding>> getReferences() {
         return references;
     }
 
@@ -434,7 +451,7 @@ public class Analyzer {
                     !b.getType().isModuleType()
                     && b.getRefs().isEmpty())
             {
-                Analyzer.self.putProblem(b.getNode(), "Unused variable: " + b.getName());
+                Analyzer.self.putProblem(b.node, "Unused variable: " + b.getName());
             }
         }
 

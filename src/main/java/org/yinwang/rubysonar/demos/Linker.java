@@ -3,6 +3,7 @@ package org.yinwang.rubysonar.demos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.*;
+import org.yinwang.rubysonar.ast.Node;
 
 import java.io.File;
 import java.util.*;
@@ -56,7 +57,7 @@ class Linker {
         _.msg("\nAdding ref links");
         progress = new Progress(analyzer.getReferences().size(), 50);
 
-        for (Entry<Ref, List<Binding>> e : analyzer.getReferences().entrySet()) {
+        for (Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
             progress.tick();
         }
@@ -80,34 +81,34 @@ class Linker {
     private void processDef(@NotNull Binding binding) {
         int hash = binding.hashCode();
 
-        if (binding.isURL() || binding.getStart() < 0 || seenDef.contains(hash)) {
+        if (binding.isURL() || binding.start < 0 || seenDef.contains(hash)) {
             return;
         }
 
         seenDef.add(hash);
-        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.getStart(), binding.getLength());
+        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.start, binding.getLength());
         style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = "" + Math.abs(binding.hashCode());
 
-        Set<Ref> refs = binding.getRefs();
+        Set<Node> refs = binding.getRefs();
         style.highlight = new ArrayList<>();
 
 
-        for (Ref r : refs) {
+        for (Node r : refs) {
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
         addFileStyle(binding.getFile(), style);
     }
 
 
-    void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
+    void processRef(@NotNull Node ref, @NotNull List<Binding> bindings) {
         int hash = ref.hashCode();
 
         if (!seenRef.contains(hash)) {
             seenRef.add(hash);
 
-            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
+            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start, ref.length());
             link.id = Integer.toString(Math.abs(hash));
 
             List<String> typings = new ArrayList<>();
@@ -123,7 +124,7 @@ class Linker {
 
             // Currently jump to the first binding only. Should change to have a
             // hover menu or something later.
-            String path = ref.getFile();
+            String path = ref.file;
             if (path != null) {
                 for (Binding b : bindings) {
                     if (link.url == null) {
@@ -194,7 +195,7 @@ class Linker {
     private void addSemanticStyle(@NotNull Binding binding, StyleRun.Type type) {
         String path = binding.getFile();
         if (path != null) {
-            addFileStyle(path, new StyleRun(type, binding.getStart(), binding.getLength()));
+            addFileStyle(path, new StyleRun(type, binding.start, binding.getLength()));
         }
     }
 

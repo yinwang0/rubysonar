@@ -35,19 +35,19 @@ public class Binding implements Comparable<Object> {
     @NotNull
     private String name;     // unqualified name
     @NotNull
-    private Node node;
+    public Node node;
     @NotNull
     private String qname;    // qualified name
     private Type type;       // inferred type
     public Kind kind;        // name usage context
 
-    private Set<Ref> refs;
+    private Set<Node> refs;
 
     // fields from Def
-    private int start = -1;
-    private int end = -1;
-    private int bodyStart = -1;
-    private int bodyEnd = -1;
+    public int start = -1;
+    public int end = -1;
+    public int bodyStart = -1;
+    public int bodyEnd = -1;
 
     @Nullable
     private String fileOrUrl;
@@ -119,7 +119,7 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public void addRef(Ref ref) {
+    public void addRef(Node ref) {
         getRefs().add(ref);
     }
 
@@ -174,7 +174,7 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public Set<Ref> getRefs() {
+    public Set<Node> getRefs() {
         if (refs == null) {
             refs = new LinkedHashSet<>(1);
         }
@@ -222,34 +222,8 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public int getStart() {
-        return start;
-    }
-
-
-    public int getEnd() {
-        return end;
-    }
-
-
     public int getLength() {
         return end - start;
-    }
-
-
-    public int getBodyStart() {
-        return bodyStart;
-    }
-
-
-    public int getBodyEnd() {
-        return bodyEnd;
-    }
-
-
-    @NotNull
-    public Node getNode() {
-        return node;
     }
 
 
@@ -257,7 +231,7 @@ public class Binding implements Comparable<Object> {
      * Bindings can be sorted by their location for outlining purposes.
      */
     public int compareTo(@NotNull Object o) {
-        return getStart() - ((Binding) o).getStart();
+        return start - ((Binding) o).start;
     }
 
 

@@ -143,7 +143,7 @@ public class BinOp extends Node {
                             String id = leftNode.asName().id;
 
                             for (Binding b : s.lookup(id)) {
-                                Node loc = b.getNode();
+                                Node loc = b.node;
                                 s1.update(id, new Binding(id, loc, trueType, b.getKind()));
                                 s2.update(id, new Binding(id, loc, falseType, b.getKind()));
                             }
@@ -173,7 +173,7 @@ public class BinOp extends Node {
                             String id = leftNode.asName().id;
 
                             for (Binding b : s.lookup(id)) {
-                                Node loc = b.getNode();
+                                Node loc = b.node;
                                 s1.update(id, new Binding(id, loc, trueType, b.getKind()));
                                 s2.update(id, new Binding(id, loc, falseType, b.getKind()));
                             }

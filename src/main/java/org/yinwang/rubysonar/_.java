@@ -43,12 +43,6 @@ public class _ {
     }
 
 
-    public static String locateTmp(String file) {
-        String tmpDir = getSystemTempDir();
-        return makePathString(tmpDir, "rubysonar", file + "." + Analyzer.self.sid);
-    }
-
-
     /**
      * Returns the parent qname of {@code qname} -- everything up to the
      * last dot (exclusive), or if there are no dots, the empty string.
@@ -116,12 +110,14 @@ public class _ {
     }
 
 
-    public static void writeFile(String path, String contents) throws Exception {
+    public static void writeFile(String path, String contents) {
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(path)));
             out.print(contents);
             out.flush();
+        } catch (Exception e) {
+            _.die("Failed to write: " + path);
         } finally {
             if (out != null) {
                 out.close();
@@ -130,52 +126,25 @@ public class _ {
     }
 
 
-    @NotNull
-    public static String readFile(String filename) throws Exception {
-        return readFile(new File(filename));
-    }
-
-
-    @NotNull
-    public static String readFile(@NotNull File path) throws Exception {
+    @Nullable
+    public static String readFile(@NotNull String path) {
         // Don't use line-oriented file read -- need to retain CRLF if present
         // so the style-run and link offsets are correct.
-        return new String(getBytesFromFile(path), UTF_8);
+        byte[] content = getBytesFromFile(path);
+        if (content == null) {
+            return null;
+        } else {
+            return new String(content, UTF_8);
+        }
     }
 
 
-    @NotNull
-    public static byte[] getBytesFromFile(@NotNull File file) {
-        InputStream is = null;
-
+    @Nullable
+    public static byte[] getBytesFromFile(@NotNull String filename) {
         try {
-            is = new FileInputStream(file);
-            long length = file.length();
-            if (length > Integer.MAX_VALUE) {
-                throw new IOException("file too large: " + file);
-            }
-
-            byte[] bytes = new byte[(int) length];
-            int offset = 0;
-            int numRead = 0;
-            while (offset < bytes.length
-                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-            {
-                offset += numRead;
-            }
-            if (offset < bytes.length) {
-                throw new IOException("Failed to read whole file " + file);
-            }
-            return bytes;
+            return FileUtils.readFileToByteArray(new File(filename));
         } catch (Exception e) {
             return null;
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (Exception e) {
-                }
-            }
         }
     }
 
@@ -225,17 +194,19 @@ public class _ {
             JarEntry entry = em.nextElement();
             if (entry.getName().startsWith(jarConnection.getEntryName())) {
                 String fileName = StringUtils.removeStart(entry.getName(), jarConnection.getEntryName());
-                InputStream entryInputStream = null;
-                try {
-                    entryInputStream = jarFile.getInputStream(entry);
-                    FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
-                } catch (Exception e) {
-                    die("Failed to copy resource: " + fileName);
-                } finally {
-                    if (entryInputStream != null) {
-                        try {
-                            entryInputStream.close();
-                        } catch (Exception e) {
+                if (!fileName.equals("/")) {  // exclude the directory
+                    InputStream entryInputStream = null;
+                    try {
+                        entryInputStream = jarFile.getInputStream(entry);
+                        FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
+                    } catch (Exception e) {
+                        die("Failed to copy resource: " + fileName);
+                    } finally {
+                        if (entryInputStream != null) {
+                            try {
+                                entryInputStream.close();
+                            } catch (Exception e) {
+                            }
                         }
                     }
                 }
@@ -244,21 +215,27 @@ public class _ {
     }
 
 
-    @NotNull
-    public static String getSHA1(@NotNull File path) {
-        byte[] bytes = getBytesFromFile(path);
-        return getMD5(bytes);
+    public static String readResource(String resource) {
+        InputStream s = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        return readWholeStream(s);
     }
 
 
     @NotNull
-    public static String getMD5(byte[] fileContents) {
+    public static String getSHA(@NotNull String path) {
+        byte[] bytes = getBytesFromFile(path);
+        return getSHA(bytes);
+    }
+
+
+    @NotNull
+    public static String getSHA(byte[] fileContents) {
         MessageDigest algorithm;
 
         try {
             algorithm = MessageDigest.getInstance("SHA-1");
         } catch (Exception e) {
-            _.die("getSHA1: failed to get MD5, shouldn't happen");
+            _.die("Failed to get SHA, shouldn't happen");
             return "";
         }
 
@@ -317,6 +294,13 @@ public class _ {
 
 
     public static void msg(String m) {
+        if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) {
+            System.out.println(m);
+        }
+    }
+
+
+    public static void testmsg(String m) {
         System.out.println(m);
     }
 
@@ -338,7 +322,17 @@ public class _ {
     }
 
 
-    public static String readWholeStream(InputStream in) throws Exception {
+    @Nullable
+    public static String readWholeFile(String filename) {
+        try {
+            return new Scanner(new File(filename)).useDelimiter("PYSONAR2END").next();
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+    }
+
+
+    public static String readWholeStream(InputStream in) {
         return new Scanner(in).useDelimiter("\\Z").next();
     }
 
@@ -431,8 +425,8 @@ public class _ {
         try {
             return file.getCanonicalPath();
         } catch (Exception e) {
-            die("failed to get canonical path");
-            return "";  // unreacheable
+            die("Failed to get canonical path");
+            return "";
         }
     }
 
@@ -471,6 +465,24 @@ public class _ {
     }
 
 
+    public static String projRelPath(String file) {
+        if (file.startsWith(Analyzer.self.projectDir)) {
+            return file.substring(Analyzer.self.projectDir.length() + 1);
+        } else {
+            return file;
+        }
+    }
+
+
+    public static String projAbsPath(String file) {
+        if (file.startsWith("/") || file.startsWith(Analyzer.self.projectDir)) {
+            return file;
+        } else {
+            return makePathString(Analyzer.self.projectDir, file);
+        }
+    }
+
+
     @NotNull
     public static File joinPath(@NotNull File dir, String file) {
         return joinPath(dir.getAbsolutePath(), file);
@@ -482,6 +494,12 @@ public class _ {
         File file1 = new File(dir);
         File file2 = new File(file1, file);
         return file2;
+    }
+
+
+    public static String locateTmp(String file) {
+        String tmpDir = getSystemTempDir();
+        return makePathString(tmpDir, "pysonar2", file + "." + Analyzer.self.sid);
     }
 
 
