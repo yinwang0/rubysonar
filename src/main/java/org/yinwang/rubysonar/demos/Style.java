@@ -38,8 +38,8 @@ public class Style implements Comparable<Style> {
 
 
     public Type type;
-    public int offset;
-    public int length;
+    public int start;
+    public int end;
 
     public String message;  // optional hover text
     @Nullable
@@ -49,15 +49,15 @@ public class Style implements Comparable<Style> {
     public List<String> highlight;   // for hover highlight
 
 
-    public Style(Type type, int offset, int length) {
+    public Style(Type type, int start, int end) {
         this.type = type;
-        this.offset = offset;
-        this.length = length;
+        this.start = start;
+        this.end = end;
     }
 
 
     public int end() {
-        return offset + length;
+        return end;
     }
 
 
@@ -68,8 +68,8 @@ public class Style implements Comparable<Style> {
         }
         Style other = (Style) o;
         return other.type == this.type
-                && other.offset == this.offset
-                && other.length == this.length
+                && other.start == this.start
+                && other.end == this.end
                 && equalFields(other.message, this.message)
                 && equalFields(other.url, this.url);
     }
@@ -87,20 +87,19 @@ public class Style implements Comparable<Style> {
     public int compareTo(@NotNull Style other) {
         if (this.equals(other)) {
             return 0;
-        }
-        if (this.offset < other.offset) {
+        } else if (this.start < other.start) {
             return -1;
-        }
-        if (other.offset < this.offset) {
+        } else if (this.start > other.start) {
             return 1;
+        } else {
+            return this.hashCode() - other.hashCode();
         }
-        return this.hashCode() - other.hashCode();
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "[" + type + " start=" + offset + " len=" + length + "]";
+        return "[" + type + " start=" + start + " end=" + end + "]";
     }
 }

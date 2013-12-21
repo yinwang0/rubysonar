@@ -96,7 +96,7 @@ class Linker {
         }
 
         seenDef.add(hash);
-        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.getLength());
+        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
         style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = qname;
@@ -112,7 +112,7 @@ class Linker {
         }
 
         seenDef.add(hash);
-        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.getLength());
+        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
         style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = "" + Math.abs(binding.hashCode());
@@ -135,7 +135,7 @@ class Linker {
         if (!seenRef.contains(hash)) {
             seenRef.add(hash);
 
-            Style link = new Style(Style.Type.LINK, ref.start, ref.length());
+            Style link = new Style(Style.Type.LINK, ref.start, ref.end);
             link.id = qname;
 
             List<String> typings = new ArrayList<>();
@@ -169,7 +169,7 @@ class Linker {
         if (!seenRef.contains(hash)) {
             seenRef.add(hash);
 
-            Style link = new Style(Style.Type.LINK, ref.start, ref.length());
+            Style link = new Style(Style.Type.LINK, ref.start, ref.end);
             link.id = Integer.toString(Math.abs(hash));
 
             List<String> typings = new ArrayList<>();
@@ -256,13 +256,13 @@ class Linker {
     private void addSemanticStyle(@NotNull Binding binding, Style.Type type) {
         String path = binding.getFile();
         if (path != null) {
-            addFileStyle(path, new Style(type, binding.start, binding.getLength()));
+            addFileStyle(path, new Style(type, binding.start, binding.end));
         }
     }
 
 
     private void processDiagnostic(@NotNull Diagnostic d) {
-        Style style = new Style(Style.Type.WARNING, d.start, d.end - d.start);
+        Style style = new Style(Style.Type.WARNING, d.start, d.end);
         style.message = d.msg;
         style.url = d.file;
         addFileStyle(d.file, style);
