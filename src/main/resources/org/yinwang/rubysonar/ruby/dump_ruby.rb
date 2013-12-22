@@ -24,11 +24,18 @@ class AstSimplifier
       begin
         @src.force_encoding(detected_enc)
       rescue
-        @src.force_encoding('ascii-8bit')
+        @src.force_encoding('utf-8')
       end
+    else
+      # default to UTF-8
+      @src.force_encoding('utf-8')
     end
 
-    @src.encode('utf-8', {:undef => :replace, :invalid => :replace})
+    @src.encode('utf-8',
+                {:undef => :replace,
+                 :invalid => :replace,
+                 :universal_newline => true}
+    )
 
     @line_starts = [0]
     find_line_starts
@@ -36,9 +43,13 @@ class AstSimplifier
 
 
   def detect_encoding(s)
-    matched = s.match('^\s*#.*coding\s*:\s*([\w\d\-]+)')
-    if matched and matched[1]
-      matched[1]
+    # take first two lines
+    header = s.match('^.*\n?.*\n?')
+    if header and header[0]
+      matched = header[0].match('^\s*#.*coding\s*[:=]\s*([\w\d\-]+)')
+      if matched and matched[1]
+        matched[1]
+      end
     end
   end
 
