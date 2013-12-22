@@ -21,7 +21,7 @@ import java.util.Map;
 public class Parser {
 
     private static final String RUBY_EXE = "irb";
-    private static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 10000;
 
     @Nullable
     Process rubyProcess;
@@ -121,9 +121,9 @@ public class Parser {
             Name vararg = var == null ? null : var;
             Name kw = (Name) convert(argsMap.get("rest_kw"));
             Name kwarg = kw == null ? null : kw;
-            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, file, start, end);
-            ret.afterRest = convertList(argsMap.get("after_rest"));
-            ret.blockarg = (Name) convert(argsMap.get("block"));
+            List<Node> afterRest = convertList(argsMap.get("after_rest"));
+            Name blockarg = (Name) convert(argsMap.get("block"));
+            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, afterRest, blockarg, file, start, end);
             return ret;
         }
 
@@ -131,6 +131,7 @@ public class Parser {
             Node func = convert(map.get("func"));
             Call ret;
             Map<String, Object> args = (Map<String, Object>) map.get("args");
+            Node blockarg = convert(map.get("block_arg"));
 
             if (args != null) {
                 List<Node> posKey = convertList(args.get("positional"));
@@ -150,18 +151,11 @@ public class Parser {
                     }
                 }
 
-                ret = new Call(func, pos, kws, null, null, file, start, end);
+                return new Call(func, pos, kws, null, null, blockarg, file, start, end);
             } else {
                 // call with no arguments
-                ret = new Call(func, null, null, null, null, file, start, end);
+                return new Call(func, null, null, null, null, blockarg, file, start, end);
             }
-
-            Node blockarg = convert(map.get("block_arg"));
-            if (blockarg != null) {
-                ret.blockarg = blockarg;
-                ret.addChildren(blockarg);
-            }
-            return ret;
         }
 
         if (type.equals("attribute")) {
@@ -642,7 +636,8 @@ public class Parser {
         if (node != null) {
             return node;
         } else {
-//            _.msg("failed to parse: " + filename);
+            _.msg("failed to parse: " + filename);
+
             Analyzer.self.failedToParse.add(filename);
             return null;
         }

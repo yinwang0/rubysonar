@@ -22,7 +22,7 @@ public class Call extends Node {
 
 
     public Call(Node func, List<Node> args, @Nullable List<Keyword> keywords,
-                Node kwargs, Node starargs, String file, int start, int end)
+                Node kwargs, Node starargs, Node blockarg, String file, int start, int end)
     {
         super(file, start, end);
         this.func = func;
@@ -30,7 +30,8 @@ public class Call extends Node {
         this.keywords = keywords;
         this.kwargs = kwargs;
         this.starargs = starargs;
-        addChildren(func, kwargs, starargs);
+        this.blockarg = blockarg;
+        addChildren(func, kwargs, starargs, blockarg);
         addChildren(args);
         addChildren(keywords);
     }

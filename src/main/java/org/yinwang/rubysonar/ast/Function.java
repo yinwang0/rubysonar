@@ -27,7 +27,8 @@ public class Function extends Node {
 
 
     public Function(Name name, List<Node> args, Node body, List<Node> defaults,
-                    Name vararg, Name kwarg, String file, int start, int end)
+                    Name vararg, Name kwarg, List<Node> afterRest, Name blockarg,
+                    String file, int start, int end)
     {
         super(file, start, end);
         if (name != null) {
@@ -44,10 +45,12 @@ public class Function extends Node {
         this.defaults = defaults;
         this.vararg = vararg;
         this.kwarg = kwarg;
-        addChildren(name);
+        this.afterRest = afterRest;
+        this.blockarg = blockarg;
         addChildren(args);
         addChildren(defaults);
-        addChildren(vararg, kwarg, this.body);
+        addChildren(afterRest);
+        addChildren(name, body, vararg, kwarg, blockarg);
     }
 
 
