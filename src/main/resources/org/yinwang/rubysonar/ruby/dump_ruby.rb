@@ -45,7 +45,7 @@ class AstSimplifier
 
   def ident_end(start_idx)
     idx = start_idx
-    while idx < @src.length and @src[idx].match /[a-zA-Z0-9_]/
+    while idx < @src.length and @src[idx].match /[a-zA-Z0-9_@$]/
       idx += 1
     end
     idx
