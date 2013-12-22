@@ -42,7 +42,7 @@ public class Parser {
 
         startRubyProcesses();
         if (rubyProcess != null) {
-            _.msg("Started: " + RUBY_EXE);
+            _.msg("started: " + RUBY_EXE);
         }
     }
 
@@ -62,9 +62,12 @@ public class Parser {
 
 
     public void close() {
-        new File(jsonizer).delete();
-        new File(exchangeFile).delete();
-        new File(endMark).delete();
+        if (!Analyzer.self.hasOption("debug")) {
+            new File(jsonizer).delete();
+            new File(exchangeFile).delete();
+            new File(endMark).delete();
+            new File(parserLog).delete();
+        }
     }
 
 
@@ -615,7 +618,7 @@ public class Parser {
             builder.redirectErrorStream(true);
             builder.redirectError(new File(parserLog));
             builder.redirectOutput(new File(parserLog));
-            builder.environment().remove("PYTHONPATH");
+            builder.environment().remove("RUBYLIB");
             p = builder.start();
         } catch (Exception e) {
             _.die("Failed to start irb");
