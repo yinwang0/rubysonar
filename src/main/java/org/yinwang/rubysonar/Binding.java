@@ -48,7 +48,7 @@ public class Binding implements Comparable<Object> {
 
     public Binding(@NotNull String id, @NotNull Node node, @NotNull Type type, @NotNull Kind kind) {
         this.name = id;
-        this.qname = type.getTable().getPath();
+        this.qname = type.table.path;
         this.type = type;
         this.kind = kind;
         this.node = node;
@@ -110,7 +110,7 @@ public class Binding implements Comparable<Object> {
     public String getFirstFile() {
         Type bt = type;
         if (bt instanceof ModuleType) {
-            String file = bt.asModuleType().getFile();
+            String file = bt.asModuleType().file;
             return file != null ? file : "<built-in module>";
         }
 

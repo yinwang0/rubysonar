@@ -33,7 +33,7 @@ public class Module extends Node {
     @Override
     public Type transform(@NotNull State s) {
         ModuleType mt = s.lookupOrCreateModule(locator, file);
-        transformExpr(body, mt.getTable());
+        transformExpr(body, mt.table);
         return mt;
     }
 

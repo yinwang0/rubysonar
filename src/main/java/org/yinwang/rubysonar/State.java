@@ -25,15 +25,15 @@ public class State {
 
 
     @Nullable
-    private Map<String, List<Binding>> table;  // stays null for most scopes (mem opt)
+    public Map<String, List<Binding>> table;  // stays null for most scopes (mem opt)
     @Nullable
     public State parent;      // all are non-null except global table
     @Nullable
-    private List<State> supers;
-    private StateType stateType;
-    private Type type;
+    public List<State> supers;
+    public StateType stateType;
+    public Type type;
     @NotNull
-    private String path = "";
+    public String path = "";
 
 
     public State(@Nullable State parent, StateType type) {
@@ -141,7 +141,7 @@ public class State {
     public void insert(String id, Node node, Type type, Binding.Kind kind) {
         Binding b = new Binding(id, node, type, kind);
         if (type.isModuleType()) {
-            b.setQname(type.asModuleType().getQname());
+            b.setQname(type.asModuleType().qname);
         } else {
             b.setQname(extendPath(id));
         }
@@ -168,17 +168,6 @@ public class State {
 
     public void setPath(@NotNull String path) {
         this.path = path;
-    }
-
-
-    @NotNull
-    public String getPath() {
-        return path;
-    }
-
-
-    public Type getType() {
-        return type;
     }
 
 

@@ -16,13 +16,9 @@ import java.util.Set;
 public abstract class Type {
 
     @Nullable
-    public State table;
-    public boolean mutated = false;
-
+    public State table = new State(null, State.StateType.SCOPE);
     public String file = null;
-
-    public State trueState;
-    public State falseState;
+    public boolean mutated = false;
 
 
     @NotNull
@@ -35,20 +31,6 @@ public abstract class Type {
 
     public void setTable(@NotNull State table) {
         this.table = table;
-    }
-
-
-    @NotNull
-    public State getTable() {
-        if (table == null) {
-            table = new State(null, State.StateType.SCOPE);
-        }
-        return table;
-    }
-
-
-    public String getFile() {
-        return file;
     }
 
 
@@ -73,8 +55,8 @@ public abstract class Type {
 
 
     public boolean isUndecidedBool() {
-        return isBool() && asBool().getValue() == BoolType.Value.Undecided &&
-                asBool().getS1() != null && asBool().getS2() != null;
+        return isBool() && asBool().value == BoolType.Value.Undecided &&
+                asBool().s1 != null && asBool().s2 != null;
     }
 
 
@@ -193,7 +175,7 @@ public abstract class Type {
     @NotNull
     public ModuleType asModuleType() {
         if (this.isUnionType()) {
-            for (Type t : this.asUnionType().getTypes()) {
+            for (Type t : this.asUnionType().types) {
                 if (t.isModuleType()) {
                     return t.asModuleType();
                 }
@@ -266,26 +248,6 @@ public abstract class Type {
             return true;
         }
         return false;
-    }
-
-
-    public State getTrueState() {
-        return trueState;
-    }
-
-
-    public void setTrueState(State trueState) {
-        this.trueState = trueState;
-    }
-
-
-    public State getFalseState() {
-        return falseState;
-    }
-
-
-    public void setFalseState(State falseState) {
-        this.falseState = falseState;
     }
 
 

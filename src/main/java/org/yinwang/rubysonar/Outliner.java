@@ -234,7 +234,7 @@ public class Outliner {
         if (mt == null) {
             return new ArrayList<>();
         }
-        return generate(mt.getTable(), abspath);
+        return generate(mt.table, abspath);
     }
 
 
@@ -262,14 +262,14 @@ public class Outliner {
             if (nb.kind == Binding.Kind.CLASS) {
                 Type realType = nb.type;
                 if (realType.isUnionType()) {
-                    for (Type t : realType.asUnionType().getTypes()) {
+                    for (Type t : realType.asUnionType().types) {
                         if (t.isClassType()) {
                             realType = t;
                             break;
                         }
                     }
                 }
-                kids = generate(realType.getTable(), path);
+                kids = generate(realType.table, path);
             }
 
             Entry kid = kids != null ? new Branch() : new Leaf();

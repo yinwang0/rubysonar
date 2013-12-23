@@ -9,9 +9,9 @@ import org.yinwang.rubysonar._;
 public class ModuleType extends Type {
 
     @NotNull
-    private String name;
+    public String name;
     @Nullable
-    private String qname;
+    public String qname;
 
 
     public ModuleType(@NotNull String name, @Nullable String file, @NotNull State parent) {
@@ -27,24 +27,13 @@ public class ModuleType extends Type {
             qname = name;
         }
         setTable(new State(parent, State.StateType.MODULE));
-        getTable().setPath(qname);
-        getTable().setType(this);
-    }
-
-
-    public String getName() {
-        return name;
+        table.setPath(qname);
+        table.setType(this);
     }
 
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    @Nullable
-    public String getQname() {
-        return qname;
     }
 
 
@@ -68,6 +57,6 @@ public class ModuleType extends Type {
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        return getName();
+        return name;
     }
 }

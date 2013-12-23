@@ -233,13 +233,7 @@ class Linker {
     @Nullable
     private String toURL(@NotNull Binding binding, String filename) {
 
-        String destPath;
-        if (binding.type.isModuleType()) {
-            destPath = binding.type.asModuleType().getFile();
-        } else {
-            destPath = binding.file;
-        }
-
+        String destPath = binding.file;
         if (destPath == null) {
             return null;
         }

@@ -25,7 +25,7 @@ public class Test {
     public Test(String inputDir, boolean exp) {
         // make a quiet analyzer
         Map<String, Object> options = new HashMap<>();
-        options.put("quiet", true);
+//        options.put("quiet", true);
         this.analyzer = new Analyzer(options);
 
         this.inputDir = inputDir;

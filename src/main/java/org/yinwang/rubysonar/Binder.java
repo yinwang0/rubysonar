@@ -27,7 +27,7 @@ public class Binder {
             Node.transformExpr(sub.slice, s);
             if (valueType instanceof ListType) {
                 ListType t = (ListType) valueType;
-                t.setElementType(UnionType.union(t.getElementType(), rvalue));
+                t.setElementType(UnionType.union(t.eltType, rvalue));
             }
         } else if (target != null) {
             Analyzer.self.putProblem(target, "invalid location for assignment");
@@ -52,7 +52,7 @@ public class Binder {
 
     public static void bind(@NotNull State s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind) {
         if (rvalue.isTupleType()) {
-            List<Type> vs = rvalue.asTupleType().getElementTypes();
+            List<Type> vs = rvalue.asTupleType().eltTypes;
             if (xs.size() != vs.size()) {
                 reportUnpackMismatch(xs, vs.size());
             } else {
@@ -93,11 +93,11 @@ public class Binder {
         Type iterType = Node.transformExpr(iter, s);
 
         if (iterType.isListType()) {
-            bind(s, target, iterType.asListType().getElementType(), kind);
+            bind(s, target, iterType.asListType().eltType, kind);
         } else if (iterType.isTupleType()) {
-            bind(s, target, iterType.asTupleType().toListType().getElementType(), kind);
+            bind(s, target, iterType.asTupleType().toListType().eltType, kind);
         } else {
-            List<Binding> ents = iterType.getTable().lookupAttr("__iter__");
+            List<Binding> ents = iterType.table.lookupAttr("__iter__");
             if (ents != null) {
                 for (Binding ent : ents) {
                     if (ent == null || !ent.type.isFuncType()) {

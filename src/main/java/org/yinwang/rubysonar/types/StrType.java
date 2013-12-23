@@ -6,7 +6,7 @@ import org.yinwang.rubysonar.Analyzer;
 
 public class StrType extends Type {
 
-    private String value;
+    public String value;
 
 
     public StrType(String value) {

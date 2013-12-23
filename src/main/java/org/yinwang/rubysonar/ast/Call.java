@@ -66,7 +66,7 @@ public class Call extends Node {
                 if (args.size() > 0) {
                     Node arg1 = args.get(0);
                     Type mod = transformExpr(arg1, s);
-                    s.putAll(mod.getTable());
+                    s.putAll(mod.table);
                     return Type.TRUE;
                 }
                 Analyzer.self.putProblem(this, "failed to include module");
@@ -96,7 +96,7 @@ public class Call extends Node {
         Type block = blockarg == null ? null : transformExpr(blockarg, s);
 
         if (fun.isUnionType()) {
-            Set<Type> types = fun.asUnionType().getTypes();
+            Set<Type> types = fun.asUnionType().types;
             Type retType = Type.UNKNOWN;
             for (Type ft : types) {
                 Type t = resolveCall(ft, pos, hash, kw, star, block);
@@ -145,7 +145,7 @@ public class Call extends Node {
             func.func.called = true;
         }
 
-        if (func.getFunc() == null) {
+        if (func.func == null) {
             // func without definition (possibly builtins)
             return func.getReturnType();
         } else if (call != null && Analyzer.self.inStack(call)) {
@@ -163,17 +163,17 @@ public class Call extends Node {
             pTypes.addAll(pos);
         }
 
-        State funcTable = new State(func.getEnv(), State.StateType.FUNCTION);
+        State funcTable = new State(func.env, State.StateType.FUNCTION);
 
-        if (func.getTable().parent != null) {
-            funcTable.setPath(func.getTable().parent.extendPath(func.func.name.id));
+        if (func.table.parent != null) {
+            funcTable.setPath(func.table.parent.extendPath(func.func.name.id));
         } else {
             funcTable.setPath(func.func.name.id);
         }
 
         // bind a special this name to the table
-        if (func.getSelfType() != null) {
-            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.getSelfType(), PARAMETER);
+        if (func.selfType != null) {
+            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.selfType, PARAMETER);
         }
 
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,
@@ -239,7 +239,7 @@ public class Call extends Node {
                     aType = hash.get(args.get(i).asName().id);
                     hash.remove(args.get(i).asName().id);
                 } else if (star != null && star.isTupleType() &&
-                        j < star.asTupleType().getElementTypes().size())
+                        j < star.asTupleType().eltTypes.size())
                 {
                     aType = star.asTupleType().get(j++);
                 } else {
@@ -308,7 +308,7 @@ public class Call extends Node {
         boolean hasOther = false;
 
         if (toType.isUnionType()) {
-            for (Type t : toType.asUnionType().getTypes()) {
+            for (Type t : toType.asUnionType().types) {
                 if (t == Type.NIL || t == Type.CONT) {
                     hasNone = true;
                 } else {

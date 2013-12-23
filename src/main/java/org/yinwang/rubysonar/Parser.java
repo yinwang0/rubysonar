@@ -636,7 +636,7 @@ public class Parser {
         if (node != null) {
             return node;
         } else {
-            _.msg("failed to parse: " + filename);
+//            _.msg("failed to parse: " + filename);
 
             Analyzer.self.failedToParse.add(filename);
             return null;

@@ -97,7 +97,7 @@ public class JSONDump {
                 }
 
                 if (t != null && t.isFuncType()) {
-                    Function func = t.asFuncType().getFunc();
+                    Function func = t.asFuncType().func;
 
                     if (func != null) {
                         StringBuilder args = new StringBuilder();

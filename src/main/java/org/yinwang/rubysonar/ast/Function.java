@@ -58,8 +58,8 @@ public class Function extends Node {
     @Override
     public Type transform(@NotNull State s) {
         FunType fun = new FunType(this, s);
-        fun.getTable().setParent(s);
-        fun.getTable().setPath(s.extendPath(name.id));
+        fun.table.setParent(s);
+        fun.table.setPath(s.extendPath(name.id));
         fun.setDefaultTypes(resolveList(defaults, s));
         Analyzer.self.addUncalled(fun);
         Binding.Kind funkind;
@@ -77,7 +77,7 @@ public class Function extends Node {
                 funkind = Binding.Kind.FUNCTION;
             }
 
-            Type outType = s.getType();
+            Type outType = s.type;
             if (outType instanceof ClassType) {
                 fun.setCls(outType.asClassType());
             }

@@ -87,7 +87,7 @@ public class Class extends Node {
         // methods need this type as self.
         Binder.bind(s, name, classType, Binding.Kind.CLASS);
         if (body != null) {
-            transformExpr(body, classType.getTable());
+            transformExpr(body, classType.table);
         }
         return Type.CONT;
     }
