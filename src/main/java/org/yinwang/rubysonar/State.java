@@ -10,7 +10,6 @@ import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 
 public class State {
@@ -24,8 +23,8 @@ public class State {
     }
 
 
-    @Nullable
-    public Map<String, List<Binding>> table;  // stays null for most scopes (mem opt)
+    @NotNull
+    public Map<String, List<Binding>> table = new HashMap<>();
     @Nullable
     public State parent;      // all are non-null except global table
     @Nullable
@@ -43,10 +42,8 @@ public class State {
 
 
     public State(@NotNull State s) {
-        if (s.table != null) {
-            this.table = new HashMap<>();
-            this.table.putAll(s.table);
-        }
+        this.table = new HashMap<>();
+        this.table.putAll(s.table);
         this.parent = s.parent;
         this.stateType = s.stateType;
         this.supers = s.supers;
@@ -73,9 +70,9 @@ public class State {
 
 
     public void merge(State other) {
-        for (Map.Entry<String, List<Binding>> e1 : getInternalTable().entrySet()) {
+        for (Map.Entry<String, List<Binding>> e1 : this.table.entrySet()) {
             List<Binding> b1 = e1.getValue();
-            List<Binding> b2 = other.getInternalTable().get(e1.getKey());
+            List<Binding> b2 = other.table.get(e1.getKey());
 
             // both branch have the same name, need merge
             if (b2 != null && b1 != b2) {
@@ -83,8 +80,8 @@ public class State {
             }
         }
 
-        for (Map.Entry<String, List<Binding>> e2 : other.getInternalTable().entrySet()) {
-            List<Binding> b1 = getInternalTable().get(e2.getKey());
+        for (Map.Entry<String, List<Binding>> e2 : other.table.entrySet()) {
+            List<Binding> b1 = this.table.get(e2.getKey());
             List<Binding> b2 = e2.getValue();
 
             // both branch have the same name, need merge
@@ -131,9 +128,7 @@ public class State {
 
 
     public void remove(String id) {
-        if (table != null) {
-            table.remove(id);
-        }
+        table.remove(id);
     }
 
 
@@ -152,7 +147,7 @@ public class State {
     // directly insert a given binding
     @NotNull
     public List<Binding> update(String id, @NotNull List<Binding> bs) {
-        getInternalTable().put(id, bs);
+        this.table.put(id, bs);
         return bs;
     }
 
@@ -161,7 +156,7 @@ public class State {
     public List<Binding> update(String id, @NotNull Binding b) {
         List<Binding> bs = new ArrayList<>();
         bs.add(b);
-        getInternalTable().put(id, bs);
+        this.table.put(id, bs);
         return bs;
     }
 
@@ -182,11 +177,7 @@ public class State {
      */
     @Nullable
     public List<Binding> lookupLocal(String name) {
-        if (table == null) {
-            return null;
-        } else {
-            return table.get(name);
-        }
+        return table.get(name);
     }
 
 
@@ -376,44 +367,28 @@ public class State {
 
 
     public void putAll(@NotNull State other) {
-        getInternalTable().putAll(other.getInternalTable());
+        this.table.putAll(other.table);
     }
 
 
     @NotNull
     public Set<String> keySet() {
-        if (table != null) {
-            return table.keySet();
-        } else {
-            return Collections.emptySet();
-        }
+        return table.keySet();
     }
 
 
     @NotNull
     public Collection<Binding> values() {
-        if (table != null) {
-            List<Binding> ret = new ArrayList<>();
-            for (List<Binding> bs : table.values()) {
-                ret.addAll(bs);
-            }
-            return ret;
+        List<Binding> ret = new ArrayList<>();
+        for (List<Binding> bs : table.values()) {
+            ret.addAll(bs);
         }
-        return Collections.emptySet();
-    }
-
-
-    @NotNull
-    public Set<Entry<String, List<Binding>>> entrySet() {
-        if (table != null) {
-            return table.entrySet();
-        }
-        return Collections.emptySet();
+        return ret;
     }
 
 
     public boolean isEmpty() {
-        return table == null || table.isEmpty();
+        return table.isEmpty();
     }
 
 
@@ -428,19 +403,9 @@ public class State {
 
 
     @NotNull
-    private Map<String, List<Binding>> getInternalTable() {
-        if (this.table == null) {
-            this.table = new HashMap<>();
-        }
-        return this.table;
-    }
-
-
-    @NotNull
     @Override
     public String toString() {
-        return "<State:" + getStateType() + ":" +
-                (table == null ? "{}" : table.keySet()) + ">";
+        return "(state:" + getStateType() + ":" + table.keySet() + ")";
     }
 
 }
