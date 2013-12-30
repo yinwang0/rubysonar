@@ -39,7 +39,7 @@ public class ClassType extends Type {
 
     public void addSuper(@NotNull Type superclass) {
         this.superclass = superclass;
-        table.addSuper(superclass.table);
+        table.setSuper(superclass.table);
     }
 
 

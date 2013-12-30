@@ -28,7 +28,7 @@ public class State {
     @Nullable
     public State parent;      // all are non-null except global table
     @Nullable
-    public List<State> supers;
+    public State supers;
     public StateType stateType;
     public Type type;
     @NotNull
@@ -104,11 +104,8 @@ public class State {
     }
 
 
-    public void addSuper(State sup) {
-        if (supers == null) {
-            supers = new ArrayList<>();
-        }
-        supers.add(sup);
+    public void setSuper(State sup) {
+        supers = sup;
     }
 
 
@@ -242,12 +239,10 @@ public class State {
             } else {
                 if (supers != null && !supers.isEmpty()) {
                     looked.add(this);
-                    for (State p : supers) {
-                        b = p.lookupAttr(attr);
-                        if (b != null) {
-                            looked.remove(this);
-                            return b;
-                        }
+                    b = supers.lookupAttr(attr);
+                    if (b != null) {
+                        looked.remove(this);
+                        return b;
                     }
                     looked.remove(this);
                     return null;

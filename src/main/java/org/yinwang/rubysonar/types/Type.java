@@ -15,7 +15,7 @@ import java.util.Set;
 
 public abstract class Type {
 
-    @Nullable
+    @NotNull
     public State table = new State(null, State.StateType.SCOPE);
     public String file = null;
     public boolean mutated = false;

@@ -77,16 +77,8 @@ public class Subscript extends Node {
             } else if (st == null || st.isNumType()) {
                 return vt.asListType().eltType;
             } else {
-                Type sliceFunc = vt.table.lookupAttrType("__getslice__");
-                if (sliceFunc == null) {
-                    addError("The type can't be sliced: " + vt);
-                    return Type.UNKNOWN;
-                } else if (sliceFunc.isFuncType()) {
-                    return Call.apply(sliceFunc.asFuncType(), null, null, null, null, null, this);
-                } else {
-                    addError("The type's __getslice__ method is not a function: " + sliceFunc);
-                    return Type.UNKNOWN;
-                }
+                addError("The type can't be subscripted: " + vt);
+                return Type.UNKNOWN;
             }
         } else {
             return Type.UNKNOWN;
@@ -99,6 +91,5 @@ public class Subscript extends Node {
     public String toString() {
         return value + "[" + slice + "]";
     }
-
 
 }
