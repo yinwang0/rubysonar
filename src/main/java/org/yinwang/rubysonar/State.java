@@ -158,6 +158,22 @@ public class State {
     }
 
 
+    public void updateType(String id, @NotNull Type type) {
+        List<Binding> bs = lookup(id);
+        List<Binding> replacement = new ArrayList<>();
+        if (bs != null) {
+            for (Binding b : bs) {
+                if (b != null) {
+                    replacement.add(new Binding(b.node, type, b.kind));
+                }
+            }
+        } else {
+            replacement.add(new Binding(new Name(id), type, Binding.Kind.SCOPE));
+        }
+        update(id, replacement);
+    }
+
+
     public void setPath(@NotNull String path) {
         this.path = path;
     }

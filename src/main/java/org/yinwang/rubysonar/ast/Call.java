@@ -73,7 +73,7 @@ public class Call extends Node {
             }
         }
 
-        // Ruby's Class.new
+        // Class.new
         if (func instanceof Attribute) {
             Attribute afun = (Attribute) func;
             if (afun.attr.id.equals("new")) {
@@ -99,12 +99,12 @@ public class Call extends Node {
             Set<Type> types = fun.asUnionType().types;
             Type retType = Type.UNKNOWN;
             for (Type ft : types) {
-                Type t = resolveCall(ft, pos, hash, kw, star, block);
+                Type t = resolveCall(ft, pos, hash, kw, star, block, s);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(fun, pos, hash, kw, star, block);
+            return resolveCall(fun, pos, hash, kw, star, block, s);
         }
     }
 
@@ -115,13 +115,23 @@ public class Call extends Node {
                              Map<String, Type> hash,
                              Type kw,
                              Type star,
-                             Type block)
+                             Type block,
+                             State s)
     {
         if (fun.isFuncType()) {
             FunType ft = fun.asFuncType();
             return apply(ft, pos, hash, kw, star, block, this);
         } else if (fun.isClassType()) {
-            return new InstanceType(fun, this, pos);
+            InstanceType inst = new InstanceType(fun, this, pos);
+            if (!isSuperCall()) {
+                return inst;
+            } else {
+                Type selfType = s.lookupType(Constants.SELFNAME);
+                if (selfType != null) {
+                    selfType.table.putAll(inst.table);
+                }
+                return Type.CONT;
+            }
         } else {
             addWarning("calling non-function and non-class: " + fun);
             return Type.UNKNOWN;
@@ -181,7 +191,7 @@ public class Call extends Node {
                 pTypes, func.defaultTypes, hash, kw, star, block);
 
         Type cachedTo = func.getMapping(fromType);
-        if (cachedTo != null) {
+        if (cachedTo != null && !(call != null && call.isCall() && call.asCall().isSuperCall())) {
             func.setSelfType(null);
             return cachedTo;
         } else {
@@ -318,6 +328,11 @@ public class Call extends Node {
         }
 
         return hasNone && hasOther;
+    }
+
+
+    public boolean isSuperCall() {
+        return func.isName() && func.asName().id.equals("super");
     }
 
 

@@ -286,5 +286,21 @@
         "end": 66
       }
     ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "sausage.rb",
+      "start": 76,
+      "end": 77
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "sausage.rb",
+        "start": 67,
+        "end": 68
+      }
+    ]
   }
 ]

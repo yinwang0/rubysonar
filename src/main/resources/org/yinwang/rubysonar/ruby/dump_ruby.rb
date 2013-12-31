@@ -354,7 +354,7 @@ class AstSimplifier
               :func => func,
               :args => convert(exp[4])
           }
-        when :super
+        when :super, :zsuper
           {
               :type => :call,
               :func => {:type => :name, :id => :super},
@@ -627,11 +627,6 @@ class AstSimplifier
         when :redo
           {
               :type => :redo
-          }
-        when :zsuper
-          {
-              :type => :name,
-              :id => :super
           }
         when :defined
           {
