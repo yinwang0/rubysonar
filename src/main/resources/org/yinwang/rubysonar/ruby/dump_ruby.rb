@@ -91,7 +91,7 @@ class AstSimplifier
     end
 
     simplified = convert(tree)
-    simplified, ignore1, ignore2 = convert_locations(simplified)
+    simplified = find_locations(simplified)
 
     if $options[:debug]
       banner 'simplified'
@@ -102,63 +102,69 @@ class AstSimplifier
   end
 
 
-  def convert_locations(obj)
-    if obj.is_a?(Hash)
-      #if obj[:type] == :binary and not obj[:left]
-      #  puts "problem obj: #{obj.inspect}"
-      #end
-      ret = {}
-      whole_start = -1;
-      whole_end = -1;
+  def find_locations(obj)
+    def find1(obj)
+      if obj.is_a?(Hash)
+        #if obj[:type] == :binary and not obj[:left]
+        #  puts "problem obj: #{obj.inspect}"
+        #end
+        ret = {}
+        whole_start = nil;
+        whole_end = nil;
 
-      obj.each do |k, v|
-        if k == :location
-          start_idx = node_start(v)
-          end_idx = ident_end(start_idx)
-          ret[:start] = start_idx
-          ret[:end] = end_idx
-          whole_start = start_idx
-          whole_end = end_idx
-        else
-          new_node, start_idx, end_idx = convert_locations(v)
-          ret[k] = new_node
+        obj.each do |k, v|
+          if k == :location
+            start_idx = node_start(v)
+            end_idx = ident_end(start_idx)
+            ret[:start] = start_idx
+            ret[:end] = end_idx
+            whole_start = start_idx
+            whole_end = end_idx
+          else
+            new_node, start_idx, end_idx = find1(v)
+            ret[k] = new_node
 
-          if start_idx > 0 && (whole_start < 0 || whole_start > start_idx)
+            if start_idx && (!whole_start || whole_start > start_idx)
+              whole_start = start_idx
+            end
+
+            if end_idx && (!whole_end || whole_end < end_idx)
+              whole_end = end_idx
+            end
+          end
+        end
+
+        if whole_start
+          ret[:start] = whole_start
+          ret[:end] = whole_end
+        end
+        return ret, whole_start, whole_end
+
+      elsif obj.is_a?(Array)
+        ret = []
+        whole_start = nil
+        whole_end = nil
+
+        for v in obj
+          new_node, start_idx, end_idx = find1(v)
+          ret.push(new_node)
+          if  start_idx && (!whole_start || whole_start > start_idx)
             whole_start = start_idx
           end
 
-          if end_idx > 0 && (whole_end < 0 || whole_end < end_idx)
+          if end_idx && (!whole_end || whole_end < end_idx)
             whole_end = end_idx
           end
         end
+
+        return ret, whole_start, whole_end
+      else
+        return obj, nil, nil
       end
-
-      ret[:start] = whole_start
-      ret[:end] = whole_end
-      return ret, whole_start, whole_end
-
-    elsif obj.is_a?(Array)
-      ret = []
-      whole_start = -1
-      whole_end = -1
-
-      for v in obj
-        new_node, start_idx, end_idx = convert_locations(v)
-        ret.push(new_node)
-        if  start_idx > 0 && (whole_start < 0 || whole_start > start_idx)
-          whole_start = start_idx
-        end
-
-        if end_idx > 0 && (whole_end < 0 || whole_end < end_idx)
-          whole_end = end_idx
-        end
-      end
-
-      return ret, whole_start, whole_end
-    else
-      return obj, -1, -1
     end
 
+    node, _, _ = find1(obj)
+    node
   end
 
 
