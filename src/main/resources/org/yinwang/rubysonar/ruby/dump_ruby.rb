@@ -91,7 +91,7 @@ class AstSimplifier
     end
 
     simplified = convert(tree)
-    simplified = convert_locations(simplified)
+    simplified, ignore1, ignore2 = convert_locations(simplified)
 
     if $options[:debug]
       banner 'simplified'
@@ -107,25 +107,56 @@ class AstSimplifier
       #if obj[:type] == :binary and not obj[:left]
       #  puts "problem obj: #{obj.inspect}"
       #end
-      new_hash = {}
+      ret = {}
+      whole_start = -1;
+      whole_end = -1;
 
       obj.each do |k, v|
         if k == :location
           start_idx = node_start(v)
           end_idx = ident_end(start_idx)
-          new_hash[:start] = start_idx
-          new_hash[:end] = end_idx
+          ret[:start] = start_idx
+          ret[:end] = end_idx
+          whole_start = start_idx
+          whole_end = end_idx
         else
-          new_hash[k] = convert_locations(v)
+          new_node, start_idx, end_idx = convert_locations(v)
+          ret[k] = new_node
+
+          if start_idx > 0 && (whole_start < 0 || whole_start > start_idx)
+            whole_start = start_idx
+          end
+
+          if end_idx > 0 && (whole_end < 0 || whole_end < end_idx)
+            whole_end = end_idx
+          end
         end
       end
 
-      new_hash
+      ret[:start] = whole_start
+      ret[:end] = whole_end
+      return ret, whole_start, whole_end
 
     elsif obj.is_a?(Array)
-      obj.map { |x| convert_locations(x) }
+      ret = []
+      whole_start = -1
+      whole_end = -1
+
+      for v in obj
+        new_node, start_idx, end_idx = convert_locations(v)
+        ret.push(new_node)
+        if  start_idx > 0 && (whole_start < 0 || whole_start > start_idx)
+          whole_start = start_idx
+        end
+
+        if end_idx > 0 && (whole_end < 0 || whole_end < end_idx)
+          whole_end = end_idx
+        end
+      end
+
+      return ret, whole_start, whole_end
     else
-      obj
+      return obj, -1, -1
     end
 
   end
@@ -335,7 +366,7 @@ class AstSimplifier
           end
           {
               :type => :call,
-              :func => func,
+              :func => func
           }
         when :args_new, :mlhs_new, :mrhs_new, :words_new, :word_new, :qwords_new, :qsymbols_new, :symbols_new
           {
