@@ -411,7 +411,7 @@ public class Analyzer {
                     !b.type.isModuleType()
                     && b.refs.isEmpty())
             {
-                Analyzer.self.putProblem(b.node, "Unused variable: " + b.name);
+                Analyzer.self.putProblem(b.node, "Unused variable: " + b.node.name);
             }
         }
 

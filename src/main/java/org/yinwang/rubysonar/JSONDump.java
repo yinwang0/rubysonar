@@ -59,7 +59,7 @@ public class JSONDump {
             return;
         }
 
-        String name = binding.name;
+        String name = binding.node.name;
         boolean isExported = !(
                 Binding.Kind.VARIABLE == binding.kind ||
                         Binding.Kind.PARAMETER == binding.kind ||
