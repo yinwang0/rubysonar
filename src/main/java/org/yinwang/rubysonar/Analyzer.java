@@ -3,6 +3,7 @@ package org.yinwang.rubysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.ast.Call;
+import org.yinwang.rubysonar.ast.Name;
 import org.yinwang.rubysonar.ast.Node;
 import org.yinwang.rubysonar.ast.Url;
 import org.yinwang.rubysonar.types.FunType;
@@ -29,6 +30,8 @@ public class Analyzer {
     public List<String> loadedFiles = new ArrayList<>();
     public List<Binding> allBindings = new ArrayList<>();
     public Map<Node, List<Binding>> references = new LinkedHashMap<>();
+    public Set<Name> resolved = new HashSet<>();
+    public Set<Name> unresolved = new HashSet<>();
 
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Set<String> failedToParse = new HashSet<>();
@@ -472,11 +475,11 @@ public class Analyzer {
         sb.append("\n- number of cross references: " + nXRef);
         sb.append("\n- number of references: " + getReferences().size());
 
-        long resolved = stats.getInt("resolved");
-        long unresolved = stats.getInt("unresolved");
-        sb.append("\n- resolved names: " + resolved);
-        sb.append("\n- unresolved names: " + unresolved);
-        sb.append("\n- name resolve rate: " + _.percent(resolved, resolved + unresolved));
+        long nResolved = this.resolved.size();
+        long nUnresolved = this.unresolved.size();
+        sb.append("\n- resolved names: " + nResolved);
+        sb.append("\n- unresolved names: " + nUnresolved);
+        sb.append("\n- name resolve rate: " + _.percent(nResolved, nResolved + nUnresolved));
         sb.append("\n" + _.getGCStats());
 
         return sb.toString();
