@@ -333,6 +333,11 @@ class AstSimplifier
           call = convert(exp[1])
           call[:args] = convert(exp[2])
           call
+        when :vcall
+          {
+              :type => :call,
+              :func => convert(exp[1])
+          }
         when :command
           {
               :type => :call,
@@ -644,7 +649,6 @@ class AstSimplifier
             :const_ref,
             :top_const_ref,
             :top_const_field,
-            :vcall,
             :paren,
             :else,
             :ensure,

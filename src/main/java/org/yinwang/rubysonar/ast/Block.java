@@ -31,9 +31,12 @@ public class Block extends Node {
 
         for (Node n : seq) {
             Type t = transformExpr(n, state);
-            if (!returned) {
+            if (n == seq.get(seq.size() - 1)) {
+                // return last value
+                retType = UnionType.remove(t, Type.CONT);
+            } else if (!returned) {
                 retType = UnionType.union(retType, t);
-                if (!UnionType.contains(t, Type.CONT)) {
+                if (!t.isUnknownType() && !UnionType.contains(t, Type.CONT)) {
                     returned = true;
                     retType = UnionType.remove(retType, Type.CONT);
                 }

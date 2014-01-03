@@ -50,7 +50,7 @@ public class Call extends Node {
 
             // handle 'require' and 'load'
             if (fn.id.equals("require") || fn.id.equals("load")) {
-                if (args.size() > 0) {
+                if (args != null && args.size() > 0) {
                     Node arg1 = args.get(0);
                     if (arg1 instanceof Str) {
                         Analyzer.self.requireFile(((Str) arg1).value);
@@ -63,7 +63,7 @@ public class Call extends Node {
 
             // handle 'include'
             if (fn.id.equals("include")) {
-                if (args.size() > 0) {
+                if (args != null && args.size() > 0) {
                     Node arg1 = args.get(0);
                     Type mod = transformExpr(arg1, s);
                     s.putAll(mod.table);
