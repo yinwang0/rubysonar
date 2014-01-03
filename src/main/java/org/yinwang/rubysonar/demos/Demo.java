@@ -108,7 +108,7 @@ public class Demo {
         styles.addAll(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();
-        String outline = new HtmlOutline(analyzer).generate(path);
+//        String outline = new HtmlOutline(analyzer).generate(path);
 
         StringBuilder sb = new StringBuilder();
         sb.append("<html><head title=\"")
@@ -122,7 +122,7 @@ public class Demo {
                 .append("</script>\n")
                 .append("</head>\n<body>\n")
                 .append("<table width=100% border='1px solid gray'><tr><td valign='top'>")
-                .append(outline)
+//                .append(outline)
                 .append("</td><td>")
                 .append("<pre>")
                 .append(addLineNumbers(styledSource))

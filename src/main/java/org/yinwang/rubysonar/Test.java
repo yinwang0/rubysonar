@@ -6,6 +6,7 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.ast.Dummy;
 import org.yinwang.rubysonar.ast.Node;
 
@@ -20,6 +21,7 @@ public class Test {
     boolean exp;
     String expecteRefsFile;
     String failedRefsFile;
+    String extraRefsFile;
 
 
     public Test(String inputDir, boolean exp) {
@@ -33,9 +35,11 @@ public class Test {
         if (new File(inputDir).isDirectory()) {
             expecteRefsFile = _.makePathString(inputDir, "refs.json");
             failedRefsFile = _.makePathString(inputDir, "failed_refs.json");
+            extraRefsFile = _.makePathString(inputDir, "extra_refs.json");
         } else {
             expecteRefsFile = _.makePathString(inputDir + ".refs.json");
             failedRefsFile = _.makePathString(inputDir, ".failed_refs.json");
+            extraRefsFile = _.makePathString(inputDir, ".extra_refs.json");
         }
     }
 
@@ -49,7 +53,7 @@ public class Test {
     public void generateRefs() {
 
         List<Map<String, Object>> refs = new ArrayList<>();
-        for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
+        for (Map.Entry<Node, List<Binding>> e : analyzer.references.entrySet()) {
 
             String file = e.getKey().file;
 
@@ -92,6 +96,7 @@ public class Test {
 
     public boolean checkRefs() {
         List<Map<String, Object>> failedRefs = new ArrayList<>();
+        List<Map<String, Object>> extraRefs = new ArrayList<>();
         String json = _.readFile(expecteRefsFile);
         if (json == null) {
             _.msg("Expected refs not found in: " + expecteRefsFile +
@@ -104,8 +109,9 @@ public class Test {
             Dummy dummy = makeDummy(refMap);
 
             List<Map<String, Object>> dests = (List<Map<String, Object>>) r.get("dests");
-            List<Binding> actualDests = analyzer.getReferences().get(dummy);
+            List<Binding> actualDests = analyzer.references.get(dummy);
             List<Map<String, Object>> failedDests = new ArrayList<>();
+            List<Map<String, Object>> extraDests = new ArrayList<>();
 
             for (Map<String, Object> d : dests) {
                 // names are ignored, they are only for human readers
@@ -113,8 +119,24 @@ public class Test {
                 int start = (int) Math.floor((double) d.get("start"));
                 int end = (int) Math.floor((double) d.get("end"));
 
-                if (!checkBindingExist(actualDests, file, start, end)) {
+                if (actualDests == null ||
+                        !checkBindingExist(actualDests, file, start, end))
+                {
                     failedDests.add(d);
+                }
+            }
+
+            if (actualDests != null && !actualDests.isEmpty()) {
+                for (Binding b : actualDests) {
+                    String destFile = b.file;
+                    if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
+                        destFile = _.projRelPath(destFile);
+                        Map<String, Object> d1 = new LinkedHashMap<>();
+                        d1.put("file", destFile);
+                        d1.put("start", b.start);
+                        d1.put("end", b.end);
+                        extraDests.add(d1);
+                    }
                 }
             }
 
@@ -125,29 +147,40 @@ public class Test {
                 failedRef.put("dests", failedDests);
                 failedRefs.add(failedRef);
             }
+
+            if (!extraDests.isEmpty()) {
+                Map<String, Object> extraRef = new LinkedHashMap<>();
+                extraRef.put("ref", refMap);
+                extraRef.put("dests", extraDests);
+                extraRefs.add(extraRef);
+            }
         }
 
-        if (failedRefs.isEmpty()) {
-            return true;
-        } else {
+        if (!failedRefs.isEmpty()) {
             String failedJson = gson.toJson(failedRefs);
-            _.testmsg("Failed to find refs: " + failedJson);
+            _.testmsg("failed to find refs: " + failedJson);
             _.writeFile(failedRefsFile, failedJson);
-            return false;
         }
+
+        if (!extraRefs.isEmpty()) {
+            String extraJson = gson.toJson(extraRefs);
+            _.testmsg("found extra refs: " + extraJson);
+            _.writeFile(extraRefsFile, extraJson);
+        }
+
+        return failedRefs.isEmpty() && extraRefs.isEmpty();
     }
 
 
-    boolean checkBindingExist(List<Binding> bs, String file, int start, int end) {
-        if (bs == null) {
-            return false;
-        }
-
-        for (Binding b : bs) {
-            if (((b.file == null && file == null) ||
-                    (b.file != null && file != null && b.file.equals(file))) &&
-                    b.start == start && b.end == end)
+    boolean checkBindingExist(@NotNull List<Binding> bs, String file, int start, int end) {
+        Iterator<Binding> iter = bs.iterator();
+        while (iter.hasNext()) {
+            Binding b = iter.next();
+            if (_.same(b.file, file) &&
+                    b.start == start &&
+                    b.end == end)
             {
+                iter.remove();
                 return true;
             }
         }
@@ -226,11 +259,18 @@ public class Test {
     }
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Options options = new Options();
         options.addOption("exp", "expected", false, "generate expected result (for setting up tests)");
         CommandLineParser parser = new BasicParser();
-        CommandLine cmd = parser.parse(options, args);
+
+        CommandLine cmd;
+        try {
+            cmd = parser.parse(options, args);
+        } catch (Exception e) {
+            _.die("failed to parse args: " + args);
+            return;
+        }
 
         args = cmd.getArgs();
         String inputDir = _.unifyPath(args[0]);

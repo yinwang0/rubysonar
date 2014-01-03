@@ -3,6 +3,7 @@ package org.yinwang.rubysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binding;
+import org.yinwang.rubysonar.Constants;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 
@@ -62,7 +63,17 @@ public class Name extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        List<Binding> b = s.lookup(id);
+        List<Binding> b = null;
+
+        if (isInstanceVar()) {
+            Type thisType = s.lookupType(Constants.SELFNAME);
+            if (thisType != null) {
+                b = thisType.table.lookup(id);
+            }
+        } else {
+            b = s.lookup(id);
+        }
+
         if (b != null) {
             Analyzer.self.putRef(this, b);
             Analyzer.self.stats.inc("resolved");

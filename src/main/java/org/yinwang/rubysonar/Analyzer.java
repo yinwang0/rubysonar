@@ -28,7 +28,7 @@ public class Analyzer {
 
     public List<String> loadedFiles = new ArrayList<>();
     public List<Binding> allBindings = new ArrayList<>();
-    private Map<Node, List<Binding>> references = new LinkedHashMap<>();
+    public Map<Node, List<Binding>> references = new LinkedHashMap<>();
 
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Set<String> failedToParse = new HashSet<>();
