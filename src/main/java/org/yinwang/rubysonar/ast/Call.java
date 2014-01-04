@@ -122,7 +122,10 @@ public class Call extends Node {
             FunType ft = fun.asFuncType();
             return apply(ft, pos, hash, kw, star, block, this);
         } else if (fun.isClassType()) {
+            // constructor
             InstanceType inst = new InstanceType(fun, this, pos);
+            fun.asClassType().setCanon(inst);
+
             if (!isSuperCall()) {
                 return inst;
             } else {
@@ -184,6 +187,9 @@ public class Call extends Node {
         // bind a special this name to the table
         if (func.selfType != null) {
             Binder.bind(funcTable, new Name(Constants.SELFNAME), func.selfType, PARAMETER);
+        }
+        else if (func.cls != null) {
+            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.cls.getCanon(), PARAMETER);
         }
 
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,

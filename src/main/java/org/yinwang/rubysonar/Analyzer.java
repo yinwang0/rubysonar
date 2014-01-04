@@ -38,7 +38,7 @@ public class Analyzer {
 
 
     public List<String> path = new ArrayList<>();
-    private Set<FunType> uncalled = new HashSet<>();
+    private Set<FunType> uncalled = new LinkedHashSet<>();
     private Set<Object> callStack = new HashSet<>();
     private Set<Object> importStack = new HashSet<>();
 

@@ -52,6 +52,11 @@ public class ClassType extends Type {
     }
 
 
+    public void setCanon(InstanceType inst) {
+        canon = inst;
+    }
+
+
     @Override
     public boolean equals(Object other) {
         return this == other;

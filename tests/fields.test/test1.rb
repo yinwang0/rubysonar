@@ -1,4 +1,4 @@
-class A
+class FieldTest1
   def initialize
     @x = 42
     @y = @x
@@ -6,5 +6,5 @@ class A
   attr_accessor :x
 end
 
-o1 = A.new
+o1 = FieldTest1.new
 puts o1.x
