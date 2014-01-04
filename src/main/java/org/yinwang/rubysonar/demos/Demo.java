@@ -114,20 +114,22 @@ public class Demo {
         sb.append("<html><head title=\"")
                 .append(path)
                 .append("\">")
+
                 .append("<style type='text/css'>\n")
                 .append(CSS)
                 .append("</style>\n")
+
                 .append("<script language=\"JavaScript\" type=\"text/javascript\">\n")
                 .append(Analyzer.self.hasOption("debug") ? JS_DEBUG : JS)
                 .append("</script>\n")
+
                 .append("</head>\n<body>\n")
-                .append("<table width=100% border='1px solid gray'><tr><td valign='top'>")
-//                .append(outline)
-                .append("</td><td>")
+
                 .append("<pre>")
                 .append(addLineNumbers(styledSource))
                 .append("</pre>")
-                .append("</td></tr></table></body></html>");
+
+                .append("</body></html>");
         return sb.toString();
     }
 

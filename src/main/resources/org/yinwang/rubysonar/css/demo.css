@@ -1,4 +1,4 @@
-body { color: #666666; }
+body { color: #666666; border: 1px solid #dddddd; padding: 1in; }
 a {text-decoration: none; color: #5AA2A7; border-radius: 1px}
 table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }
 .builtin {color: #B17E41;}
@@ -12,7 +12,7 @@ table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }
 .identifier {color: #8b7765;}
 .info {border-bottom: 1px dotted RoyalBlue;}
 .keyword {color: #0000cd;}
-.lineno {color: #cccccc;}
+.lineno {color: #dddddd;}
 .number {color: #483d8b;}
 .parameter {color: #777777;}
 .string {color: #999999;}
