@@ -315,7 +315,7 @@ class AstSimplifier
             params[:block_var] = convert_array(exp[2])
           end
           params
-        when :class, :sclass
+        when :class
           ret = {
               :type => :class,
               :name => convert(exp[1]),
@@ -325,6 +325,12 @@ class AstSimplifier
             ret[:super] = convert(exp[2])
           end
           ret
+        when :sclass
+          {
+              :type => :class,
+              :name => convert(exp[1]),
+              :body => convert(exp[2])
+          }
         when :method_add_block
           call = convert(exp[1])
           call[:block_arg] = convert(exp[2])

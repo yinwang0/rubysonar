@@ -62,7 +62,7 @@ public class Call extends Node {
             }
 
             // handle 'include'
-            if (fn.id.equals("include")) {
+            if (fn.id.equals("include") || fn.id.equals("extend")) {
                 if (args != null && args.size() > 0) {
                     Node arg1 = args.get(0);
                     Type mod = transformExpr(arg1, s);
@@ -70,6 +70,10 @@ public class Call extends Node {
                     return Type.TRUE;
                 }
                 Analyzer.self.putProblem(this, "failed to include module");
+            }
+
+            if (fn.id.equals("attr_accessor")) {
+                return Type.CONT;
             }
         }
 

@@ -2,10 +2,7 @@ package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.rubysonar.Analyzer;
-import org.yinwang.rubysonar.Binder;
-import org.yinwang.rubysonar.Binding;
-import org.yinwang.rubysonar.State;
+import org.yinwang.rubysonar.*;
 import org.yinwang.rubysonar.types.ClassType;
 import org.yinwang.rubysonar.types.Type;
 
@@ -73,6 +70,7 @@ public class Class extends Node {
         }
 
         ClassType classType = new ClassType(name.id, s);
+        classType.table.insert(Constants.SELFNAME, this, classType, Binding.Kind.CLASS);
 
         if (base != null) {
             Type baseType = transformExpr(base, s);
