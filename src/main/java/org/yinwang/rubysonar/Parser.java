@@ -94,6 +94,13 @@ public class Parser {
         if (type.equals("module")) {
             Node name = convert(map.get("name"));
             Block body = (Block) convert(map.get("body"));
+
+            if (name instanceof Name) {
+                String id = ((Name) name).id;
+                if (id.startsWith("ClassMethods") || id.startsWith("InstanceMethods")) {
+                    return body;
+                }
+            }
             return new Module(name, body, file, start, end);
         }
 
@@ -123,7 +130,8 @@ public class Parser {
             Name kwarg = kw == null ? null : kw;
             List<Node> afterRest = convertList(argsMap.get("after_rest"));
             Name blockarg = (Name) convert(argsMap.get("block"));
-            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, afterRest, blockarg, file, start, end);
+            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, afterRest, blockarg, file,
+                    start, end);
             return ret;
         }
 

@@ -43,7 +43,7 @@ public class Class extends Node {
     }
 
 
-    @NotNull
+    @Nullable
     public Node getLocator() {
         return locator;
     }
