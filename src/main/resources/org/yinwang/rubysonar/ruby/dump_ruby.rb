@@ -578,10 +578,19 @@ class AstSimplifier
           make_string(exp[1], exp[2])
         when :@tstring_content, :@CHAR
           make_string(exp[1], exp[2])
-        when :string_content
+        when :string_content, :xstring_new
           make_string('')
         when :string_add, :xstring_add, :qwords_add
-          convert(exp[2])
+          if not exp[1] or exp[1] == [:string_content] or exp[1] == [:xstring_new]
+            convert(exp[2])
+          else
+            {
+                :type => :binary,
+                :op => op(:+),
+                :left => convert(exp[1]),
+                :right => convert(exp[2])
+            }
+          end
         when :string_concat, :xstring_concat
           convert([:binary, exp[1], :+, exp[2]])
         when :hash
@@ -650,6 +659,11 @@ class AstSimplifier
               :type => exp[0],
               :value => args_to_array(convert(exp[1]))
           }
+        when :string_embexpr
+          {
+              :type => :string_embexpr,
+              :value => convert(exp[1])
+          }
         when :var_ref,
             :var_field,
             :const_ref,
@@ -667,7 +681,6 @@ class AstSimplifier
             :regexp_literal,
             :string_literal,
             :xstring_literal,
-            :string_embexpr,
             :string_dvar,
             :mrhs_new_from_args,
             :assoc_splat,

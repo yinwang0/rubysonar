@@ -344,6 +344,11 @@ public class Parser {
             return new Str(s, file, start, end);
         }
 
+        if (type.equals("string_embexpr")) {
+            Node value = convert(map.get("value"));
+            return new StrEmbed(value, file, start, end);
+        }
+
         if (type.equals("regexp")) {
             Node pattern = convert(map.get("pattern"));
             Node regexp_end = convert(map.get("regexp_end"));
