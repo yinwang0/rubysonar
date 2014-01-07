@@ -54,7 +54,7 @@ public class JSONDump {
     }
 
 
-    private static void writeSymJson(Binding binding, JsonGenerator json) throws IOException {
+    private static void writeSymJson(@NotNull Binding binding, JsonGenerator json) throws IOException {
         if (binding.start < 0) {
             return;
         }
@@ -65,7 +65,7 @@ public class JSONDump {
                         Binding.Kind.PARAMETER == binding.kind ||
                         Binding.Kind.SCOPE == binding.kind ||
                         Binding.Kind.ATTRIBUTE == binding.kind ||
-                        (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%")));
+                        (name != null && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
 
         String path = binding.qname.replace('.', '/').replace("%20", ".");
 
@@ -104,12 +104,14 @@ public class JSONDump {
                         args.append("(");
                         boolean first = true;
 
-                        for (Node n : func.args) {
-                            if (!first) {
-                                args.append(", ");
+                        if (func.args != null) {
+                            for (Node n : func.args) {
+                                if (!first) {
+                                    args.append(", ");
+                                }
+                                first = false;
+                                args.append(n.toDisplay());
                             }
-                            first = false;
-                            args.append(n.toDisplay());
                         }
 
                         if (func.vararg != null) {
