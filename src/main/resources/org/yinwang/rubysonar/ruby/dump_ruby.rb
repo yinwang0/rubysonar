@@ -112,8 +112,10 @@ class AstSimplifier
         #  puts "problem obj: #{obj.inspect}"
         #end
         ret = {}
-        whole_start = nil;
-        whole_end = nil;
+        whole_start = nil
+        whole_end = nil
+        start_line = nil
+        end_line = nil
 
         obj.each do |k, v|
           if k == :location
@@ -121,18 +123,24 @@ class AstSimplifier
             end_idx = ident_end(start_idx)
             ret[:start] = start_idx
             ret[:end] = end_idx
+            ret[:start_line] = v[0]
+            ret[:end_line] = v[1]
             whole_start = start_idx
             whole_end = end_idx
+            start_line = v[0]
+            end_line = v[1]
           else
-            new_node, start_idx, end_idx = find1(v)
+            new_node, start_idx, end_idx, line_start, line_end = find1(v)
             ret[k] = new_node
 
             if start_idx && (!whole_start || whole_start > start_idx)
               whole_start = start_idx
+              start_line = line_start
             end
 
             if end_idx && (!whole_end || whole_end < end_idx)
               whole_end = end_idx
+              end_line = line_end
             end
           end
         end
@@ -140,8 +148,10 @@ class AstSimplifier
         if whole_start
           ret[:start] = whole_start
           ret[:end] = whole_end
+          ret[:start_line] = start_line
+          ret[:end_line] = end_line
         end
-        return ret, whole_start, whole_end
+        return ret, whole_start, whole_end, start_line, end_line
 
       elsif obj.is_a?(Array)
         ret = []
@@ -149,24 +159,26 @@ class AstSimplifier
         whole_end = nil
 
         for v in obj
-          new_node, start_idx, end_idx = find1(v)
+          new_node, start_idx, end_idx, line_start, line_end = find1(v)
           ret.push(new_node)
           if  start_idx && (!whole_start || whole_start > start_idx)
             whole_start = start_idx
+            start_line = line_start
           end
 
           if end_idx && (!whole_end || whole_end < end_idx)
             whole_end = end_idx
+            end_line = line_end
           end
         end
 
-        return ret, whole_start, whole_end
+        return ret, whole_start, whole_end, start_line, end_line
       else
-        return obj, nil, nil
+        return obj, nil, nil, nil, nil
       end
     end
 
-    node, _, _ = find1(obj)
+    node, _, _, _, _ = find1(obj)
     node
   end
 
