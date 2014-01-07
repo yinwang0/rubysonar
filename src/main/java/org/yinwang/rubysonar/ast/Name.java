@@ -79,7 +79,7 @@ public class Name extends Node {
             Analyzer.self.resolved.add(this);
             Analyzer.self.unresolved.remove(this);
             return State.makeUnion(b);
-        } else if (id.equals("True") || id.equals("False")) {
+        } else if (id.equals("true") || id.equals("false")) {
             return Type.BOOL;
         } else {
             Analyzer.self.putProblem(this, "unbound variable " + id);
