@@ -72,6 +72,7 @@ public class Demo {
             }
         }
 
+        _.msg("\nWriting HTML");
         Progress progress = new Progress(total, 50);
 
         for (String path : analyzer.getLoadedFiles()) {
