@@ -74,6 +74,9 @@ class AstSimplifier
 
 
   def ident_end(start_idx)
+    if @src[start_idx] == '[' and @src[start_idx + 1] == ']'
+      return start_idx + 2
+    end
     idx = start_idx
     while idx < @src.length and @src[idx].match /[[:alpha:]0-9_@$]/
       idx += 1
