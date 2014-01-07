@@ -104,12 +104,14 @@ public class JSONDump {
                         args.append("(");
                         boolean first = true;
 
-                        for (Node n : func.args) {
-                            if (!first) {
-                                args.append(", ");
+                        if (func.args != null ) {
+                            for (Node n : func.args) {
+                                if (!first) {
+                                    args.append(", ");
+                                }
+                                first = false;
+                                args.append(n.toDisplay());
                             }
-                            first = false;
-                            args.append(n.toDisplay());
                         }
 
                         if (func.vararg != null) {
