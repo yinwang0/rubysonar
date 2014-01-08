@@ -25,8 +25,14 @@ public class JSONDump {
     private static Set<String> seenDocs = new HashSet<>();
 
 
-    private static String dirname(String path) {
-        return new File(path).getParent();
+    @NotNull
+    private static String dirname(@NotNull String path) {
+        File f = new File(path);
+        if (f.getParent() != null) {
+            return f.getParent();
+        } else {
+            return path;
+        }
     }
 
 
