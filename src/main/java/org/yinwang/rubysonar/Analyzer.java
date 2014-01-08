@@ -150,13 +150,15 @@ public class Analyzer {
     @NotNull
     public List<String> getLoadPath() {
         List<String> loadPath = new ArrayList<>();
+        loadPath.addAll(path);
+
         if (cwd != null) {
             loadPath.add(cwd);
         }
         if (projectDir != null && (new File(projectDir).isDirectory())) {
             loadPath.add(projectDir);
         }
-        loadPath.addAll(path);
+
         return loadPath;
     }
 
