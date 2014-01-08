@@ -164,6 +164,7 @@ public class JSONDump {
             if (binding.start >= 0 && ref.start >= 0) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
+                json.writeStringField("symOrigin", binding.node.file);
                 json.writeStringField("file", ref.file);
                 json.writeNumberField("start", ref.start);
                 json.writeNumberField("end", ref.end);
