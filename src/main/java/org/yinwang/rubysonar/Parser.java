@@ -130,8 +130,9 @@ public class Parser {
             Name kwarg = kw == null ? null : kw;
             List<Node> afterRest = convertList(argsMap.get("after_rest"));
             Name blockarg = (Name) convert(argsMap.get("block"));
-            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, afterRest, blockarg, file,
-                    start, end);
+            Str docstring = (Str) convert(map.get("doc"));
+            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, afterRest, blockarg, docstring,
+                    file, start, end);
             return ret;
         }
 
@@ -239,7 +240,8 @@ public class Parser {
             Node locator = convert(map.get("name"));
             Node base = convert(map.get("super"));
             Node body = convert(map.get("body"));
-            return new Class(locator, base, body, file, start, end);
+            Str docstring = (Str) convert(map.get("doc"));
+            return new Class(locator, base, body, docstring, file, start, end);
         }
 
         if (type.equals("undef")) {

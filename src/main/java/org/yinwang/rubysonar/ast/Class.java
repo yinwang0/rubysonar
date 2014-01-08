@@ -15,9 +15,10 @@ public class Class extends Node {
     public Name name;
     public Node base;
     public Node body;
+    public Str docstring;
 
 
-    public Class(@Nullable Node locator, Node base, Node body, String file, int start, int end) {
+    public Class(@Nullable Node locator, Node base, Node body, Str docstring, String file, int start, int end) {
         super(file, start, end);
 
         // set name
@@ -33,7 +34,8 @@ public class Class extends Node {
         this.locator = locator;
         this.base = base;
         this.body = body;
-        addChildren(this.locator, this.body, this.base);
+        this.docstring = docstring;
+        addChildren(this.locator, this.body, this.base, this.docstring);
     }
 
 
@@ -53,6 +55,11 @@ public class Class extends Node {
     public static String genClassName() {
         classCounter = classCounter + 1;
         return "class%" + classCounter;
+    }
+
+
+    public void setDocstring(Str docstring) {
+        this.docstring = docstring;
     }
 
 

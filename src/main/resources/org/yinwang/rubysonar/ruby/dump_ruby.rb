@@ -39,6 +39,7 @@ class AstSimplifier
 
     @line_starts = [0]
     find_line_starts
+    find_docs
   end
 
 
@@ -62,6 +63,31 @@ class AstSimplifier
     lines.each { |line|
       total += line.length + 1 # line and \n
       @line_starts.push(total)
+    }
+  end
+
+
+  def find_docs
+    @docs = {}
+    lines = @src.split(/\n/)
+    current_line = 0
+    accum = []
+
+    lines.each { |line|
+      matched = line.match('^\s*#\s*(.*)')
+      if matched
+        accum.push(matched[1])
+      elsif !accum.empty?
+        doc = {
+            :type => :string,
+            :id => accum.join('\n'),
+            :line => current_line + 1
+        }
+        @docs[current_line+1] = doc
+        accum.clear
+      end
+
+      current_line += 1
     }
   end
 
@@ -150,6 +176,14 @@ class AstSimplifier
           ret[:end] = whole_end
           ret[:start_line] = start_line
           ret[:end_line] = end_line
+
+          # insert docstrings for node if any
+          if [:class, :def].include?(ret[:type])
+            doc = @docs[start_line]
+            if doc
+              ret[:doc] = doc
+            end
+          end
         end
         return ret, whole_start, whole_end, start_line, end_line
 

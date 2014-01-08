@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.ast.Function;
 import org.yinwang.rubysonar.ast.Node;
+import org.yinwang.rubysonar.ast.Str;
 import org.yinwang.rubysonar.types.Type;
 
 import java.io.*;
@@ -173,15 +174,21 @@ public class JSONDump {
         if (!seenDocs.contains(path)) {
             seenDocs.add(path);
 
-//            if (doc != null) {
-//                json.writeStartObject();
-//                json.writeStringField("sym", path);
-//                json.writeStringField("file", binding.getFileOrUrl());
-//                json.writeStringField("body", doc.value);
-//                json.writeNumberField("start", doc.start);
-//                json.writeNumberField("end", doc.end);
-//                json.writeEndObject();
-//            }
+            Str doc = null;
+            if (binding.node instanceof org.yinwang.rubysonar.ast.Class) {
+                doc = ((org.yinwang.rubysonar.ast.Class) binding.node).docstring;
+            } else if (binding.node instanceof Function) {
+                doc = ((Function) binding.node).docstring;
+            }
+            if (doc != null) {
+                json.writeStartObject();
+                json.writeStringField("sym", path);
+                json.writeStringField("file", binding.file);
+                json.writeStringField("body", doc.value);
+                json.writeNumberField("start", doc.start);
+                json.writeNumberField("end", doc.end);
+                json.writeEndObject();
+            }
         }
     }
 

@@ -24,11 +24,12 @@ public class Function extends Node {
     public Node body;
     public boolean called = false;
     public boolean isLamba = false;
+    public Str docstring;
 
 
     public Function(Name name, List<Node> args, Node body, List<Node> defaults,
                     Name vararg, Name kwarg, List<Node> afterRest, Name blockarg,
-                    String file, int start, int end)
+                    Str docstring, String file, int start, int end)
     {
         super(file, start, end);
         if (name != null) {
@@ -47,10 +48,16 @@ public class Function extends Node {
         this.kwarg = kwarg;
         this.afterRest = afterRest;
         this.blockarg = blockarg;
+        this.docstring = docstring;
         addChildren(args);
         addChildren(defaults);
         addChildren(afterRest);
         addChildren(name, body, vararg, kwarg, blockarg);
+    }
+
+
+    public void setDocstring(Str docstring) {
+        this.docstring = docstring;
     }
 
 
