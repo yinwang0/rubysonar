@@ -541,7 +541,7 @@ class AstSimplifier
               :else => convert(bodystmt[3]),
               :ensure => convert(bodystmt[4])
           }
-        when :rescue, :rescue_mod
+        when :rescue
           ret = {:type => :rescue}
           if exp[1]
             if exp[1][0].is_a? Array
@@ -560,6 +560,12 @@ class AstSimplifier
             ret[:else] = convert(exp[4])
           end
           ret
+        when :rescue_mod
+          {
+              :type => :begin,
+              :body => convert(exp[1]),
+              :rescue => convert(exp[2])
+          }
         when :stmts_new
           {
               :type => :block,

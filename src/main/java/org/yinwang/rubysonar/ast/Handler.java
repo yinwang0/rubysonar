@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.Binder;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
+import org.yinwang.rubysonar.types.UnionType;
 
 import java.util.List;
 
@@ -12,15 +13,17 @@ public class Handler extends Node {
 
     public List<Node> exceptions;
     public Node binder;
-    public Block body;
+    public Node handler;
+    public Node orelse;
 
 
-    public Handler(List<Node> exceptions, Node binder, Block body, String file, int start, int end) {
+    public Handler(List<Node> exceptions, Node binder, Node handler, Node orelse, String file, int start, int end) {
         super(file, start, end);
-        this.binder = binder;
         this.exceptions = exceptions;
-        this.body = body;
-        addChildren(binder, body);
+        this.binder = binder;
+        this.handler = handler;
+        this.orelse = orelse;
+        addChildren(binder, handler, orelse);
         addChildren(exceptions);
     }
 
@@ -35,11 +38,18 @@ public class Handler extends Node {
         if (binder != null) {
             Binder.bind(s, binder, typeval);
         }
-        if (body != null) {
-            return transformExpr(body, s);
-        } else {
-            return Type.UNKNOWN;
+
+        Type ret = Type.UNKNOWN;
+
+        if (handler != null) {
+            ret = UnionType.union(ret, transformExpr(handler, s));
         }
+
+        if (orelse != null) {
+            ret = UnionType.union(ret, transformExpr(orelse, s));
+        }
+
+        return ret;
     }
 
 

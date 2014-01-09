@@ -5,26 +5,24 @@ import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
 
-import java.util.List;
-
 
 public class Try extends Node {
 
-    public List<Handler> handlers;
-    public Block body;
-    public Block orelse;
-    public Block finalbody;
+    public Node rescue;
+    public Node body;
+    public Node orelse;
+    public Node finalbody;
 
 
-    public Try(List<Handler> handlers, Block body, Block orelse, Block finalbody,
+    public Try(Node rescue, Node body, Node orelse, Node finalbody,
                String file, int start, int end)
     {
         super(file, start, end);
-        this.handlers = handlers;
+        this.rescue = rescue;
         this.body = body;
         this.orelse = orelse;
         this.finalbody = finalbody;
-        addChildren(handlers);
+        addChildren(rescue);
         addChildren(body, orelse);
     }
 
@@ -37,10 +35,8 @@ public class Try extends Node {
         Type tph = Type.UNKNOWN;
         Type tpFinal = Type.UNKNOWN;
 
-        if (handlers != null) {
-            for (Handler h : handlers) {
-                tph = UnionType.union(tph, transformExpr(h, s));
-            }
+        if (rescue != null) {
+            tph = UnionType.union(tph, transformExpr(rescue, s));
         }
 
         if (body != null) {
@@ -62,7 +58,7 @@ public class Try extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(try:" + handlers + ":" + body + ":" + orelse + ")";
+        return "(try:" + rescue + ":" + body + ":" + orelse + ")";
     }
 
 

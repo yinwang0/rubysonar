@@ -270,8 +270,9 @@ public class Parser {
         if (type.equals("rescue")) {
             List<Node> exceptions = convertList(map.get("exceptions"));
             Node binder = convert(map.get("binder"));
-            Block body = (Block) convert(map.get("body"));
-            return new Handler(exceptions, binder, body, file, start, end);
+            Node handler = convert(map.get("handler"));
+            Node orelse = convert(map.get("else"));
+            return new Handler(exceptions, binder, handler, orelse, file, start, end);
         }
 
         if (type.equals("for")) {
@@ -385,10 +386,11 @@ public class Parser {
         }
 
         if (type.equals("begin")) {
-            Block body = (Block) convert(map.get("body"));
-            Block orelse = (Block) convert(map.get("else"));
-            Block finalbody = (Block) convert(map.get("ensure"));
-            return new Try(null, body, orelse, finalbody, file, start, end);
+            Node body = convert(map.get("body"));
+            Node rescue = convert(map.get("rescue"));
+            Node orelse = convert(map.get("else"));
+            Node finalbody = convert(map.get("ensure"));
+            return new Try(rescue, body, orelse, finalbody, file, start, end);
         }
 
         if (type.equals("unary")) {
