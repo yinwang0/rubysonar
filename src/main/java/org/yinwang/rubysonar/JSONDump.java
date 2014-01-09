@@ -256,6 +256,7 @@ public class JSONDump {
                     }
                 }
             }
+            writeRefJson(b.node, b, refJson);
         }
 
         for (JsonGenerator json : allJson) {
