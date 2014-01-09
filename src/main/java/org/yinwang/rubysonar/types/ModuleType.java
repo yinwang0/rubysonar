@@ -3,7 +3,6 @@ package org.yinwang.rubysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.State;
-import org.yinwang.rubysonar._;
 
 
 public class ModuleType extends Type {
@@ -17,14 +16,10 @@ public class ModuleType extends Type {
     public ModuleType(@NotNull String name, @Nullable String file, @NotNull State parent) {
         this.name = name;
         this.file = file;  // null for builtin modules
-        if (file != null) {
-            // This will return null iff specified file is not prefixed by
-            // any path in the module search path -- i.e., the caller asked
-            // the analyzer to load a file not in the search path.
-            qname = _.moduleQname(file);
-        }
-        if (qname == null) {
+        if (parent.path.isEmpty()) {
             qname = name;
+        } else {
+            qname = parent.path + "/" + name;
         }
         setTable(new State(parent, State.StateType.MODULE));
         table.setPath(qname);
