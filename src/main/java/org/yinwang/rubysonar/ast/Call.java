@@ -7,7 +7,7 @@ import org.yinwang.rubysonar.types.*;
 
 import java.util.*;
 
-import static org.yinwang.rubysonar.Binding.Kind.PARAMETER;
+import static org.yinwang.rubysonar.Binding.Kind.SCOPE;
 
 
 public class Call extends Node {
@@ -190,10 +190,9 @@ public class Call extends Node {
 
         // bind a special this name to the table
         if (func.selfType != null) {
-            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.selfType, PARAMETER);
-        }
-        else if (func.cls != null) {
-            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.cls.getCanon(), PARAMETER);
+            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.selfType, SCOPE);
+        } else if (func.cls != null) {
+            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.cls.getCanon(), SCOPE);
         }
 
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,
