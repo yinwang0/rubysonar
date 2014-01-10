@@ -74,7 +74,7 @@ public class JSONDump {
                         Binding.Kind.ATTRIBUTE == binding.kind ||
                         (name != null && (name.length() == 0 || name.startsWith("lambda%"))));
 
-        String path = binding.qname.replace('.', '/').replace("%20", ".");
+        String path = binding.qname.replace("%20", ".");
 
         if (!seenDef.contains(path)) {
             seenDef.add(path);
@@ -168,7 +168,7 @@ public class JSONDump {
 
     private static void writeRefJson(Node ref, Binding binding, JsonGenerator json) throws IOException {
         if (binding.file != null) {
-            String path = binding.qname.replace(".", "/").replace("%20", ".");
+            String path = binding.qname.replace("%20", ".");
 
             if (binding.start >= 0 && ref.start >= 0) {
                 json.writeStartObject();
@@ -185,7 +185,7 @@ public class JSONDump {
 
 
     private static void writeDocJson(Binding binding, Analyzer idx, JsonGenerator json) throws Exception {
-        String path = binding.qname.replace('.', '/').replace("%20", ".");
+        String path = binding.qname.replace("%20", ".");
 
         if (!seenDocs.contains(path)) {
             seenDocs.add(path);
