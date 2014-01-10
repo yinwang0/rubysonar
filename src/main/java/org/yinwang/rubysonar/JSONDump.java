@@ -36,7 +36,7 @@ public class JSONDump {
     }
 
 
-    private static Analyzer newAnalyzer(String srcpath, String[] inclpaths) throws Exception {
+    private static Analyzer newAnalyzer(List<String> srcpath, String[] inclpaths) throws Exception {
         Analyzer idx = new Analyzer();
         for (String inclpath : inclpaths) {
             idx.addPath(inclpath);
@@ -72,12 +72,20 @@ public class JSONDump {
                         Binding.Kind.PARAMETER == binding.kind ||
                         Binding.Kind.SCOPE == binding.kind ||
                         Binding.Kind.ATTRIBUTE == binding.kind ||
-                        (name != null && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
+                        (name != null && (name.length() == 0 || name.startsWith("lambda%"))));
 
         String path = binding.qname.replace('.', '/').replace("%20", ".");
 
         if (!seenDef.contains(path)) {
             seenDef.add(path);
+
+            if (binding.kind == Binding.Kind.METHOD) {
+                neMethods++;
+            }
+            if (binding.kind == Binding.Kind.CLASS) {
+                neClass++;
+            }
+
             json.writeStartObject();
             json.writeStringField("name", name);
             json.writeStringField("path", path);
@@ -89,10 +97,11 @@ public class JSONDump {
             json.writeBooleanField("exported", isExported);
             json.writeStringField("kind", binding.kind.toString());
 
-            if (Binding.Kind.FUNCTION == binding.kind ||
-                    Binding.Kind.METHOD == binding.kind ||
-                    Binding.Kind.CONSTRUCTOR == binding.kind)
-            {
+            if (binding.kind == Binding.Kind.METHOD) {
+                if (!isExported) {
+                    _.msg("method not exported: " + binding.qname);
+                }
+
                 json.writeObjectFieldStart("funcData");
 
                 // get args expression
@@ -205,10 +214,15 @@ public class JSONDump {
     }
 
 
+    static int neMethods = 0;
+    static int neFunc = 0;
+    static int neClass = 0;
+
+
     /*
      * Precondition: srcpath and inclpaths are absolute paths
      */
-    private static void graph(String srcpath,
+    private static void graph(List<String> srcpath,
                               String[] inclpaths,
                               OutputStream symOut,
                               OutputStream refOut,
@@ -216,7 +230,6 @@ public class JSONDump {
     {
         // Compute parent dirs, sort by length so potential prefixes show up first
         List<String> parentDirs = Lists.newArrayList(inclpaths);
-        parentDirs.add(dirname(srcpath));
         Collections.sort(parentDirs, new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
@@ -239,18 +252,32 @@ public class JSONDump {
             json.writeStartArray();
         }
 
+        int nMethods = 0;
+        int nClass = 0;
+
+        Set<String> srcpathSet = new HashSet<>();
+        srcpathSet.addAll(srcpath);
+
         for (Binding b : idx.getAllBindings()) {
+
             if (b.file != null) {
-                if (shouldEmit(b.file, srcpath)) {
+//                if (srcpathSet.contains(b.file)) {
+                    if (b.kind == Binding.Kind.METHOD) {
+                        nMethods++;
+                    }
+                    if (b.kind == Binding.Kind.CLASS) {
+                        nClass++;
+                    }
+
                     writeSymJson(b, symJson);
                     writeDocJson(b, idx, docJson);
-                }
+//                }
             }
 
             for (Node ref : b.refs) {
                 if (ref.file != null) {
                     String key = ref.file + ":" + ref.start;
-                    if (!seenRef.contains(key) && shouldEmit(ref.file, srcpath)) {
+                    if (!seenRef.contains(key)) {
                         writeRefJson(ref, b, refJson);
                         seenRef.add(key);
                     }
@@ -258,6 +285,10 @@ public class JSONDump {
             }
             writeRefJson(b.node, b, refJson);
         }
+
+        _.msg("found: " + nMethods + " methods, " + nClass + " classes");
+        _.msg("emitted: " + neMethods + " methods, " + neClass + " classes");
+
 
         for (JsonGenerator json : allJson) {
             json.writeEndArray();
@@ -281,21 +312,20 @@ public class JSONDump {
 
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 3 || args.length > 4) {
+        log.setLevel(Level.SEVERE);
+
+        String[] inclpaths;
+        String outroot;
+        List<String> srcpath = new ArrayList<>();
+
+        if (args.length >= 2) {
+            outroot = args[0];
+            inclpaths = args[1].split(":");
+            srcpath.addAll(Arrays.asList(args).subList(2, args.length));
+        } else {
             usage();
             return;
         }
-
-        log.setLevel(Level.SEVERE);
-        if (args.length >= 4) {
-            log.setLevel(Level.ALL);
-            log.info("LOGGING VERBOSE");
-            log.info("ARGS: " + Arrays.toString(args));
-        }
-
-        String srcpath = args[0];
-        String[] inclpaths = args[1].split(":");
-        String outroot = args[2];
 
         String symFilename = outroot + "-sym";
         String refFilename = outroot + "-ref";

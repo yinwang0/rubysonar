@@ -69,27 +69,16 @@ public class Function extends Node {
         fun.table.setPath(s.extendPath(name.id));
         fun.setDefaultTypes(resolveList(defaults, s));
         Analyzer.self.addUncalled(fun);
-        Binding.Kind funkind;
 
         if (isLamba) {
             return fun;
         } else {
-            if (s.getStateType() == State.StateType.CLASS) {
-                if ("initialize".equals(name.id)) {
-                    funkind = Binding.Kind.CONSTRUCTOR;
-                } else {
-                    funkind = Binding.Kind.METHOD;
-                }
-            } else {
-                funkind = Binding.Kind.FUNCTION;
-            }
-
             Type outType = s.type;
             if (outType instanceof ClassType) {
                 fun.setCls(outType.asClassType());
             }
 
-            Binder.bind(s, name, fun, funkind);
+            Binder.bind(s, name, fun, Binding.Kind.METHOD);
             return Type.CONT;
         }
     }

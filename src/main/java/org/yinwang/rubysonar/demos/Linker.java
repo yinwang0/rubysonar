@@ -47,7 +47,17 @@ class Linker {
         _.msg("Adding xref links");
         Progress progress = new Progress(analyzer.getAllBindings().size(), 50);
 
+        int nMethods = 0;
+        int nFunc = 0;
+        int nClass = 0;
         for (Binding b : analyzer.getAllBindings()) {
+            if (b.kind == Binding.Kind.METHOD) {
+                nMethods++;
+            }
+            if (b.kind == Binding.Kind.CLASS) {
+                nClass++;
+            }
+
             if (b.kind != Binding.Kind.MODULE) {
                 if (Analyzer.self.hasOption("debug")) {
                     processDefDebug(b);
@@ -57,6 +67,8 @@ class Linker {
                 progress.tick();
             }
         }
+
+        _.msg("found: " + nMethods + " methods, " + nFunc + " funcs, " + nClass + " classes");
 
         // highlight definitions
         _.msg("\nAdding ref links");

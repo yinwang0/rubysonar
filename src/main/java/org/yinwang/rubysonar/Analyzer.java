@@ -111,6 +111,14 @@ public class Analyzer {
     }
 
 
+    // main entry to the analyzer
+    public void analyze(List<String> paths) {
+        for (String path : paths) {
+            loadFileRecursive(_.unifyPath(path));
+        }
+    }
+
+
     public void setCWD(String cd) {
         if (cd != null) {
             cwd = _.unifyPath(cd);
