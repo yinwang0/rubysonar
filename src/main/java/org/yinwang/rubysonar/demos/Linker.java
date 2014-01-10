@@ -58,14 +58,12 @@ class Linker {
                 nClass++;
             }
 
-            if (b.kind != Binding.Kind.MODULE) {
-                if (Analyzer.self.hasOption("debug")) {
-                    processDefDebug(b);
-                } else {
-                    processDef(b);
-                }
-                progress.tick();
+            if (Analyzer.self.hasOption("debug")) {
+                processDefDebug(b);
+            } else {
+                processDef(b);
             }
+            progress.tick();
         }
 
         _.msg("found: " + nMethods + " methods, " + nFunc + " funcs, " + nClass + " classes");
