@@ -77,7 +77,7 @@ public class Class extends Node {
         }
 
         ClassType classType = new ClassType(name.id, s);
-        classType.table.insert(Constants.SELFNAME, this, classType, Binding.Kind.CLASS);
+        classType.table.insert(Constants.SELFNAME, this, classType, Binding.Kind.SCOPE);
 
         if (base != null) {
             Type baseType = transformExpr(base, s);
