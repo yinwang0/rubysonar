@@ -66,7 +66,7 @@ public class Name extends Node {
         List<Binding> b = null;
 
         if (isInstanceVar()) {
-            Type thisType = s.lookupType(Constants.SELFNAME);
+            Type thisType = s.lookupType(Constants.INSTNAME);
             if (thisType != null) {
                 b = thisType.table.lookup(id);
             }

@@ -133,7 +133,7 @@ public class Call extends Node {
             if (!isSuperCall()) {
                 return inst;
             } else {
-                Type selfType = s.lookupType(Constants.SELFNAME);
+                Type selfType = s.lookupType(Constants.INSTNAME);
                 if (selfType != null) {
                     selfType.table.putAll(inst.table);
                 }
@@ -190,9 +190,9 @@ public class Call extends Node {
 
         // bind a special this name to the table
         if (func.selfType != null) {
-            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.selfType, SCOPE);
+            Binder.bind(funcTable, new Name(Constants.INSTNAME), func.selfType, SCOPE);
         } else if (func.cls != null) {
-            Binder.bind(funcTable, new Name(Constants.SELFNAME), func.cls.getCanon(), SCOPE);
+            Binder.bind(funcTable, new Name(Constants.INSTNAME), func.cls.getCanon(), SCOPE);
         }
 
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,
