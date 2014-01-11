@@ -77,6 +77,7 @@ public class Class extends Node {
         }
 
         ClassType classType = new ClassType(name.id, s);
+        classType.table.setParent(s);
         classType.table.insert(Constants.SELFNAME, this, classType, Binding.Kind.SCOPE);
 
         if (base != null) {

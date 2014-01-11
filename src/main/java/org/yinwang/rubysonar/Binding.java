@@ -70,7 +70,7 @@ public class Binding implements Comparable<Object> {
         end = node.end;
 
         Node parent = node.parent;
-        if ((parent instanceof Function && ((Function) parent).name == node) ||
+        if ((parent instanceof Function && ((Function) parent).locator == node) ||
                 (parent instanceof Class && ((Class) parent).locator == node))
         {
             bodyStart = parent.start;

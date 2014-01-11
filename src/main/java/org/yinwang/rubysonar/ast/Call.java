@@ -206,7 +206,7 @@ public class Call extends Node {
         } else {
             Type toType = transformExpr(func.func.body, funcTable);
             if (missingReturn(toType)) {
-                Analyzer.self.putProblem(func.func.name, "Function not always return a value");
+                Analyzer.self.putProblem(func.func.locator, "Function not always return a value");
 
                 if (call != null) {
                     Analyzer.self.putProblem(call, "Call not always return a value");

@@ -111,15 +111,6 @@ public class Parser {
 
         if (type.equals("def") || type.equals("lambda")) {
             Node binder = convert(map.get("name"));
-            Name name = null;
-            if (type.equals("lambda")) {
-                name = null;
-            } else if (binder instanceof Attribute) {
-                name = ((Attribute) binder).attr;
-            } else if (binder instanceof Name) {
-                name = (Name) binder;
-            }
-
             Block body = (Block) convert(map.get("body"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
             List<Node> positional = convertList(argsMap.get("positional"));
@@ -131,9 +122,8 @@ public class Parser {
             List<Node> afterRest = convertList(argsMap.get("after_rest"));
             Name blockarg = (Name) convert(argsMap.get("block"));
             Str docstring = (Str) convert(map.get("doc"));
-            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, afterRest, blockarg, docstring,
-                    file, start, end);
-            return ret;
+            return new Function(binder, positional, body, defaults, vararg, kwarg, afterRest, blockarg,
+                    docstring, file, start, end);
         }
 
         if (type.equals("call")) {

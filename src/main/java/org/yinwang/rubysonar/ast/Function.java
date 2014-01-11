@@ -2,7 +2,6 @@ package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.Analyzer;
-import org.yinwang.rubysonar.Binder;
 import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.ClassType;
@@ -14,6 +13,7 @@ import java.util.List;
 
 public class Function extends Node {
 
+    public Node locator;
     public Name name;
     public List<Node> args;
     public List<Node> defaults;
@@ -27,18 +27,24 @@ public class Function extends Node {
     public Str docstring;
 
 
-    public Function(Name name, List<Node> args, Node body, List<Node> defaults,
+    public Function(Node locator, List<Node> args, Node body, List<Node> defaults,
                     Name vararg, Name kwarg, List<Node> afterRest, Name blockarg,
                     Str docstring, String file, int start, int end)
     {
         super(file, start, end);
-        if (name != null) {
-            this.name = name;
+        if (locator != null) {
+            this.locator = locator;
         } else {
             isLamba = true;
             String fn = genLambdaName();
-            this.name = new Name(fn, file, start, start + "lambda".length());
-            addChildren(this.name);
+            this.locator = new Name(fn, file, start, start + "lambda".length());
+            addChildren(this.locator);
+        }
+
+        if (this.locator instanceof Attribute) {
+            this.name = ((Attribute) this.locator).attr;
+        } else if (this.locator instanceof Name) {
+            this.name = (Name) this.locator;
         }
 
         this.args = args;
@@ -52,7 +58,7 @@ public class Function extends Node {
         addChildren(args);
         addChildren(defaults);
         addChildren(afterRest);
-        addChildren(name, body, vararg, kwarg, blockarg);
+        addChildren(locator, body, vararg, kwarg, blockarg);
     }
 
 
@@ -64,6 +70,13 @@ public class Function extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
+        if (locator instanceof Attribute) {
+            Type locType = transformExpr(((Attribute) locator).target, s);
+            if (!locType.isUnknownType()) {
+                s = locType.table;
+            }
+        }
+
         FunType fun = new FunType(this, s);
         fun.table.setParent(s);
         fun.table.setPath(s.extendPath(name.id));
@@ -78,7 +91,7 @@ public class Function extends Node {
                 fun.setCls(outType.asClassType());
             }
 
-            Binder.bind(s, name, fun, Binding.Kind.METHOD);
+            s.insert(name.id, name, fun, Binding.Kind.METHOD);
             return Type.CONT;
         }
     }
@@ -108,7 +121,7 @@ public class Function extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(func:" + name + ")";
+        return "(func:" + locator + ")";
     }
 
 }
