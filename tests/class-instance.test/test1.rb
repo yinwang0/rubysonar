@@ -11,7 +11,7 @@ class A
 end
 
 puts A.cm
-puts A.im
+puts A.im   # error, should not be found
 
 
 # -----------------------------------
@@ -62,5 +62,5 @@ class E
   }
 end
 
-puts E.cm
-puts E.cm2
+puts E.cm      # error, should be found
+puts E.cm2     # error, should be found
