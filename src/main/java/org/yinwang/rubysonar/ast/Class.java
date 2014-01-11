@@ -16,9 +16,10 @@ public class Class extends Node {
     public Node base;
     public Node body;
     public Str docstring;
+    public boolean isStatic;
 
 
-    public Class(@Nullable Node locator, Node base, Node body, Str docstring, String file, int start, int end) {
+    public Class(@Nullable Node locator, Node base, Node body, Str docstring, boolean isStatic, String file, int start, int end) {
         super(file, start, end);
 
         // set name
@@ -35,6 +36,7 @@ public class Class extends Node {
         this.base = base;
         this.body = body;
         this.docstring = docstring;
+        this.isStatic = isStatic;
         addChildren(this.locator, this.body, this.base, this.docstring);
     }
 
@@ -70,7 +72,10 @@ public class Class extends Node {
             Type existing = transformExpr(locator, s);
             if (existing instanceof ClassType) {
                 if (body != null) {
+                    boolean wasStatic = Analyzer.self.staticContext;
+                    Analyzer.self.setStaticContext(true);
                     transformExpr(body, existing.table);
+                    Analyzer.self.setStaticContext(wasStatic);
                 }
                 return Type.CONT;
             }

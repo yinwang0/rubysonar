@@ -16,7 +16,8 @@ public class Binding implements Comparable<Object> {
     public enum Kind {
         ATTRIBUTE,    // attr accessed with "." on some other object
         CLASS,        // class definition
-        METHOD,       // static or instance method
+        METHOD,       // instance method
+        CLASS_METHOD,       // class method
         MODULE,       // file
         PARAMETER,    // function param
         SCOPE,        // top-level variable ("scope" means we assume it can have attrs)

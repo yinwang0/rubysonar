@@ -1,10 +1,12 @@
 package org.yinwang.rubysonar.types;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.ast.Call;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class InstanceType extends Type {
@@ -14,7 +16,15 @@ public class InstanceType extends Type {
 
     public InstanceType(@NotNull Type c) {
         table.setStateType(State.StateType.INSTANCE);
-        table.setSuper(c.table);
+
+        for (Map.Entry<String, List<Binding>> e : c.table.table.entrySet()) {
+            for (Binding b : e.getValue()) {
+                if (b.kind != Binding.Kind.CLASS_METHOD) {
+                    table.update(e.getKey(), b);
+                }
+            }
+        }
+
         table.setPath(c.table.path);
         classType = c;
     }

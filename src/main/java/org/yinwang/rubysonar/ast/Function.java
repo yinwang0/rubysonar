@@ -91,7 +91,11 @@ public class Function extends Node {
                 fun.setCls(outType.asClassType());
             }
 
-            s.insert(name.id, name, fun, Binding.Kind.METHOD);
+            if (Analyzer.self.staticContext) {
+                s.insert(name.id, name, fun, Binding.Kind.CLASS_METHOD);
+            } else {
+                s.insert(name.id, name, fun, Binding.Kind.METHOD);
+            }
             return Type.CONT;
         }
     }

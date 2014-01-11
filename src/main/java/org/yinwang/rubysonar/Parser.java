@@ -231,7 +231,8 @@ public class Parser {
             Node base = convert(map.get("super"));
             Node body = convert(map.get("body"));
             Str docstring = (Str) convert(map.get("doc"));
-            return new Class(locator, base, body, docstring, file, start, end);
+            boolean isStatic = (Boolean) map.get("static");
+            return new Class(locator, base, body, docstring, isStatic, file, start, end);
         }
 
         if (type.equals("undef")) {

@@ -53,6 +53,8 @@ public class Analyzer {
     public boolean multilineFunType = false;
     public String suffix;
 
+    public boolean staticContext = false;
+
     public Map<String, Object> options;
 
 
@@ -510,6 +512,11 @@ public class Analyzer {
 
     public void registerBinding(@NotNull Binding b) {
         allBindings.add(b);
+    }
+
+
+    public void setStaticContext(boolean staticContext) {
+        this.staticContext = staticContext;
     }
 
 

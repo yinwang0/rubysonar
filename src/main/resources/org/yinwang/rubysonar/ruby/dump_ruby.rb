@@ -367,8 +367,9 @@ class AstSimplifier
         when :class
           ret = {
               :type => :class,
+              :static => false,
               :name => convert(exp[1]),
-              :body => convert(exp[3])
+              :body => convert(exp[3]),
           }
           if exp[2]
             ret[:super] = convert(exp[2])
@@ -377,8 +378,9 @@ class AstSimplifier
         when :sclass
           {
               :type => :class,
+              :static => true,
               :name => convert(exp[1]),
-              :body => convert(exp[2])
+              :body => convert(exp[2]),
           }
         when :method_add_block
           call = convert(exp[1])
