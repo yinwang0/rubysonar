@@ -141,7 +141,12 @@ public class State {
     }
 
 
-    // directly insert a given binding
+    public String makeTagId(String id, String tag) {
+        return id + Constants.IDSEP + tag;
+    }
+
+
+    // directly insert a given binding list
     @NotNull
     public List<Binding> update(String id, @NotNull List<Binding> bs) {
         this.table.put(id, bs);
@@ -155,6 +160,23 @@ public class State {
         bs.add(b);
         this.table.put(id, bs);
         return bs;
+    }
+
+
+    public void insertTagged(String id, String tag, Node node, Type type, Binding.Kind kind) {
+        insert(makeTagId(id, tag), node, type, kind);
+    }
+
+
+    @NotNull
+    public List<Binding> updateTagged(String id, String tag, @NotNull List<Binding> bs) {
+        return update(makeTagId(id, tag), bs);
+    }
+
+
+    @NotNull
+    public List<Binding> updateTagged(String id, String tag, @NotNull Binding b) {
+        return update(makeTagId(id, tag), b);
     }
 
 
@@ -194,6 +216,12 @@ public class State {
     }
 
 
+    @Nullable
+    public List<Binding> lookupLocalTagged(String name, String tag) {
+        return lookupLocal(makeTagId(name, tag));
+    }
+
+
     /**
      * Look up a name (String) in the current symbol table.  If not found,
      * recurse on the parent table.
@@ -215,6 +243,12 @@ public class State {
                 }
             }
         }
+    }
+
+
+    @Nullable
+    public List<Binding> lookupTagged(@NotNull String name, String tag) {
+        return lookup(makeTagId(name, tag));
     }
 
 
@@ -267,6 +301,12 @@ public class State {
                 }
             }
         }
+    }
+
+
+    @Nullable
+    public List<Binding> lookupAttrTagged(String attr, String tag) {
+        return lookupAttr(makeTagId(attr, tag));
     }
 
 
@@ -408,8 +448,9 @@ public class State {
         name = _.moduleName(name);
         if (path.equals("")) {
             return name;
+        } else {
+            return path + "." + name;
         }
-        return path + "." + name;
     }
 
 

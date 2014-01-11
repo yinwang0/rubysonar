@@ -70,8 +70,9 @@ public class Function extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
+        Type locType = null;
         if (locator instanceof Attribute) {
-            Type locType = transformExpr(((Attribute) locator).target, s);
+            locType = transformExpr(((Attribute) locator).target, s);
             if (!locType.isUnknownType()) {
                 s = locType.table;
             }
@@ -91,10 +92,10 @@ public class Function extends Node {
                 fun.setCls(outType.asClassType());
             }
 
-            if (Analyzer.self.staticContext) {
-                s.insert(name.id, name, fun, Binding.Kind.CLASS_METHOD);
+            if (Analyzer.self.staticContext || locType instanceof ClassType) {
+                s.insertTagged(name.id, "class", name, fun, Binding.Kind.CLASS_METHOD);
             } else {
-                s.insert(name.id, name, fun, Binding.Kind.METHOD);
+                s.insertTagged(name.id, "instance", name, fun, Binding.Kind.METHOD);
             }
             return Type.CONT;
         }

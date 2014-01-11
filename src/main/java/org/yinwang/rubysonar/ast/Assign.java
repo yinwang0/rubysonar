@@ -1,10 +1,7 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Analyzer;
-import org.yinwang.rubysonar.Binder;
-import org.yinwang.rubysonar.Constants;
-import org.yinwang.rubysonar.State;
+import org.yinwang.rubysonar.*;
 import org.yinwang.rubysonar.types.Type;
 
 
@@ -34,7 +31,7 @@ public class Assign extends Node {
             if (thisType == null) {
                 Analyzer.self.putProblem(this, "Instance variable assignment not within class");
             } else {
-                Binder.bind(thisType.table, target, valueType);
+                thisType.table.insertTagged(((Name) target).id, "instance", target, valueType, Binding.Kind.SCOPE);
             }
         } else {
             Binder.bind(s, target, valueType);

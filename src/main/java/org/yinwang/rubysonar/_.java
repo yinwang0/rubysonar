@@ -101,6 +101,12 @@ public class _ {
     }
 
 
+    public static String mainName(@NotNull String taggedName) {
+        String[] segs = taggedName.split(Constants.IDSEP);
+        return segs[0];
+    }
+
+
     @NotNull
     public static String arrayToString(@NotNull Collection<String> strings) {
         StringBuffer sb = new StringBuffer();
