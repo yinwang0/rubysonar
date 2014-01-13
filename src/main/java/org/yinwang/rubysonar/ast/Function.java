@@ -95,7 +95,7 @@ public class Function extends Node {
             if (Analyzer.self.staticContext || locType instanceof ClassType) {
                 s.insertTagged(name.id, "class", name, fun, Binding.Kind.CLASS_METHOD);
             } else {
-                s.insertTagged(name.id, "instance", name, fun, Binding.Kind.METHOD);
+                s.insert(name.id, name, fun, Binding.Kind.METHOD);
             }
             return Type.CONT;
         }

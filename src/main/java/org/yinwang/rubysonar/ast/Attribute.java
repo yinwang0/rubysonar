@@ -6,7 +6,6 @@ import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.types.ClassType;
-import org.yinwang.rubysonar.types.InstanceType;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
 
@@ -96,9 +95,8 @@ public class Attribute extends Node {
 
     private Type getAttrType(@NotNull Type targetType) {
         List<Binding> bs;
-        if (targetType instanceof InstanceType) {
-            bs = targetType.table.lookupAttrTagged(attr.id, "instance");
-        } else if (targetType instanceof ClassType) {
+        if (targetType instanceof ClassType) {
+            // look for class methods only
             bs = targetType.table.lookupAttrTagged(attr.id, "class");
         } else {
             bs = targetType.table.lookupAttr(attr.id);
