@@ -183,7 +183,7 @@ public class Call extends Node {
         State funcTable = new State(func.env, State.StateType.FUNCTION);
 
         if (func.table.parent != null) {
-            funcTable.setPath(func.table.parent.extendPath(func.func.name.id));
+            funcTable.setPath(func.table.parent.extendPath(func.func.name.id, "."));
         } else {
             funcTable.setPath(func.func.name.id);
         }

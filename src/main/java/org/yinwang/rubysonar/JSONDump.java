@@ -61,6 +61,19 @@ public class JSONDump {
     }
 
 
+    private static String kindName(Binding.Kind kind) {
+        if (kind == Binding.Kind.CLASS) {
+            return "class";
+        } else if (kind == Binding.Kind.CLASS_METHOD) {
+            return "method";
+        } else if (kind == Binding.Kind.METHOD) {
+            return "method";
+        } else {
+            return kind.toString();
+        }
+    }
+
+
     private static void writeSymJson(@NotNull Binding binding, JsonGenerator json) throws IOException {
         if (binding.start < 0) {
             return;
@@ -95,12 +108,9 @@ public class JSONDump {
             json.writeNumberField("defStart", binding.bodyStart);
             json.writeNumberField("defEnd", binding.bodyEnd);
             json.writeBooleanField("exported", isExported);
-            json.writeStringField("kind", binding.kind.toString());
+            json.writeStringField("kind", kindName(binding.kind));
 
             if (binding.kind == Binding.Kind.METHOD) {
-                if (!isExported) {
-                    _.msg("method not exported: " + binding.qname);
-                }
 
                 json.writeObjectFieldStart("funcData");
 
@@ -261,17 +271,15 @@ public class JSONDump {
         for (Binding b : idx.getAllBindings()) {
 
             if (b.file != null) {
-//                if (srcpathSet.contains(b.file)) {
-                    if (b.kind == Binding.Kind.METHOD) {
-                        nMethods++;
-                    }
-                    if (b.kind == Binding.Kind.CLASS) {
-                        nClass++;
-                    }
+                if (b.kind == Binding.Kind.METHOD) {
+                    nMethods++;
+                }
+                if (b.kind == Binding.Kind.CLASS) {
+                    nClass++;
+                }
 
-                    writeSymJson(b, symJson);
-                    writeDocJson(b, idx, docJson);
-//                }
+                writeSymJson(b, symJson);
+                writeDocJson(b, idx, docJson);
             }
 
             for (Node ref : b.refs) {

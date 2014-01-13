@@ -80,7 +80,6 @@ public class Function extends Node {
 
         FunType fun = new FunType(this, s);
         fun.table.setParent(s);
-        fun.table.setPath(s.extendPath(name.id));
         fun.setDefaultTypes(resolveList(defaults, s));
         Analyzer.self.addUncalled(fun);
 
@@ -94,8 +93,10 @@ public class Function extends Node {
 
             if (Analyzer.self.staticContext || locType instanceof ClassType) {
                 s.insertTagged(name.id, "class", name, fun, Binding.Kind.CLASS_METHOD);
+                fun.table.setPath(s.extendPath(name.id, "#"));
             } else {
                 s.insert(name.id, name, fun, Binding.Kind.METHOD);
+                fun.table.setPath(s.extendPath(name.id, "."));
             }
             return Type.CONT;
         }

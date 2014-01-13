@@ -135,7 +135,11 @@ public class State {
         if (type.isModuleType()) {
             b.setQname(type.asModuleType().qname);
         } else {
-            b.setQname(extendPath(id));
+            if (id.endsWith("%class")) {
+                b.setQname(extendPath(id, "."));
+            } else {
+                b.setQname(extendPath(id, "#"));
+            }
         }
         update(id, b);
     }
@@ -450,12 +454,12 @@ public class State {
 
 
     @NotNull
-    public String extendPath(@NotNull String name) {
-        name = _.moduleName(name);
+    public String extendPath(@NotNull String name, String sep) {
+        name = _.mainName(name);
         if (path.equals("")) {
             return name;
         } else {
-            return path + "." + name;
+            return path + sep + name;
         }
     }
 

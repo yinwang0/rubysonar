@@ -105,7 +105,7 @@ public class Attribute extends Node {
         if (bs == null) {
             Analyzer.self.putProblem(attr, "attribute not found in type: " + targetType);
             Type t = Type.UNKNOWN;
-            t.table.setPath(targetType.table.extendPath(attr.id));
+            t.table.setPath(targetType.table.extendPath(attr.id, "."));
             return t;
         } else {
             for (Binding b : bs) {

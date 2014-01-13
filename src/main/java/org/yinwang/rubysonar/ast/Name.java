@@ -85,7 +85,7 @@ public class Name extends Node {
             Analyzer.self.putProblem(this, "unbound variable " + id);
             Analyzer.self.unresolved.add(this);
             Type t = Type.UNKNOWN;
-            t.table.setPath(s.extendPath(id));
+            t.table.setPath(s.extendPath(id, "."));
             return t;
         }
     }
