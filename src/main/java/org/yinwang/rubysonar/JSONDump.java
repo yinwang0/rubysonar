@@ -160,11 +160,16 @@ public class JSONDump {
                     }
                 }
 
-                String typeExpr = binding.type.toString();
-
                 json.writeNullField("params");
 
-                String signature = argExpr == null ? "" : argExpr + "\n" + typeExpr;
+                String signature;
+                if (argExpr == null) {
+                    signature = "";
+                } else if (argExpr.equals("()")) {
+                    signature = "";
+                } else {
+                    signature = argExpr;
+                }
                 json.writeStringField("signature", signature);
             }
 
