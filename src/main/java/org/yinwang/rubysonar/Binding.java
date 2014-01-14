@@ -21,7 +21,8 @@ public class Binding implements Comparable<Object> {
         MODULE,       // file
         PARAMETER,    // function param
         SCOPE,        // top-level variable ("scope" means we assume it can have attrs)
-        VARIABLE      // local variable
+        VARIABLE,      // local variable
+        CONSTANT,
     }
 
 

@@ -63,13 +63,13 @@ public class JSONDump {
 
     private static String kindName(Binding.Kind kind) {
         if (kind == Binding.Kind.CLASS) {
-            return "CLASS";
+            return "class";
         } else if (kind == Binding.Kind.CLASS_METHOD) {
-            return "METHOD";
+            return "method";
         } else if (kind == Binding.Kind.METHOD) {
-            return "METHOD";
+            return "method";
         } else {
-            return kind.toString();
+            return kind.toString().toLowerCase();
         }
     }
 
@@ -110,10 +110,7 @@ public class JSONDump {
             json.writeBooleanField("exported", isExported);
             json.writeStringField("kind", kindName(binding.kind));
 
-            if (binding.kind == Binding.Kind.METHOD) {
-
-                json.writeObjectFieldStart("funcData");
-
+            if (binding.kind == Binding.Kind.METHOD || binding.kind == Binding.Kind.CLASS_METHOD) {
                 // get args expression
                 String argExpr = null;
                 Type t = binding.type;
@@ -168,7 +165,6 @@ public class JSONDump {
 
                 String signature = argExpr == null ? "" : argExpr + "\n" + typeExpr;
                 json.writeStringField("signature", signature);
-                json.writeEndObject();
             }
 
             json.writeEndObject();
