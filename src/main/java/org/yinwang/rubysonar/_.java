@@ -102,8 +102,13 @@ public class _ {
 
 
     public static String mainName(@NotNull String taggedName) {
-        String[] segs = taggedName.split(Constants.IDSEP);
-        return segs[0];
+        String[] segs = taggedName.split(Constants.IDSEP_REGEX);
+        if (segs.length == 0) {
+            // shouldn't happen, but just in case
+            return taggedName;
+        } else {
+            return segs[0];
+        }
     }
 
 
