@@ -113,6 +113,43 @@ public class Function extends Node {
     }
 
 
+    public String getArgList() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        boolean first = true;
+
+        if (args != null) {
+            for (Node n : args) {
+                if (!first) {
+                    sb.append(", ");
+                }
+                first = false;
+                sb.append(n.toDisplay());
+            }
+        }
+
+        if (vararg != null) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append("*" + vararg.toDisplay());
+        }
+
+        if (kwarg != null) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append("**" + kwarg.toDisplay());
+        }
+
+        sb.append(")");
+
+        return sb.toString();
+    }
+
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Function) {

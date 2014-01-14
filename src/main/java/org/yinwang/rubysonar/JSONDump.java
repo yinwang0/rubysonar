@@ -122,45 +122,10 @@ public class JSONDump {
 
                 if (t != null && t.isFuncType()) {
                     Function func = t.asFuncType().func;
-
                     if (func != null) {
-                        StringBuilder args = new StringBuilder();
-                        args.append("(");
-                        boolean first = true;
-
-                        if (func.args != null) {
-                            for (Node n : func.args) {
-                                if (!first) {
-                                    args.append(", ");
-                                }
-                                first = false;
-                                args.append(n.toDisplay());
-                            }
-                        }
-
-                        if (func.vararg != null) {
-                            if (!first) {
-                                args.append(", ");
-                            }
-                            first = false;
-                            args.append("*" + func.vararg.toDisplay());
-                        }
-
-                        if (func.kwarg != null) {
-                            if (!first) {
-                                args.append(", ");
-                            }
-                            first = false;
-                            args.append("**" + func.kwarg.toDisplay());
-                        }
-
-                        args.append(")");
-
-                        argExpr = args.toString();
+                        argExpr = func.getArgList();
                     }
                 }
-
-                json.writeNullField("params");
 
                 String signature;
                 if (argExpr == null) {
