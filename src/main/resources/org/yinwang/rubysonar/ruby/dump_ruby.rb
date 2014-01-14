@@ -70,6 +70,7 @@ class AstSimplifier
   def find_docs
     @docs = {}
     lines = @src.split(/\n/)
+    first_line = nil
     current_line = 0
     accum = []
 
@@ -77,14 +78,18 @@ class AstSimplifier
       matched = line.match('^\s*#\s*(.*)')
       if matched
         accum.push(matched[1])
+        if !first_line
+          first_line = current_line
+        end
       elsif !accum.empty?
         doc = {
             :type => :string,
             :id => accum.join('\n'),
-            :line => current_line + 1
         }
         @docs[current_line+1] = doc
+        @docs[first_line-1] = doc
         accum.clear
+        first_line = nil
       end
 
       current_line += 1
@@ -178,7 +183,7 @@ class AstSimplifier
           ret[:end_line] = end_line
 
           # insert docstrings for node if any
-          if [:class, :def].include?(ret[:type])
+          if [:module, :class, :def].include?(ret[:type])
             doc = @docs[start_line]
             if doc
               ret[:doc] = doc

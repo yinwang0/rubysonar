@@ -14,12 +14,14 @@ public class Module extends Node {
     public Node locator;
     public Name name;
     public Block body;
+    public Str docstring;
 
 
-    public Module(Node locator, Block body, String file, int start, int end) {
+    public Module(Node locator, Block body, Str docstring, String file, int start, int end) {
         super(file, start, end);
         this.locator = locator;
         this.body = body;
+        this.docstring = docstring;
         if (locator instanceof Attribute) {
             this.name = ((Attribute) locator).attr;
         } else if (locator instanceof Name) {

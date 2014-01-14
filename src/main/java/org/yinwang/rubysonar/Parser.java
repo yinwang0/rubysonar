@@ -101,7 +101,8 @@ public class Parser {
                     return body;
                 }
             }
-            return new Module(name, body, file, start, end);
+            Str docstring = (Str) convert(map.get("doc"));
+            return new Module(name, body, docstring, file, start, end);
         }
 
         if (type.equals("block")) {

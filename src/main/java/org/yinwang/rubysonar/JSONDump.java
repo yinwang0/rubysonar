@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.ast.Function;
+import org.yinwang.rubysonar.ast.Module;
 import org.yinwang.rubysonar.ast.Node;
 import org.yinwang.rubysonar.ast.Str;
 import org.yinwang.rubysonar.types.Type;
@@ -167,6 +168,37 @@ public class JSONDump {
                 json.writeStringField("signature", signature);
             }
 
+            // find docstrings
+            Str doc = null;
+            Node fullNode = binding.node;
+            if (binding.kind == Binding.Kind.CLASS) {
+                while (fullNode != null && !(fullNode instanceof org.yinwang.rubysonar.ast.Class)) {
+                    fullNode = fullNode.parent;
+                }
+            } else if (binding.kind == Binding.Kind.METHOD || binding.kind == Binding.Kind.CLASS_METHOD) {
+                while (fullNode != null && !(fullNode instanceof Function)) {
+                    fullNode = fullNode.parent;
+                }
+            } else if (binding.kind == Binding.Kind.MODULE) {
+                while (fullNode != null && !(fullNode instanceof Module)) {
+                    fullNode = fullNode.parent;
+                }
+            }
+
+
+            if (fullNode instanceof org.yinwang.rubysonar.ast.Class) {
+                doc = ((org.yinwang.rubysonar.ast.Class) fullNode).docstring;
+            } else if (fullNode instanceof Function) {
+                doc = ((Function) fullNode).docstring;
+            } else if (fullNode instanceof Module) {
+                doc = ((Module) fullNode).docstring;
+            }
+
+
+            if (doc != null) {
+                json.writeStringField("docstring", doc.value);
+            }
+
             json.writeEndObject();
         }
     }
@@ -275,7 +307,6 @@ public class JSONDump {
                 }
 
                 writeSymJson(b, symJson);
-                writeDocJson(b, idx, docJson);
             }
 
             for (Node ref : b.refs) {
