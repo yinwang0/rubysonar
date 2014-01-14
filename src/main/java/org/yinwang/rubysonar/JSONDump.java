@@ -63,11 +63,11 @@ public class JSONDump {
 
     private static String kindName(Binding.Kind kind) {
         if (kind == Binding.Kind.CLASS) {
-            return "class";
+            return "CLASS";
         } else if (kind == Binding.Kind.CLASS_METHOD) {
-            return "method";
+            return "METHOD";
         } else if (kind == Binding.Kind.METHOD) {
-            return "method";
+            return "METHOD";
         } else {
             return kind.toString();
         }

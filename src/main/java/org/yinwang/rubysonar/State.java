@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.ast.Attribute;
 import org.yinwang.rubysonar.ast.Name;
 import org.yinwang.rubysonar.ast.Node;
+import org.yinwang.rubysonar.types.FunType;
 import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 import org.yinwang.rubysonar.types.UnionType;
@@ -135,10 +136,14 @@ public class State {
         if (type.isModuleType()) {
             b.setQname(type.asModuleType().qname);
         } else {
-            if (id.endsWith("%class")) {
-                b.setQname(extendPath(id, "."));
+            if (type instanceof FunType) {
+                if (id.endsWith(Constants.IDSEP + "class")) {
+                    b.setQname(extendPath(id, "."));
+                } else {
+                    b.setQname(extendPath(id, "#"));
+                }
             } else {
-                b.setQname(extendPath(id, "#"));
+                b.setQname(extendPath(id, "::"));
             }
         }
         update(id, b);

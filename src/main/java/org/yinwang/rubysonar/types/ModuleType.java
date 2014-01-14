@@ -19,7 +19,7 @@ public class ModuleType extends Type {
         if (parent.path.isEmpty()) {
             qname = name;
         } else {
-            qname = parent.path + "/" + name;
+            qname = parent.path + "::" + name;
         }
         setTable(new State(parent, State.StateType.MODULE));
         table.setPath(qname);
