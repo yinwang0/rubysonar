@@ -151,41 +151,6 @@ public class JSONDump {
     }
 
 
-    private static void writeDocJson(Binding binding, Analyzer idx, JsonGenerator json) throws Exception {
-        String path = binding.qname.replace("%20", ".");
-
-        if (!seenDocs.contains(path)) {
-            seenDocs.add(path);
-
-            Str doc = null;
-            if (binding.node instanceof org.yinwang.rubysonar.ast.Class) {
-                doc = ((org.yinwang.rubysonar.ast.Class) binding.node).docstring;
-            } else if (binding.node instanceof Function) {
-                doc = ((Function) binding.node).docstring;
-            }
-            if (doc != null) {
-                json.writeStartObject();
-                json.writeStringField("sym", path);
-                json.writeStringField("file", binding.file);
-                json.writeStringField("body", doc.value);
-                json.writeNumberField("start", doc.start);
-                json.writeNumberField("end", doc.end);
-                json.writeEndObject();
-            }
-        }
-    }
-
-
-    private static boolean shouldEmit(@NotNull String pathToMaybeEmit, String srcpath) {
-        return _.unifyPath(pathToMaybeEmit).startsWith(_.unifyPath(srcpath));
-    }
-
-
-    static int neMethods = 0;
-    static int neFunc = 0;
-    static int neClass = 0;
-
-
     /*
      * Precondition: srcpath and inclpaths are absolute paths
      */
