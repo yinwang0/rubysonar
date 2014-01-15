@@ -64,11 +64,6 @@ public class Function extends Node {
     }
 
 
-    public void setDocstring(Str docstring) {
-        this.docstring = docstring;
-    }
-
-
     @NotNull
     @Override
     public Type transform(@NotNull State s) {

@@ -19,7 +19,9 @@ public class Class extends Node {
     public boolean isStatic;
 
 
-    public Class(@Nullable Node locator, Node base, Node body, Str docstring, boolean isStatic, String file, int start, int end) {
+    public Class(@Nullable Node locator, Node base, Node body, Str docstring, boolean isStatic, String file, int start,
+                 int end)
+    {
         super(file, start, end);
 
         // set name
@@ -57,11 +59,6 @@ public class Class extends Node {
     public static String genClassName() {
         classCounter = classCounter + 1;
         return "class%" + classCounter;
-    }
-
-
-    public void setDocstring(Str docstring) {
-        this.docstring = docstring;
     }
 
 
