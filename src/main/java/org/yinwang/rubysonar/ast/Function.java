@@ -4,10 +4,12 @@ import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
+import org.yinwang.rubysonar._;
 import org.yinwang.rubysonar.types.ClassType;
 import org.yinwang.rubysonar.types.FunType;
 import org.yinwang.rubysonar.types.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -114,39 +116,33 @@ public class Function extends Node {
 
 
     public String getArgList() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        boolean first = true;
 
+        List<String> argList = new ArrayList<>();
         if (args != null) {
             for (Node n : args) {
-                if (!first) {
-                    sb.append(", ");
-                }
-                first = false;
-                sb.append(n.toDisplay());
+                argList.add(n.toDisplay());
             }
         }
 
         if (vararg != null) {
-            if (!first) {
-                sb.append(", ");
+            argList.add("*" + vararg.toDisplay());
+        }
+
+        if (afterRest != null) {
+            for (Node a : afterRest) {
+                argList.add(a.toDisplay());
             }
-            first = false;
-            sb.append("*" + vararg.toDisplay());
         }
 
         if (kwarg != null) {
-            if (!first) {
-                sb.append(", ");
-            }
-            first = false;
-            sb.append("**" + kwarg.toDisplay());
+            argList.add("**" + kwarg.toDisplay());
         }
 
-        sb.append(")");
+        if (blockarg != null) {
+            argList.add("&" + blockarg.toDisplay());
+        }
 
-        return sb.toString();
+        return _.joinWithSep(argList, ",", null, null);
     }
 
 

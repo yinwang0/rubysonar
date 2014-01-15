@@ -92,13 +92,6 @@ public class JSONDump {
         if (!seenDef.contains(path)) {
             seenDef.add(path);
 
-            if (binding.kind == Binding.Kind.METHOD) {
-                neMethods++;
-            }
-            if (binding.kind == Binding.Kind.CLASS) {
-                neClass++;
-            }
-
             json.writeStartObject();
             json.writeStringField("name", name);
             json.writeStringField("path", path);
@@ -112,7 +105,6 @@ public class JSONDump {
 
             if (binding.kind == Binding.Kind.METHOD || binding.kind == Binding.Kind.CLASS_METHOD) {
                 // get args expression
-                String argExpr = null;
                 Type t = binding.type;
 
                 if (t.isUnionType()) {
@@ -122,25 +114,18 @@ public class JSONDump {
                 if (t != null && t.isFuncType()) {
                     Function func = t.asFuncType().func;
                     if (func != null) {
-                        argExpr = func.getArgList();
+                        String signature = func.getArgList();
+                        if (!signature.equals("")) {
+                            signature = "(" + signature + ")";
+                        }
+                        json.writeStringField("signature", signature);
                     }
                 }
-
-                String signature;
-                if (argExpr == null) {
-                    signature = "";
-                } else if (argExpr.equals("()")) {
-                    signature = "";
-                } else {
-                    signature = argExpr;
-                }
-                json.writeStringField("signature", signature);
             }
 
-
-            String doc = binding.findDocString().value;
-            if (doc != null) {
-                json.writeStringField("docstring", doc);
+            Str docstring = binding.findDocString();
+            if (docstring != null) {
+                json.writeStringField("docstring", docstring.value);
             }
 
             json.writeEndObject();
@@ -234,22 +219,12 @@ public class JSONDump {
             json.writeStartArray();
         }
 
-        int nMethods = 0;
-        int nClass = 0;
-
         Set<String> srcpathSet = new HashSet<>();
         srcpathSet.addAll(srcpath);
 
         for (Binding b : idx.getAllBindings()) {
 
             if (b.file != null) {
-                if (b.kind == Binding.Kind.METHOD) {
-                    nMethods++;
-                }
-                if (b.kind == Binding.Kind.CLASS) {
-                    nClass++;
-                }
-
                 writeSymJson(b, symJson);
             }
 
@@ -264,10 +239,6 @@ public class JSONDump {
             }
             writeRefJson(b.node, b, refJson);
         }
-
-        _.msg("found: " + nMethods + " methods, " + nClass + " classes");
-        _.msg("emitted: " + neMethods + " methods, " + neClass + " classes");
-
 
         for (JsonGenerator json : allJson) {
             json.writeEndArray();
