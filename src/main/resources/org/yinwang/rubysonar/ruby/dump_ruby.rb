@@ -179,7 +179,7 @@ class AstSimplifier
         if whole_start
           # push whole_end to 'end' keyword
           if [:module, :class, :def, :lambda, :if, :begin, :while, :for]
-              .include?(obj[:type])
+              .include?(obj[:type]) and not obj[:mod]
             locator = whole_end
             while locator <= @src.length and
                 not 'end'.eql? @src[locator .. locator + 'end'.length-1]
@@ -510,10 +510,13 @@ class AstSimplifier
           ret = {
               :type => :if,
               :test => convert(exp[1]),
-              :body => convert(exp[2])
+              :body => convert(exp[2]),
           }
           if exp[3]
             ret[:else] = convert(exp[3])
+          end
+          if exp[0] == :if_mod
+            ret[:mod] = true
           end
           ret
         when :case
@@ -524,22 +527,40 @@ class AstSimplifier
           end
           convert_when(exp[2], value)
         when :while, :while_mod
+          if exp[0] == :while_mod
+            mod = true
+          else
+            mod = false
+          end
           {
               :type => :while,
               :test => convert(exp[1]),
-              :body => convert(exp[2])
+              :body => convert(exp[2]),
+              :mod => mod
           }
         when :until, :until_mod
+          if exp[0] == :until_mod
+            mod = true
+          else
+            mod = false
+          end
           {
               :type => :while,
               :test => negate(convert(exp[1])),
-              :body => convert(exp[2])
+              :body => convert(exp[2]),
+              :mod => mod
           }
         when :unless, :unless_mod
+          if exp[0] == :unless_mod
+            mod = true
+          else
+            mod = false
+          end
           ret = {
               :type => :if,
               :test => negate(convert(exp[1])),
-              :body => convert(exp[2])
+              :body => convert(exp[2]),
+              :mod => mod
           }
           if exp[3]
             ret[:else] = convert(exp[3])
@@ -584,7 +605,8 @@ class AstSimplifier
           {
               :type => :begin,
               :body => convert(exp[1]),
-              :rescue => convert(exp[2])
+              :rescue => convert(exp[2]),
+              :mod => true
           }
         when :stmts_new
           {
