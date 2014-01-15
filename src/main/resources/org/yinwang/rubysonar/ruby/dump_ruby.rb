@@ -177,6 +177,19 @@ class AstSimplifier
         end
 
         if whole_start
+          # push whole_end to 'end' keyword
+          if [:module, :class, :def, :lambda, :if, :begin, :while, :for]
+              .include?(obj[:type])
+            locator = whole_end
+            while locator <= @src.length and
+                not 'end'.eql? @src[locator .. locator + 'end'.length-1]
+              locator += 1
+            end
+            if 'end'.eql? @src[locator .. locator + 'end'.length-1]
+              whole_end = locator + 'end'.length
+            end
+          end
+
           ret[:start] = whole_start
           ret[:end] = whole_end
           ret[:start_line] = start_line
