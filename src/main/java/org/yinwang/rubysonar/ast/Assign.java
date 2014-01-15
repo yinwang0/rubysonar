@@ -33,7 +33,9 @@ public class Assign extends Node {
             } else {
                 thisType.table.insert(((Name) target).id, target, valueType, Binding.Kind.SCOPE);
             }
-        } else if (target instanceof Name && ((Name) target).id.toUpperCase().equals(((Name) target).id)) {
+        } else if (s.stateType == State.StateType.CLASS &&
+                target instanceof Name && ((Name) target).id.toUpperCase().equals(((Name) target).id))
+        {
             // constant
             s.insertTagged(((Name) target).id, "class", target, valueType, Binding.Kind.CONSTANT);
         } else {
