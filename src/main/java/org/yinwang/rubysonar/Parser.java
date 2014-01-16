@@ -129,9 +129,9 @@ public class Parser {
 
         if (type.equals("call")) {
             Node func = convert(map.get("func"));
-            Call ret;
             Map<String, Object> args = (Map<String, Object>) map.get("args");
             Node blockarg = convert(map.get("block_arg"));
+            Node stararg = null;
 
             if (args != null) {
                 List<Node> posKey = convertList(args.get("positional"));
@@ -150,11 +150,11 @@ public class Parser {
                         }
                     }
                 }
-
-                return new Call(func, pos, kws, null, null, blockarg, file, start, end);
+                stararg = convert(args.get("star"));
+                return new Call(func, pos, kws, null, stararg, blockarg, file, start, end);
             } else {
                 // call with no arguments
-                return new Call(func, null, null, null, null, blockarg, file, start, end);
+                return new Call(func, null, null, null, stararg, blockarg, file, start, end);
             }
         }
 
