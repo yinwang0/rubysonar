@@ -3,8 +3,8 @@
     "ref": {
       "name": "bar",
       "file": "blockarg.rb",
-      "start": 94,
-      "end": 97
+      "start": 96,
+      "end": 99
     },
     "dests": [
       {
@@ -19,8 +19,8 @@
     "ref": {
       "name": "foo",
       "file": "blockarg.rb",
-      "start": 73,
-      "end": 76
+      "start": 76,
+      "end": 79
     },
     "dests": [
       {
@@ -33,17 +33,33 @@
   },
   {
     "ref": {
+      "name": "x",
+      "file": "blockarg.rb",
+      "start": 80,
+      "end": 81
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "blockarg.rb",
+        "start": 63,
+        "end": 64
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "block",
       "file": "blockarg.rb",
-      "start": 82,
-      "end": 87
+      "start": 84,
+      "end": 89
     },
     "dests": [
       {
         "name": "block",
         "file": "blockarg.rb",
-        "start": 64,
-        "end": 69
+        "start": 67,
+        "end": 72
       }
     ]
   },
@@ -67,15 +83,63 @@
     "ref": {
       "name": "x",
       "file": "blockarg.rb",
-      "start": 104,
-      "end": 105
+      "start": 110,
+      "end": 111
     },
     "dests": [
       {
         "name": "x",
         "file": "blockarg.rb",
-        "start": 101,
-        "end": 102
+        "start": 107,
+        "end": 108
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "foo",
+      "file": "blockarg.rb",
+      "start": 141,
+      "end": 144
+    },
+    "dests": [
+      {
+        "name": "foo",
+        "file": "star.rb",
+        "start": 4,
+        "end": 7
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "args",
+      "file": "blockarg.rb",
+      "start": 146,
+      "end": 150
+    },
+    "dests": [
+      {
+        "name": "args",
+        "file": "blockarg.rb",
+        "start": 125,
+        "end": 129
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "block",
+      "file": "blockarg.rb",
+      "start": 153,
+      "end": 158
+    },
+    "dests": [
+      {
+        "name": "block",
+        "file": "blockarg.rb",
+        "start": 132,
+        "end": 137
       }
     ]
   },

@@ -6,8 +6,13 @@ end
 # foo { |x| x }
 
 
-def bar(&block)
-  foo(42, &block)
+def bar(x, &block)
+  foo(x, &block)
 end
 
-bar { |x| x }
+bar(42) { |x| x }
+
+
+def baz(*args, &block)
+  foo(*args, &block)
+end

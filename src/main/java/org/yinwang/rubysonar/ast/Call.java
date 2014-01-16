@@ -276,11 +276,13 @@ public class Call extends Node {
         if (restKw != null) {
             if (hash != null && !hash.isEmpty()) {
                 Type hashType = UnionType.newUnion(hash.values());
+                Type dict = new DictType(Type.STR, hashType);
                 Binder.bind(
                         funcTable,
                         restKw,
-                        new DictType(Type.STR, hashType),
+                        dict,
                         Binding.Kind.PARAMETER);
+                fromType.add(dict);
             } else {
                 Binder.bind(funcTable, restKw, Type.UNKNOWN, Binding.Kind.PARAMETER);
             }
@@ -294,25 +296,31 @@ public class Call extends Node {
                         Binder.bind(funcTable, func.afterRest.get(i),
                                 pTypes.get(pTypes.size() - nAfter + i),
                                 Binding.Kind.PARAMETER);
+                        fromType.add(pTypes.get(pTypes.size() - nAfter + i));
                     }
                     if (pTypes.size() - nAfter > 0) {
                         Type restType = new TupleType(pTypes.subList(pSize, pTypes.size() - nAfter));
                         Binder.bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                        fromType.add(restType);
                     }
                 } else {
                     Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
                     Binder.bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                    fromType.add(restType);
                 }
             } else {
                 Binder.bind(funcTable, rest, Type.UNKNOWN, Binding.Kind.PARAMETER);
+                fromType.add(Type.UNKNOWN);
             }
         }
 
         if (func.blockarg != null) {
             if (block != null) {
                 Binder.bind(funcTable, func.blockarg, block, Binding.Kind.PARAMETER);
+                fromType.add(block);
             } else {
                 Binder.bind(funcTable, func.blockarg, Type.UNKNOWN, Binding.Kind.PARAMETER);
+                fromType.add(Type.UNKNOWN);
             }
         }
 
