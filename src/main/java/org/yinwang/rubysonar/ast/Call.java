@@ -314,8 +314,12 @@ public class Call extends Node {
             }
         }
 
-        if (func.blockarg != null && block != null) {
-            Binder.bind(funcTable, func.blockarg, block, Binding.Kind.PARAMETER);
+        if (func.blockarg != null) {
+            if (block != null) {
+                Binder.bind(funcTable, func.blockarg, block, Binding.Kind.PARAMETER);
+            } else {
+                Binder.bind(funcTable, func.blockarg, Type.UNKNOWN, Binding.Kind.PARAMETER);
+            }
         }
 
         return fromType;
