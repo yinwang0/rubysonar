@@ -282,10 +282,7 @@ public class Call extends Node {
                         new DictType(Type.STR, hashType),
                         Binding.Kind.PARAMETER);
             } else {
-                Binder.bind(funcTable,
-                        restKw,
-                        Type.UNKNOWN,
-                        Binding.Kind.PARAMETER);
+                Binder.bind(funcTable, restKw, Type.UNKNOWN, Binding.Kind.PARAMETER);
             }
         }
 
@@ -307,10 +304,7 @@ public class Call extends Node {
                     Binder.bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
                 }
             } else {
-                Binder.bind(funcTable,
-                        rest,
-                        Type.UNKNOWN,
-                        Binding.Kind.PARAMETER);
+                Binder.bind(funcTable, rest, Type.UNKNOWN, Binding.Kind.PARAMETER);
             }
         }
 
