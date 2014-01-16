@@ -286,7 +286,7 @@ class AstSimplifier
           }
         when :symbol
           sym = convert(exp[1])
-          sym[:type] = :name
+          sym[:type] = :symbol
           sym
         when :@cvar
           {

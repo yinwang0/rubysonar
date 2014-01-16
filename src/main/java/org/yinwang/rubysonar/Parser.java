@@ -428,10 +428,10 @@ public class Parser {
             return new Name(id, NameType.GLOBAL, file, start, end);
         }
 
-//        if (type.equals("symbol")) {
-//            String id = (String) map.get("id");
-//            return new Name(id, file, start, end);
-//        }
+        if (type.equals("symbol")) {
+            String id = (String) map.get("id");
+            return new Symbol(id, file, start, end);
+        }
 
         if (type.equals("int")) {
             String n = (String) map.get("value");
