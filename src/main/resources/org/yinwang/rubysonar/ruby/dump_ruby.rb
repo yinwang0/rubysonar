@@ -373,7 +373,7 @@ class AstSimplifier
             ret[:rest_kw] = convert(exp[6])
           end
           if exp[7]
-            ret[:block] = convert(exp[7])
+            ret[:blockarg] = convert(exp[7])
           end
           ret
         when :block_var
@@ -402,7 +402,13 @@ class AstSimplifier
           }
         when :method_add_block
           call = convert(exp[1])
-          call[:block_arg] = convert(exp[2])
+          if call[:args]
+            call[:args][:blockarg] = convert(exp[2])
+          else
+            call[:args] = {
+              :blockarg => convert(exp[2])
+            }
+          end
           call
         when :method_add_arg
           call = convert(exp[1])
@@ -472,7 +478,7 @@ class AstSimplifier
         when :args_add_block
           args = convert(exp[1])
           if exp[2]
-            args[:block] = convert(exp[2])
+            args[:blockarg] = convert(exp[2])
           end
           args
         when :assign, :massign

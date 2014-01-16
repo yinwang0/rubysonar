@@ -121,7 +121,7 @@ public class Parser {
             Name kw = (Name) convert(argsMap.get("rest_kw"));
             Name kwarg = kw == null ? null : kw;
             List<Node> afterRest = convertList(argsMap.get("after_rest"));
-            Name blockarg = (Name) convert(argsMap.get("block"));
+            Name blockarg = (Name) convert(argsMap.get("blockarg"));
             Str docstring = (Str) convert(map.get("doc"));
             return new Function(binder, positional, body, defaults, vararg, kwarg, afterRest, blockarg,
                     docstring, file, start, end);
@@ -130,7 +130,7 @@ public class Parser {
         if (type.equals("call")) {
             Node func = convert(map.get("func"));
             Map<String, Object> args = (Map<String, Object>) map.get("args");
-            Node blockarg = convert(map.get("block_arg"));
+            Node blockarg = null;
             Node stararg = null;
 
             if (args != null) {
@@ -151,6 +151,7 @@ public class Parser {
                     }
                 }
                 stararg = convert(args.get("star"));
+                blockarg = convert(args.get("blockarg"));
                 return new Call(func, pos, kws, null, stararg, blockarg, file, start, end);
             } else {
                 // call with no arguments
