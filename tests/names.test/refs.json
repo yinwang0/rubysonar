@@ -46,21 +46,5 @@
         "end": 12
       }
     ]
-  },
-  {
-    "ref": {
-      "name": "a",
-      "file": "names.rb",
-      "start": 97,
-      "end": 98
-    },
-    "dests": [
-      {
-        "name": "a",
-        "file": "names.rb",
-        "start": 11,
-        "end": 12
-      }
-    ]
   }
 ]
