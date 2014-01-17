@@ -86,31 +86,6 @@ public abstract class Node implements java.io.Serializable {
     protected abstract Type transform(State s);
 
 
-    public boolean isCall() {
-        return this instanceof Call;
-    }
-
-
-    public boolean isModule() {
-        return this instanceof Module;
-    }
-
-
-    public boolean isClassDef() {
-        return false;
-    }
-
-
-    public boolean isFunctionDef() {
-        return false;
-    }
-
-
-    public boolean isLambda() {
-        return false;
-    }
-
-
     public boolean isName() {
         return this instanceof Name;
     }

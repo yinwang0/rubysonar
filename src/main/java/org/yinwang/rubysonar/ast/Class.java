@@ -43,18 +43,6 @@ public class Class extends Node {
     }
 
 
-    @Override
-    public boolean isClassDef() {
-        return true;
-    }
-
-
-    @Nullable
-    public Node getLocator() {
-        return locator;
-    }
-
-
     @NotNull
     public static String genClassName() {
         classCounter = classCounter + 1;
