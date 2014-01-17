@@ -26,7 +26,7 @@ public class Assign extends Node {
     @Override
     public Type transform(@NotNull State s) {
         Type valueType = transformExpr(value, s);
-        if (target.isName() && target.asName().isInstanceVar()) {
+        if (target instanceof Name && ((Name) target).isInstanceVar()) {
             Type thisType = s.lookupType(Constants.INSTNAME);
             if (thisType == null) {
                 Analyzer.self.putProblem(this, "Instance variable assignment not within class");

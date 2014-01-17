@@ -139,9 +139,9 @@ public class Parser {
                 List<Keyword> kws = new ArrayList<>();
                 if (posKey != null) {
                     for (Node node : posKey) {
-                        if (node.isAssign() && node.asAssign().target.isName()) {
-                            kws.add(new Keyword(node.asAssign().target.asName().id,
-                                    node.asAssign().value,
+                        if (node instanceof Assign && ((Assign) node).target instanceof Name) {
+                            kws.add(new Keyword(((Name) ((Assign) node).target).id,
+                                    ((Assign) node).value,
                                     file,
                                     node.start,
                                     node.end));

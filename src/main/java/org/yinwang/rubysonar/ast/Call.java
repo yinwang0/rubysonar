@@ -45,8 +45,8 @@ public class Call extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        if (func.isName()) {
-            Name fn = func.asName();
+        if (func instanceof Name) {
+            Name fn = (Name) func;
 
             // handle 'require' and 'load'
             if (fn.id.equals("require") || fn.id.equals("load")) {
@@ -252,11 +252,11 @@ public class Call extends Node {
             } else if (i - nPos >= 0 && i - nPos < dSize) {
                 aType = dTypes.get(i - nPos);
             } else {
-                if (hash != null && args.get(i).isName() &&
-                        hash.containsKey(args.get(i).asName().id))
+                if (hash != null && args.get(i) instanceof Name &&
+                        hash.containsKey(((Name) args.get(i)).id))
                 {
-                    aType = hash.get(args.get(i).asName().id);
-                    hash.remove(args.get(i).asName().id);
+                    aType = hash.get(((Name) args.get(i)).id);
+                    hash.remove(((Name) args.get(i)).id);
                 } else if (star != null && star.isTupleType() &&
                         j < star.asTupleType().eltTypes.size())
                 {
@@ -347,7 +347,7 @@ public class Call extends Node {
 
 
     public boolean isSuperCall() {
-        return func.isName() && func.asName().id.equals("super");
+        return func instanceof Name && ((Name) func).id.equals("super");
     }
 
 

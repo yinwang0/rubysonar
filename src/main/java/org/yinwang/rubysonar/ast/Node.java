@@ -86,63 +86,6 @@ public abstract class Node implements java.io.Serializable {
     protected abstract Type transform(State s);
 
 
-    public boolean isName() {
-        return this instanceof Name;
-    }
-
-
-    public boolean isAssign() {
-        return this instanceof Assign;
-    }
-
-
-    public boolean isBinOp() {
-        return this instanceof BinOp;
-    }
-
-
-    @NotNull
-    public BinOp asBinOp() {
-        return (BinOp) this;
-    }
-
-
-    @NotNull
-    public Call asCall() {
-        return (Call) this;
-    }
-
-
-    @NotNull
-    public Module asModule() {
-        return (Module) this;
-    }
-
-
-    @NotNull
-    public Class asClassDef() {
-        return (Class) this;
-    }
-
-
-    @NotNull
-    public Function asFunctionDef() {
-        return (Function) this;
-    }
-
-
-    @NotNull
-    public Name asName() {
-        return (Name) this;
-    }
-
-
-    @NotNull
-    public Assign asAssign() {
-        return (Assign) this;
-    }
-
-
     protected void addWarning(String msg) {
         Analyzer.self.putProblem(this, msg);
     }
