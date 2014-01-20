@@ -154,7 +154,8 @@ public class JSONDump {
     /*
      * Precondition: srcpath and inclpaths are absolute paths
      */
-    private static void graph(List<String> srcpath,
+    private static void graph(String projectDir,
+                              List<String> srcpath,
                               String[] inclpaths,
                               OutputStream symOut,
                               OutputStream refOut,
@@ -189,12 +190,12 @@ public class JSONDump {
 
         for (Binding b : idx.getAllBindings()) {
 
-            if (b.file != null) {
+            if (b.file != null && b.file.startsWith(projectDir)) {
                 writeSymJson(b, symJson);
             }
 
             for (Node ref : b.refs) {
-                if (ref.file != null) {
+                if (ref.file != null && ref.file.startsWith(projectDir)) {
                     String key = ref.file + ":" + ref.start;
                     if (!seenRef.contains(key)) {
                         writeRefJson(ref, b, refJson);
@@ -202,7 +203,7 @@ public class JSONDump {
                     }
                 }
             }
-            writeRefJson(b.node, b, refJson);
+//            writeRefJson(b.node, b, refJson);
         }
 
         for (JsonGenerator json : allJson) {
@@ -231,12 +232,14 @@ public class JSONDump {
 
         String[] inclpaths;
         String outroot;
+        String projectDir;
         List<String> srcpath = new ArrayList<>();
 
-        if (args.length >= 2) {
+        if (args.length >= 3) {
             outroot = args[0];
-            inclpaths = args[1].split(":");
-            srcpath.addAll(Arrays.asList(args).subList(2, args.length));
+            projectDir = args[1];
+            inclpaths = args[2].split(":");
+            srcpath.addAll(Arrays.asList(args).subList(3, args.length));
         } else {
             usage();
             return;
@@ -251,7 +254,7 @@ public class JSONDump {
             symOut = new BufferedOutputStream(new FileOutputStream(symFilename));
             refOut = new BufferedOutputStream(new FileOutputStream(refFilename));
             _.msg("graphing: " + srcpath);
-            graph(srcpath, inclpaths, symOut, refOut, docOut);
+            graph(projectDir, srcpath, inclpaths, symOut, refOut, docOut);
             docOut.flush();
             symOut.flush();
             refOut.flush();
