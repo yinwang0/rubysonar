@@ -22,7 +22,6 @@ public class JSONDump {
 
     private static Set<String> seenDef = new HashSet<>();
     private static Set<String> seenRef = new HashSet<>();
-    private static Set<String> seenDocs = new HashSet<>();
 
 
     @NotNull
@@ -158,8 +157,7 @@ public class JSONDump {
                               List<String> srcpath,
                               String[] inclpaths,
                               OutputStream symOut,
-                              OutputStream refOut,
-                              OutputStream docOut) throws Exception
+                              OutputStream refOut) throws Exception
     {
         // Compute parent dirs, sort by length so potential prefixes show up first
         List<String> parentDirs = Lists.newArrayList(inclpaths);
@@ -179,8 +177,7 @@ public class JSONDump {
         JsonFactory jsonFactory = new JsonFactory();
         JsonGenerator symJson = jsonFactory.createGenerator(symOut);
         JsonGenerator refJson = jsonFactory.createGenerator(refOut);
-        JsonGenerator docJson = jsonFactory.createGenerator(docOut);
-        JsonGenerator[] allJson = {symJson, refJson, docJson};
+        JsonGenerator[] allJson = {symJson, refJson};
         for (JsonGenerator json : allJson) {
             json.writeStartArray();
         }
@@ -201,6 +198,8 @@ public class JSONDump {
                         writeRefJson(ref, b, refJson);
                         seenRef.add(key);
                     }
+                } else {
+//                    _.msg("filtering out: " + ref.file + ":" + ref.start);
                 }
             }
 //            writeRefJson(b.node, b, refJson);
@@ -230,14 +229,14 @@ public class JSONDump {
     public static void main(String[] args) throws Exception {
         log.setLevel(Level.SEVERE);
 
-        String[] inclpaths;
-        String outroot;
         String projectDir;
+        String outroot;
+        String[] inclpaths;
         List<String> srcpath = new ArrayList<>();
 
         if (args.length >= 3) {
-            outroot = args[0];
-            projectDir = args[1];
+            projectDir = args[0];
+            outroot = args[1];
             inclpaths = args[2].split(":");
             srcpath.addAll(Arrays.asList(args).subList(3, args.length));
         } else {
@@ -245,26 +244,18 @@ public class JSONDump {
             return;
         }
 
-        String symFilename = outroot + "-sym";
-        String refFilename = outroot + "-ref";
-        String docFilename = outroot + "-doc";
-        OutputStream symOut = null, refOut = null, docOut = null;
+        OutputStream symOut = null, refOut = null;
         try {
-            docOut = new BufferedOutputStream(new FileOutputStream(docFilename));
-            symOut = new BufferedOutputStream(new FileOutputStream(symFilename));
-            refOut = new BufferedOutputStream(new FileOutputStream(refFilename));
+            symOut = new BufferedOutputStream(new FileOutputStream(outroot + "-sym"));
+            refOut = new BufferedOutputStream(new FileOutputStream(outroot + "-ref"));
             _.msg("graphing: " + srcpath);
-            graph(projectDir, srcpath, inclpaths, symOut, refOut, docOut);
-            docOut.flush();
+            graph(projectDir, srcpath, inclpaths, symOut, refOut);
             symOut.flush();
             refOut.flush();
         } catch (FileNotFoundException e) {
             System.err.println("Could not find file: " + e);
             return;
         } finally {
-            if (docOut != null) {
-                docOut.close();
-            }
             if (symOut != null) {
                 symOut.close();
             }
