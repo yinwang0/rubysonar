@@ -116,7 +116,7 @@ public class Analyzer {
     // main entry to the analyzer
     public void analyze(List<String> paths) {
         for (String path : paths) {
-            loadFileRecursive(_.unifyPath(path));
+            analyze(path);
         }
     }
 

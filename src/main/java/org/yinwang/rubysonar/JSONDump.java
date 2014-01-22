@@ -40,22 +40,8 @@ public class JSONDump {
         for (String inclpath : inclpaths) {
             idx.addPath(inclpath);
         }
-
         idx.analyze(srcpath);
         idx.finish();
-
-        if (idx.semanticErrors.size() > 0) {
-            log.info("Analyzer errors:");
-            for (Entry<String, List<Diagnostic>> entry : idx.semanticErrors.entrySet()) {
-                String k = entry.getKey();
-                log.info("  Key: " + k);
-                List<Diagnostic> diagnostics = entry.getValue();
-                for (Diagnostic d : diagnostics) {
-                    log.info("    " + d);
-                }
-            }
-        }
-
         return idx;
     }
 
@@ -182,9 +168,6 @@ public class JSONDump {
             json.writeStartArray();
         }
 
-        Set<String> srcpathSet = new HashSet<>();
-        srcpathSet.addAll(srcpath);
-
         for (Binding b : idx.getAllBindings()) {
 
             if (b.file != null && b.file.startsWith(projectDir)) {
@@ -198,11 +181,10 @@ public class JSONDump {
                         writeRefJson(ref, b, refJson);
                         seenRef.add(key);
                     }
-                } else {
-//                    _.msg("filtering out: " + ref.file + ":" + ref.start);
                 }
             }
-//            writeRefJson(b.node, b, refJson);
+            // self reference
+            writeRefJson(b.node, b, refJson);
         }
 
         for (JsonGenerator json : allJson) {
