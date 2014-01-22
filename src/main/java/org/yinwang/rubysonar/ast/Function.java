@@ -78,9 +78,9 @@ public class Function extends Node {
         FunType fun = new FunType(this, s);
         fun.table.setParent(s);
         fun.setDefaultTypes(resolveList(defaults, s));
-        Analyzer.self.addUncalled(fun);
 
         if (isLamba) {
+            Analyzer.self.addUncalled(fun);
             return fun;
         } else {
             Type outType = s.type;
@@ -95,6 +95,7 @@ public class Function extends Node {
                 s.insert(name.id, name, fun, Binding.Kind.METHOD);
                 fun.table.setPath(s.extendPath(name.id, "."));
             }
+            Analyzer.self.addUncalled(fun);
             return Type.CONT;
         }
     }
