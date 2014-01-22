@@ -113,10 +113,10 @@ public class Analyzer {
     }
 
 
-    // main entry to the analyzer
+    // main entry to the analyzer (for JSONDump only)
     public void analyze(List<String> paths) {
         for (String path : paths) {
-            analyze(path);
+            loadFileRecursive(path);
         }
     }
 

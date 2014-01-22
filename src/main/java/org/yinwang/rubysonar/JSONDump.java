@@ -2,7 +2,6 @@ package org.yinwang.rubysonar;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.ast.Function;
 import org.yinwang.rubysonar.ast.Node;
@@ -11,7 +10,6 @@ import org.yinwang.rubysonar.types.Type;
 
 import java.io.*;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,8 +33,9 @@ public class JSONDump {
     }
 
 
-    private static Analyzer newAnalyzer(List<String> srcpath, String[] inclpaths) throws Exception {
+    private static Analyzer newAnalyzer(String projectDir, List<String> srcpath, List<String> inclpaths) {
         Analyzer idx = new Analyzer();
+        idx.addPath(projectDir);
         for (String inclpath : inclpaths) {
             idx.addPath(inclpath);
         }
@@ -141,24 +140,11 @@ public class JSONDump {
      */
     private static void graph(String projectDir,
                               List<String> srcpath,
-                              String[] inclpaths,
+                              List<String> inclpaths,
                               OutputStream symOut,
                               OutputStream refOut) throws Exception
     {
-        // Compute parent dirs, sort by length so potential prefixes show up first
-        List<String> parentDirs = Lists.newArrayList(inclpaths);
-        Collections.sort(parentDirs, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                int diff = s1.length() - s2.length();
-                if (0 == diff) {
-                    return s1.compareTo(s2);
-                }
-                return diff;
-            }
-        });
-
-        Analyzer idx = newAnalyzer(srcpath, inclpaths);
+        Analyzer idx = newAnalyzer(projectDir, srcpath, inclpaths);
         idx.multilineFunType = true;
         JsonFactory jsonFactory = new JsonFactory();
         JsonGenerator symJson = jsonFactory.createGenerator(symOut);
@@ -213,13 +199,13 @@ public class JSONDump {
 
         String projectDir;
         String outroot;
-        String[] inclpaths;
+        List<String> inclpaths;
         List<String> srcpath = new ArrayList<>();
 
         if (args.length >= 3) {
             projectDir = args[0];
             outroot = args[1];
-            inclpaths = args[2].split(":");
+            inclpaths = Arrays.asList(args[2].split(":"));
             srcpath.addAll(Arrays.asList(args).subList(3, args.length));
         } else {
             usage();
