@@ -84,8 +84,7 @@ public class FunType extends Type {
     @Override
     public boolean equals(Object other) {
         if (other instanceof FunType) {
-            FunType fo = (FunType) other;
-            return fo.table.path.equals(table.path) || this == other;
+            return func.equals(((FunType) other).func);
         } else {
             return false;
         }
@@ -94,7 +93,7 @@ public class FunType extends Type {
 
     @Override
     public int hashCode() {
-        return "FunType".hashCode();
+        return func.hashCode();
     }
 
 

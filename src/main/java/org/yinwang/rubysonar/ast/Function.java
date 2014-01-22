@@ -79,25 +79,22 @@ public class Function extends Node {
         fun.table.setParent(s);
         fun.setDefaultTypes(resolveList(defaults, s));
 
-        if (isLamba) {
-            Analyzer.self.addUncalled(fun);
-            return fun;
-        } else {
+        if (!isLamba) {
             Type outType = s.type;
             if (outType instanceof ClassType) {
                 fun.setCls(outType.asClassType());
             }
-
-            if (Analyzer.self.staticContext || locType instanceof ClassType) {
-                s.insertTagged(name.id, "class", name, fun, Binding.Kind.CLASS_METHOD);
-                fun.table.setPath(s.extendPath(name.id, "#"));
-            } else {
-                s.insert(name.id, name, fun, Binding.Kind.METHOD);
-                fun.table.setPath(s.extendPath(name.id, "."));
-            }
-            Analyzer.self.addUncalled(fun);
-            return Type.CONT;
         }
+
+        if (Analyzer.self.staticContext || locType instanceof ClassType) {
+            s.insertTagged(name.id, "class", name, fun, Binding.Kind.CLASS_METHOD);
+            fun.table.setPath(s.extendPath(name.id, "#"));
+        } else {
+            s.insert(name.id, name, fun, Binding.Kind.METHOD);
+            fun.table.setPath(s.extendPath(name.id, "."));
+        }
+        Analyzer.self.addUncalled(fun);
+        return Type.CONT;
     }
 
 
@@ -139,17 +136,6 @@ public class Function extends Node {
         }
 
         return _.joinWithSep(argList, ",", null, null);
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Function) {
-            Function fo = (Function) obj;
-            return (fo.file.equals(file) && fo.start == start);
-        } else {
-            return false;
-        }
     }
 
 
