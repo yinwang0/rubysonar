@@ -39,7 +39,7 @@ public class Function extends Node {
         } else {
             isLamba = true;
             String fn = genLambdaName();
-            this.locator = new Name(fn, file, start, start + "lambda".length());
+            this.locator = new Name(fn, file, -1, -1);
             addChildren(this.locator);
         }
 
