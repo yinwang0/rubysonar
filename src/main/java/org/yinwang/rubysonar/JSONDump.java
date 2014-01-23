@@ -46,11 +46,7 @@ public class JSONDump {
 
 
     private static String kindName(Binding.Kind kind) {
-        if (kind == Binding.Kind.CLASS) {
-            return "class";
-        } else if (kind == Binding.Kind.CLASS_METHOD) {
-            return "method";
-        } else if (kind == Binding.Kind.METHOD) {
+        if (kind == Binding.Kind.CLASS_METHOD) {
             return "method";
         } else {
             return kind.toString().toLowerCase();
@@ -124,7 +120,7 @@ public class JSONDump {
             if (binding.start >= 0 && ref.start >= 0) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
-                json.writeStringField("symOrigin", binding.node.file);
+                json.writeStringField("symFile", binding.node.file);
                 json.writeStringField("file", ref.file);
                 json.writeNumberField("start", ref.start);
                 json.writeNumberField("end", ref.end);

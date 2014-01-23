@@ -14,11 +14,11 @@ import java.util.Set;
 public class Binding implements Comparable<Object> {
 
     public enum Kind {
-        ATTRIBUTE,    // attr accessed with "." on some other object
+        MODULE,       // file
         CLASS,        // class definition
         METHOD,       // instance method
         CLASS_METHOD,       // class method
-        MODULE,       // file
+        ATTRIBUTE,    // attr accessed with "." on some other object
         PARAMETER,    // function param
         SCOPE,        // top-level variable ("scope" means we assume it can have attrs)
         VARIABLE,      // local variable
