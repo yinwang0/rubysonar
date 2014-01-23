@@ -68,39 +68,6 @@ public class _ {
     }
 
 
-    @Nullable
-    public static String moduleQname(@NotNull String file) {
-        File f = new File(file);
-
-        if (f.getName().endsWith("__init__.py")) {
-            file = f.getParent();
-        } else if (file.endsWith(Analyzer.self.suffix)) {
-            file = file.substring(0, file.length() - Analyzer.self.suffix.length());
-        }
-
-        return file.replace(".", "%20").replace('/', '.').replace('\\', '.');
-    }
-
-
-    /**
-     * Given an absolute {@code path} to a file (not a directory),
-     * returns the module name for the file.  If the file is an __init__.py,
-     * returns the last component of the file's parent directory, else
-     * returns the filename without path or extension.
-     */
-    public static String moduleName(String path) {
-        File f = new File(path);
-        String name = f.getName();
-        if (name.equals("__init__.py")) {
-            return f.getParentFile().getName();
-        } else if (name.endsWith(Analyzer.self.suffix)) {
-            return name.substring(0, name.length() - Analyzer.self.suffix.length());
-        } else {
-            return name;
-        }
-    }
-
-
     public static String mainName(@NotNull String taggedName) {
         String[] segs = taggedName.split(Constants.IDSEP_REGEX);
         if (segs.length == 0) {
@@ -119,14 +86,6 @@ public class _ {
             sb.append(s).append("\n");
         }
         return sb.toString();
-    }
-
-
-    @NotNull
-    public static String arrayToSortedStringSet(Collection<String> strings) {
-        Set<String> sorter = new TreeSet<>();
-        sorter.addAll(strings);
-        return arrayToString(sorter);
     }
 
 
@@ -349,16 +308,6 @@ public class _ {
     }
 
 
-    @Nullable
-    public static String readWholeFile(String filename) {
-        try {
-            return new Scanner(new File(filename)).useDelimiter("PYSONAR2END").next();
-        } catch (FileNotFoundException e) {
-            return null;
-        }
-    }
-
-
     public static String readWholeStream(InputStream in) {
         return new Scanner(in).useDelimiter("\\Z").next();
     }
@@ -526,7 +475,7 @@ public class _ {
 
     public static String locateTmp(String file) {
         String tmpDir = getSystemTempDir();
-        return makePathString(tmpDir, "pysonar2", file + "." + Analyzer.self.sid);
+        return makePathString(tmpDir, "rubysonar", file + "." + Analyzer.self.sid);
     }
 
 
