@@ -36,9 +36,7 @@ public class JSONDump {
     private static Analyzer newAnalyzer(String projectDir, List<String> srcpath, List<String> inclpaths) {
         Analyzer idx = new Analyzer();
         idx.addPath(projectDir);
-        for (String inclpath : inclpaths) {
-            idx.addPath(inclpath);
-        }
+        idx.addPaths(inclpaths);
         idx.analyze(srcpath);
         idx.finish();
         return idx;
