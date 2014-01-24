@@ -78,10 +78,12 @@ public class Call extends Node {
         }
 
         // Class.new
+        Name newName = null;
         if (func instanceof Attribute) {
             Attribute afun = (Attribute) func;
             if (afun.attr.id.equals("new")) {
                 func = afun.target;
+                newName = afun.attr;
             }
         }
 
@@ -103,18 +105,19 @@ public class Call extends Node {
             Set<Type> types = fun.asUnionType().types;
             Type retType = Type.UNKNOWN;
             for (Type ft : types) {
-                Type t = resolveCall(ft, pos, hash, kw, star, block, s);
+                Type t = resolveCall(ft, newName, pos, hash, kw, star, block, s);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(fun, pos, hash, kw, star, block, s);
+            return resolveCall(fun, newName, pos, hash, kw, star, block, s);
         }
     }
 
 
     @NotNull
     private Type resolveCall(@NotNull Type fun,
+                             Name newName,
                              List<Type> pos,
                              Map<String, Type> hash,
                              Type kw,
@@ -127,7 +130,7 @@ public class Call extends Node {
             return apply(ft, pos, hash, kw, star, block, this);
         } else if (fun.isClassType()) {
             // constructor
-            InstanceType inst = new InstanceType(fun, this, pos);
+            InstanceType inst = new InstanceType(fun, newName, this, pos);
             fun.asClassType().setCanon(inst);
 
             if (!isSuperCall()) {
