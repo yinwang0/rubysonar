@@ -18,6 +18,9 @@ public class InstanceType extends Type {
 
     public InstanceType(@NotNull Type c) {
         table.setStateType(State.StateType.INSTANCE);
+        table.setParent(c.table.parent);
+        table.setPath(c.table.path);
+        classType = c;
 
         for (Map.Entry<String, List<Binding>> e : c.table.table.entrySet()) {
             for (Binding b : e.getValue()) {
@@ -26,9 +29,6 @@ public class InstanceType extends Type {
                 }
             }
         }
-
-        table.setPath(c.table.path);
-        classType = c;
     }
 
 
