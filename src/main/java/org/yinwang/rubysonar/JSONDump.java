@@ -152,6 +152,7 @@ public class JSONDump {
 
             if (b.file != null && b.file.startsWith(projectDir)) {
                 writeSymJson(b, symJson);
+                writeRefJson(b.node, b, refJson);    // self reference
             }
 
             for (Node ref : b.refs) {
@@ -163,8 +164,6 @@ public class JSONDump {
                     }
                 }
             }
-            // self reference
-            writeRefJson(b.node, b, refJson);
         }
 
         for (JsonGenerator json : allJson) {
