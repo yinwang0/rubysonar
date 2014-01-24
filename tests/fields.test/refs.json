@@ -17,6 +17,22 @@
   },
   {
     "ref": {
+      "name": "new",
+      "file": "test1.rb",
+      "start": 104,
+      "end": 107
+    },
+    "dests": [
+      {
+        "name": "initialize",
+        "file": "test1.rb",
+        "start": 23,
+        "end": 33
+      }
+    ]
+  },
+  {
+    "ref": {
       "file": "test1.rb",
       "start": 55,
       "end": 57
@@ -73,6 +89,22 @@
         "file": "test2.rb",
         "start": 6,
         "end": 16
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "new",
+      "file": "test2.rb",
+      "start": 107,
+      "end": 110
+    },
+    "dests": [
+      {
+        "name": "initialize",
+        "file": "test2.rb",
+        "start": 23,
+        "end": 33
       }
     ]
   },

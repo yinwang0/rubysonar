@@ -33,6 +33,22 @@
   },
   {
     "ref": {
+      "name": "new",
+      "file": "test1.rb",
+      "start": 92,
+      "end": 95
+    },
+    "dests": [
+      {
+        "name": "initialize",
+        "file": "test1.rb",
+        "start": 14,
+        "end": 24
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "o1",
       "file": "test1.rb",
       "start": 113,
