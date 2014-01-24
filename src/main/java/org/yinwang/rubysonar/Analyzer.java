@@ -27,7 +27,7 @@ public class Analyzer {
 
     public State globaltable = new State(null, State.StateType.GLOBAL);
 
-    public List<String> loadedFiles = new ArrayList<>();
+    public Set<String> loadedFiles = new HashSet<>();
     public List<Binding> allBindings = new ArrayList<>();
     public Map<Node, List<Binding>> references = new LinkedHashMap<>();
     public Set<Name> resolved = new HashSet<>();
@@ -311,8 +311,6 @@ public class Analyzer {
 
     @Nullable
     private Type parseAndResolve(String file) {
-        loadingProgress.tick();
-
         try {
             Node ast = getAstForFile(file);
 
@@ -321,7 +319,10 @@ public class Analyzer {
                 return null;
             } else {
                 Type type = Node.transformExpr(ast, globaltable);
-                loadedFiles.add(file);
+                if (!loadedFiles.contains(file)) {
+                    loadedFiles.add(file);
+                    loadingProgress.tick();
+                }
                 return type;
             }
         } catch (OutOfMemoryError e) {
