@@ -109,7 +109,7 @@ class AstSimplifier
       return start_idx + 2
     end
     idx = start_idx
-    while idx < @src.length and @src[idx].match /[[:alpha:]0-9_@$]/
+    while idx < @src.length and @src[idx].match /[[:alpha:]0-9_@$\?!]/
       idx += 1
     end
     idx
