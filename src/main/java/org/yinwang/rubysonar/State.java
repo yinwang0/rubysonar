@@ -338,8 +338,8 @@ public class State {
             mod.table.insert(((Attribute) locator).attr.id, ((Attribute) locator).attr, mod2, Binding.Kind.MODULE);
             return mod2;
         } else {
-            _.die("illegal locator: " + locator);
-            return new ModuleType("bad", null, this);   // unreacheable
+            String name = locator.toString();
+            return new ModuleType(name, null, this);
         }
     }
 
