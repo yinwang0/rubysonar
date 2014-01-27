@@ -24,7 +24,9 @@ public class Binder {
         } else if (target instanceof Subscript) {
             Subscript sub = (Subscript) target;
             Type valueType = Node.transformExpr(sub.value, s);
-            Node.transformExpr(sub.slice, s);
+            if (sub.slice != null) {
+                Node.transformExpr(sub.slice, s);
+            }
             if (valueType instanceof ListType) {
                 ListType t = (ListType) valueType;
                 t.setElementType(UnionType.union(t.eltType, rvalue));
