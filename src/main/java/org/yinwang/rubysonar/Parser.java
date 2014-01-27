@@ -21,7 +21,7 @@ import java.util.Map;
 public class Parser {
 
     private static final String RUBY_EXE = "irb";
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 30000;
 
     @Nullable
     Process rubyProcess;
