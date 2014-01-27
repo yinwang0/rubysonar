@@ -112,7 +112,7 @@ public class Parser {
 
         if (type.equals("def") || type.equals("lambda")) {
             Node binder = convert(map.get("name"));
-            Block body = (Block) convert(map.get("body"));
+            Node body = convert(map.get("body"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
             List<Node> positional = convertList(argsMap.get("positional"));
             List<Node> defaults = convertList(argsMap.get("defaults"));

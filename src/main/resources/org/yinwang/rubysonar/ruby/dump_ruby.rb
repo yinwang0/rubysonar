@@ -782,6 +782,7 @@ class AstSimplifier
             :blockarg,
             :symbol_literal,
             :regexp_literal,
+            :param_error,
             :string_literal,
             :xstring_literal,
             :string_dvar,

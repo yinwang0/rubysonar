@@ -16,6 +16,7 @@ public class RbInt extends Node {
     public RbInt(String s, String file, int start, int end) {
         super(file, start, end);
 
+        s = s.toLowerCase();
         s = s.replaceAll("_", "");
         int sign = 1;
 
@@ -30,18 +31,18 @@ public class RbInt extends Node {
         if (s.startsWith("0b")) {
             base = 2;
             s = s.substring(2);
+        } else if (s.startsWith("0o")) {
+            base = 8;
+            s = s.substring(2);
         } else if (s.startsWith("0x")) {
             base = 16;
             s = s.substring(2);
         } else if (s.startsWith("x")) {
             base = 16;
             s = s.substring(1);
-        } else if (s.startsWith("0o")) {
-            base = 8;
+        } else if (s.startsWith("0d")) {
+            base = 10;
             s = s.substring(2);
-        } else if (s.startsWith("0") && s.length() >= 2) {
-            base = 8;
-            s = s.substring(1);
         } else {
             base = 10;
         }
