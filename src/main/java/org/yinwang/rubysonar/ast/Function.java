@@ -7,6 +7,7 @@ import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar._;
 import org.yinwang.rubysonar.types.ClassType;
 import org.yinwang.rubysonar.types.FunType;
+import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
 import java.util.ArrayList;
@@ -86,12 +87,12 @@ public class Function extends Node {
             }
         }
 
-        if (Analyzer.self.staticContext || locType instanceof ClassType) {
+        if (Analyzer.self.staticContext || locType instanceof ClassType || locType instanceof ModuleType) {
             s.insertTagged(name.id, "class", name, fun, Binding.Kind.CLASS_METHOD);
-            fun.table.setPath(s.extendPath(name.id, "#"));
+            fun.table.setPath(s.extendPath(name.id, "."));
         } else {
             s.insert(name.id, name, fun, Binding.Kind.METHOD);
-            fun.table.setPath(s.extendPath(name.id, "."));
+            fun.table.setPath(s.extendPath(name.id, "#"));
         }
         Analyzer.self.addUncalled(fun);
         return Type.CONT;
