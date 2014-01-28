@@ -1,7 +1,10 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.*;
+import org.yinwang.rubysonar.Binding;
+import org.yinwang.rubysonar.Constants;
+import org.yinwang.rubysonar.State;
+import org.yinwang.rubysonar._;
 import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
@@ -35,10 +38,7 @@ public class Module extends Node {
     public Type transform(@NotNull State s) {
         ModuleType mt = s.lookupOrCreateModule(locator, file);
         mt.table.insert(Constants.SELFNAME, name, mt, Binding.Kind.SCOPE);
-        boolean wasStatic = Analyzer.self.staticContext;
-        Analyzer.self.setStaticContext(true);
         transformExpr(body, mt.table);
-        Analyzer.self.setStaticContext(wasStatic);
         return mt;
     }
 
