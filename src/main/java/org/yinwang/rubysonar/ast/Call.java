@@ -72,6 +72,11 @@ public class Call extends Node {
                 Analyzer.self.putProblem(this, "failed to include module");
             }
 
+            if (fn.id.equals("module_function")) {
+                Analyzer.self.setStaticContext(true);
+                return Type.CONT;
+            }
+
             if (fn.id.equals("attr_accessor")) {
                 return Type.CONT;
             }

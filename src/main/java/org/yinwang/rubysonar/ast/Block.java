@@ -28,6 +28,7 @@ public class Block extends Node {
 
         boolean returned = false;
         Type retType = Type.UNKNOWN;
+        boolean wasStatic = Analyzer.self.staticContext;
 
         for (Node n : seq) {
             Type t = transformExpr(n, state);
@@ -47,6 +48,7 @@ public class Block extends Node {
             }
         }
 
+        Analyzer.self.setStaticContext(wasStatic);
         return retType;
     }
 
