@@ -68,7 +68,6 @@ public class Class extends Node {
 
         ClassType classType = new ClassType(name.id, s);
         classType.table.setParent(s);
-        classType.table.insert(Constants.SELFNAME, name, classType, Binding.Kind.SCOPE);
 
         if (base != null) {
             Type baseType = transformExpr(base, s);
@@ -82,6 +81,8 @@ public class Class extends Node {
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.
         Binder.bind(s, name, classType, Binding.Kind.CLASS);
+        classType.table.insert(Constants.SELFNAME, name, classType, Binding.Kind.SCOPE);
+
         if (body != null) {
             transformExpr(body, classType.table);
         }

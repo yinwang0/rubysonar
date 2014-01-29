@@ -624,6 +624,13 @@ class AstSimplifier
           stmt = convert(exp[2])
           block[:stmts].push(stmt)
           block
+        when :bodystmt
+          block = convert(exp[1])
+          if exp[2]
+            res = convert(exp[2])
+            block[:stmts].push(res)
+          end
+          block
         when :binary
           {
               :type => :binary,
@@ -777,7 +784,6 @@ class AstSimplifier
             :ensure,
             :arg_paren,
             :mlhs_paren,
-            :bodystmt,
             :rest_param,
             :blockarg,
             :symbol_literal,
