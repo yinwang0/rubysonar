@@ -47,6 +47,11 @@ public class Name extends Node {
             if (thisType != null) {
                 b = thisType.table.lookup(id);
             }
+        } else if (Analyzer.self.staticContext) {
+            b = s.lookupTagged(id, "class");
+            if (b == null) {
+                b = s.lookup(id);
+            }
         } else {
             b = s.lookup(id);
         }

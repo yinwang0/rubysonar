@@ -88,6 +88,7 @@ public class Function extends Node {
         }
 
         if (locType instanceof ClassType || locType instanceof ModuleType || Analyzer.self.staticContext) {
+            fun.setClassMethod(true);
             s.insertTagged(name.id, "class", name, fun, Binding.Kind.CLASS_METHOD);
             fun.table.setPath(s.extendPath(name.id, "."));
         } else {

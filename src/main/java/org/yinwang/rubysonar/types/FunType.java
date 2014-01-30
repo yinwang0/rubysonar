@@ -21,6 +21,7 @@ public class FunType extends Type {
     @Nullable
     public Type selfType;                 // self's type for calls
     public List<Type> defaultTypes;       // types for default parameters (evaluated at def time)
+    public boolean isClassMethod = false;
 
 
     public FunType() {
@@ -78,6 +79,11 @@ public class FunType extends Type {
 
     public void setDefaultTypes(List<Type> defaultTypes) {
         this.defaultTypes = defaultTypes;
+    }
+
+
+    public void setClassMethod(boolean isClassMethod) {
+        this.isClassMethod = isClassMethod;
     }
 
 

@@ -223,7 +223,16 @@ public class Call extends Node {
             func.setSelfType(null);
             return cachedTo;
         } else {
-            Type toType = transformExpr(func.func.body, funcTable);
+            Type toType;
+            if (func.isClassMethod) {
+                boolean wasStatic = Analyzer.self.staticContext;
+                Analyzer.self.setStaticContext(true);
+                toType = transformExpr(func.func.body, funcTable);
+                Analyzer.self.setStaticContext(wasStatic);
+            } else {
+                toType = transformExpr(func.func.body, funcTable);
+            }
+
             if (missingReturn(toType)) {
                 Analyzer.self.putProblem(func.func.locator, "Function not always return a value");
 
