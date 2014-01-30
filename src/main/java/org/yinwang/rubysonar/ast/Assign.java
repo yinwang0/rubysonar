@@ -41,7 +41,7 @@ public class Assign extends Node {
         } else {
             Binder.bind(s, target, valueType);
         }
-        return Type.CONT;
+        return valueType;
     }
 
 
