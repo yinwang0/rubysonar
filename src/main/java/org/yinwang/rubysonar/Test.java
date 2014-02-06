@@ -2,10 +2,6 @@ package org.yinwang.rubysonar;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.ast.Dummy;
 import org.yinwang.rubysonar.ast.Node;
@@ -260,23 +256,12 @@ public class Test {
 
 
     public static void main(String[] args) {
-        Options options = new Options();
-        options.addOption("exp", "expected", false, "generate expected result (for setting up tests)");
-        CommandLineParser parser = new BasicParser();
-
-        CommandLine cmd;
-        try {
-            cmd = parser.parse(options, args);
-        } catch (Exception e) {
-            _.die("failed to parse args: " + args);
-            return;
-        }
-
-        args = cmd.getArgs();
-        String inputDir = _.unifyPath(args[0]);
+        Options options = new Options(args);
+        List<String> argList = options.getArgs();
+        String inputDir = _.unifyPath(argList.get(0));
 
         // generate expected file?
-        boolean exp = cmd.hasOption("expected");
+        boolean exp = options.hasOption("exp");
         testAll(inputDir, exp);
     }
 
