@@ -432,8 +432,17 @@ public class State {
     }
 
 
+    public boolean isSyntheticName(String name) {
+        return name.equals(Constants.SELFNAME) || name.equals(Constants.INSTNAME);
+    }
+
+
     public void putAll(@NotNull State other) {
-        this.table.putAll(other.table);
+        for (Map.Entry<String, List<Binding>> e : other.table.entrySet()) {
+            if (!isSyntheticName(e.getKey())) {
+                this.table.put(e.getKey(), e.getValue());
+            }
+        }
     }
 
 
