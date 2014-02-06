@@ -17,6 +17,22 @@
   },
   {
     "ref": {
+      "name": "foo",
+      "file": "instance-only.rb",
+      "start": 64,
+      "end": 67
+    },
+    "dests": [
+      {
+        "name": "foo",
+        "file": "instance-only.rb",
+        "start": 15,
+        "end": 18
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "B2",
       "file": "instance-only.rb",
       "start": 93,

@@ -99,6 +99,9 @@ public class Attribute extends Node {
         if (targetType instanceof ClassType || targetType instanceof ModuleType) {
             // look for class methods only
             bs = targetType.table.lookupAttrTagged(attr.id, "class");
+            if (bs == null) {
+                bs = targetType.table.lookupAttr(attr.id);
+            }
         } else {
             bs = targetType.table.lookupAttr(attr.id);
         }

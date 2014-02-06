@@ -65,6 +65,22 @@
   },
   {
     "ref": {
+      "name": "im",
+      "file": "classmethods.rb",
+      "start": 196,
+      "end": 198
+    },
+    "dests": [
+      {
+        "name": "im",
+        "file": "classmethods.rb",
+        "start": 140,
+        "end": 142
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "B",
       "file": "classmethods.rb",
       "start": 280,
