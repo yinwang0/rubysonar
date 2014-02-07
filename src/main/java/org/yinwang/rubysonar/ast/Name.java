@@ -44,8 +44,10 @@ public class Name extends Node {
 
         if (isInstanceVar()) {
             Type thisType = s.lookupType(Constants.INSTNAME);
+            thisType = thisType != null ? thisType : s.lookupType(Constants.SELFNAME);
             if (thisType != null) {
-                b = thisType.table.lookup(id);
+                b = s.lookupTagged(id, "class");
+                b = b != null ? b : thisType.table.lookup(id);
             }
         } else if (Analyzer.self.staticContext) {
             b = s.lookupTagged(id, "class");
