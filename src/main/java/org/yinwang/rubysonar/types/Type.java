@@ -205,52 +205,6 @@ public abstract class Type {
     }
 
 
-    public boolean isTrue() {
-        if (this == TRUE) {
-            return true;
-        }
-        if (this == FALSE || this.isUndecidedBool()) {
-            return false;
-        }
-        if (this.isIntType() && (this.asIntType().lt(BigInteger.ZERO) || this.asIntType().gt(BigInteger.ZERO))) {
-            return true;
-        }
-        if (this.isIntType() && this.asIntType().isZero()) {
-            return false;
-        }
-        if (this.isFloatType() && (this.asFloatType().lt(0) || this.asFloatType().gt(0))) {
-            return true;
-        }
-        if (this.isFloatType() && this.asFloatType().isZero()) {
-            return false;
-        }
-        if (this != NIL) {
-            return true;
-        }
-        return false;
-    }
-
-
-    public boolean isFalse() {
-        if (this == FALSE) {
-            return true;
-        }
-        if (this == TRUE || this.isUndecidedBool()) {
-            return false;
-        }
-        if (this.isIntType() && this.asIntType().isZero()) {
-            return true;
-        }
-        if (this.isFloatType() && this.asFloatType().isZero()) {
-            return true;
-        }
-        if (this == NIL) {
-            return true;
-        }
-        return false;
-    }
-
-
     /**
      * Internal class to support printing in the presence of type-graph cycles.
      */

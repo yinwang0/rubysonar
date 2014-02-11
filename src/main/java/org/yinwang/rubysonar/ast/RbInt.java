@@ -57,7 +57,7 @@ public class RbInt extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return new IntType(value);
+        return Type.INT;
     }
 
 

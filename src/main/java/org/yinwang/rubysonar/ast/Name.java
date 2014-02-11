@@ -67,6 +67,7 @@ public class Name extends Node {
             return Type.BOOL;
         } else {
             Analyzer.self.putProblem(this, "unbound variable " + id);
+            Analyzer.self.unresolved.add(this);
             return Type.UNKNOWN;
         }
     }
