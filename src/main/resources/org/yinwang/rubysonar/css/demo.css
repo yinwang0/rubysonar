@@ -3,6 +3,10 @@ a {
     text-decoration: none; color: #5AA2A7;
     border: solid 1px white;
 }
+a.active {
+    background: -webkit-linear-gradient(top,rgba(255, 255, 200, 0.35) 0,rgba(255, 255, 200, 0.55) 100%);
+    border: solid 1px #E5E600;
+}
 table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }
 .builtin {color: #B17E41;}
 .comment, .block-comment {color: #aaaaaa; font-style: italic;}
@@ -21,7 +25,3 @@ table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }
 .string {color: #999999;}
 .type-name {color: #4682b4;}
 .warning {border-bottom: 1px dotted orange;}
-a.active {
-    background: -webkit-linear-gradient(top,rgba(255, 255, 200, 0.35) 0,rgba(255, 255, 200, 0.55) 100%);
-    border: solid 1px #E5E600;
-}

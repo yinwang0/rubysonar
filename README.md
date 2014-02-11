@@ -1,16 +1,13 @@
-## RubySonar - a deep static analyzer for Ruby
+## RubySonar - a type inferencer and indexer for Ruby
 
-(For the ease of development, RubySonar is recently separated from PySonar2's
-`ruby` branch and become its own repository. The code is still in development
-and can't yet be put into serious use.)
-
-RubySonar is a static analyzer for Ruby, which does interprocedural analysis to
-infer types. RubySonar is modeled after PySonar2. To understand PySonar2's
+RubySonar is a type inferencer and indexer for Ruby, which does interprocedural analysis to
+infer types. RubySonar is modeled after <a href="https://github.com/yinwang0/pysonar2">PySonar2</a>. To understand PySonar2's
 properties, please refer to my blog posts:
 
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
+<img src="http://www.yinwang.org/images/rubysonar.gif" width="80%">
 
 
 ### How to build
