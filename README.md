@@ -1,13 +1,22 @@
 ## RubySonar - a type inferencer and indexer for Ruby
 
-RubySonar is a type inferencer and indexer for Ruby, which does interprocedural analysis to
-infer types. RubySonar is modeled after <a href="https://github.com/yinwang0/pysonar2">PySonar2</a>. To understand PySonar2's
-properties, please refer to my blog posts:
+RubySonar is a type inferencer and indexer for Ruby, which does sophisticated
+interprocedural analysis to infer types. It is the underlying technology that
+powers the code search site <a
+href="https://sourcegraph.com/github.com/rails/rails">Sourcegraph</a>.
+
+RubySonar is modeled after <a
+href="https://github.com/yinwang0/pysonar2">PySonar2</a>. To understand its
+technical properties, please refer to my blog posts:
 
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
+
+### Demo
+
 <img src="http://www.yinwang.org/images/rubysonar.gif" width="80%">
+
 
 
 ### How to build
