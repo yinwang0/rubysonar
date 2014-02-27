@@ -6,7 +6,9 @@ import org.yinwang.rubysonar.ast.Call;
 import org.yinwang.rubysonar.ast.Name;
 import org.yinwang.rubysonar.ast.Node;
 import org.yinwang.rubysonar.ast.Url;
+import org.yinwang.rubysonar.types.ClassType;
 import org.yinwang.rubysonar.types.FunType;
+import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
 import java.io.File;
@@ -422,9 +424,9 @@ public class Analyzer {
 
         // mark unused variables
         for (Binding b : allBindings) {
-            if (!b.type.isClassType() &&
-                    !b.type.isFuncType() &&
-                    !b.type.isModuleType()
+            if (!(b.type instanceof ClassType) &&
+                    !(b.type instanceof FunType) &&
+                    !(b.type instanceof ModuleType)
                     && b.refs.isEmpty())
             {
                 Analyzer.self.putProblem(b.node, "Unused variable: " + b.node.name);

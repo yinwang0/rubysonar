@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.ast.Function;
 import org.yinwang.rubysonar.ast.Node;
 import org.yinwang.rubysonar.ast.Str;
+import org.yinwang.rubysonar.types.FunType;
 import org.yinwang.rubysonar.types.Type;
+import org.yinwang.rubysonar.types.UnionType;
 
 import java.io.*;
 import java.util.*;
@@ -85,12 +87,12 @@ public class JSONDump {
                 // get args expression
                 Type t = binding.type;
 
-                if (t.isUnionType()) {
-                    t = t.asUnionType().firstUseful();
+                if (t instanceof UnionType) {
+                    t = ((UnionType) t).firstUseful();
                 }
 
-                if (t != null && t.isFuncType()) {
-                    Function func = t.asFuncType().func;
+                if (t != null && t instanceof FunType) {
+                    Function func = ((FunType) t).func;
                     if (func != null) {
                         String signature = func.getArgList();
                         if (!signature.equals("")) {

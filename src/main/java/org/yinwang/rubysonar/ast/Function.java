@@ -83,7 +83,7 @@ public class Function extends Node {
         if (!isLamba) {
             Type outType = s.type;
             if (outType instanceof ClassType) {
-                fun.setCls(outType.asClassType());
+                fun.setCls((ClassType) outType);
             }
         }
 

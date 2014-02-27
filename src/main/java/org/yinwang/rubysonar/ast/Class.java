@@ -71,7 +71,7 @@ public class Class extends Node {
 
         if (base != null) {
             Type baseType = transformExpr(base, s);
-            if (baseType.isClassType()) {
+            if (baseType instanceof ClassType) {
                 classType.addSuper(baseType);
             } else {
                 Analyzer.self.putProblem(base, base + " is not a class");

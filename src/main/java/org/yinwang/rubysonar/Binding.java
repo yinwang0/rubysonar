@@ -137,7 +137,8 @@ public class Binding implements Comparable<Object> {
     public String getFirstFile() {
         Type bt = type;
         if (bt instanceof ModuleType) {
-            String file = bt.asModuleType().file;
+
+            String file = ((ModuleType) bt).file;
             return file != null ? file : "<built-in module>";
         }
 

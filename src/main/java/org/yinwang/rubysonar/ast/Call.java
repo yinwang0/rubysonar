@@ -117,8 +117,8 @@ public class Call extends Node {
         Type star = starargs == null ? null : transformExpr(starargs, s);
         Type block = blockarg == null ? null : transformExpr(blockarg, s);
 
-        if (fun.isUnionType()) {
-            Set<Type> types = fun.asUnionType().types;
+        if (fun instanceof UnionType) {
+            Set<Type> types = ((UnionType) fun).types;
             Type retType = Type.UNKNOWN;
             for (Type ft : types) {
                 Type t = resolveCall(ft, newName, pos, hash, kw, star, block, s);
@@ -141,13 +141,13 @@ public class Call extends Node {
                              Type block,
                              State s)
     {
-        if (fun.isFuncType()) {
-            FunType ft = fun.asFuncType();
+        if (fun instanceof FunType) {
+            FunType ft = (FunType) fun;
             return apply(ft, pos, hash, kw, star, block, this);
-        } else if (fun.isClassType()) {
+        } else if (fun instanceof ClassType) {
             // constructor
             InstanceType inst = new InstanceType(fun, newName, this, pos);
-            fun.asClassType().setCanon(inst);
+            ((ClassType) fun).setCanon(inst);
 
             if (!isSuperCall()) {
                 return inst;
@@ -268,8 +268,8 @@ public class Call extends Node {
         int dSize = dTypes == null ? 0 : dTypes.size();
         int nPos = pSize - dSize;
 
-        if (star != null && star.isListType()) {
-            star = star.asListType().toTupleType();
+        if (star != null && star instanceof ListType) {
+            star = ((ListType) star).toTupleType();
         }
 
         for (int i = 0, j = 0; i < pSize; i++) {
@@ -285,15 +285,17 @@ public class Call extends Node {
                 {
                     aType = hash.get(((Name) args.get(i)).id);
                     hash.remove(((Name) args.get(i)).id);
-                } else if (star != null && star.isTupleType() &&
-                        j < star.asTupleType().eltTypes.size())
-                {
-                    aType = star.asTupleType().get(j++);
                 } else {
-                    aType = Type.UNKNOWN;
-                    if (call != null) {
-                        Analyzer.self.putProblem(args.get(i),
-                                "unable to bind argument:" + args.get(i));
+                    if (star != null && star instanceof TupleType &&
+                            j < ((TupleType) star).eltTypes.size())
+                    {
+                        aType = ((TupleType) star).get(j++);
+                    } else {
+                        aType = Type.UNKNOWN;
+                        if (call != null) {
+                            Analyzer.self.putProblem(args.get(i),
+                                    "unable to bind argument:" + args.get(i));
+                        }
                     }
                 }
             }
@@ -360,8 +362,8 @@ public class Call extends Node {
         boolean hasNone = false;
         boolean hasOther = false;
 
-        if (toType.isUnionType()) {
-            for (Type t : toType.asUnionType().types) {
+        if (toType instanceof UnionType) {
+            for (Type t : ((UnionType) toType).types) {
                 if (t == Type.NIL || t == Type.CONT) {
                     hasNone = true;
                 } else {

@@ -5,10 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binding;
 import org.yinwang.rubysonar.State;
-import org.yinwang.rubysonar.types.ClassType;
-import org.yinwang.rubysonar.types.ModuleType;
-import org.yinwang.rubysonar.types.Type;
-import org.yinwang.rubysonar.types.UnionType;
+import org.yinwang.rubysonar.types.*;
 
 import java.util.List;
 import java.util.Set;
@@ -46,8 +43,8 @@ public class Attribute extends Node {
 
     public void setAttr(State s, @NotNull Type v) {
         Type targetType = transformExpr(target, s);
-        if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().types;
+        if (targetType instanceof UnionType) {
+            Set<Type> types = ((UnionType) targetType).types;
             for (Type tp : types) {
                 setAttrType(tp, v);
             }
@@ -81,8 +78,8 @@ public class Attribute extends Node {
         }
 
         Type targetType = transformExpr(target, s);
-        if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().types;
+        if (targetType instanceof UnionType) {
+            Set<Type> types = ((UnionType) targetType).types;
             Type retType = Type.UNKNOWN;
             for (Type tt : types) {
                 retType = UnionType.union(retType, getAttrType(tt));
@@ -115,9 +112,9 @@ public class Attribute extends Node {
             for (Binding b : bs) {
                 Analyzer.self.putRef(attr, b);
                 if (parent != null && (parent instanceof Call) &&
-                        b.type.isFuncType() && targetType.isInstanceType())
+                        b.type instanceof FunType && targetType instanceof InstanceType)
                 {  // method call
-                    b.type.asFuncType().setSelfType(targetType);
+                    ((FunType) b.type).setSelfType(targetType);
                 }
             }
 

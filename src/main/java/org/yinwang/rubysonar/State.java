@@ -133,8 +133,9 @@ public class State {
     // create new binding and insert
     public void insert(String id, Node node, Type type, Binding.Kind kind) {
         Binding b = new Binding(node, type, kind);
-        if (type.isModuleType()) {
-            b.setQname(type.asModuleType().qname);
+        if (type instanceof ModuleType) {
+
+            b.setQname(((ModuleType) type).qname);
         } else {
             if (type instanceof FunType) {
                 if (id.endsWith(Constants.IDSEP + "class")) {
@@ -321,12 +322,16 @@ public class State {
 
     public ModuleType lookupOrCreateModule(Node locator, String file) {
         Type existing = Node.transformExpr(locator, this);
-        if (existing.isModuleType()) {
-            return existing.asModuleType();
+        if (existing instanceof ModuleType) {
+
+            return (ModuleType) existing;
+
         } else if (locator instanceof Name) {
             List<Binding> bs = lookupAttr(((Name) locator).id);
-            if (bs != null && bs.size() > 0 && bs.get(0).type.isModuleType()) {
-                return bs.get(0).type.asModuleType();
+            if (bs != null && bs.size() > 0 && bs.get(0).type instanceof ModuleType) {
+
+                return (ModuleType) bs.get(0).type;
+
             } else {
                 ModuleType mt = new ModuleType(((Name) locator).id, file, this);
                 this.insert(((Name) locator).id, locator, mt, Binding.Kind.MODULE);
