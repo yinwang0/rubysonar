@@ -37,6 +37,11 @@ public class Name extends Node {
     }
 
 
+    public static boolean isSyntheticName(String name) {
+        return name.equals(Constants.SELFNAME) || name.equals(Constants.INSTNAME);
+    }
+
+
     @NotNull
     @Override
     public Type transform(@NotNull State s) {

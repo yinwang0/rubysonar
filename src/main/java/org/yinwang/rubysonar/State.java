@@ -437,14 +437,9 @@ public class State {
     }
 
 
-    public boolean isSyntheticName(String name) {
-        return name.equals(Constants.SELFNAME) || name.equals(Constants.INSTNAME);
-    }
-
-
     public void putAll(@NotNull State other) {
         for (Map.Entry<String, List<Binding>> e : other.table.entrySet()) {
-            if (!isSyntheticName(e.getKey())) {
+            if (!Name.isSyntheticName(e.getKey())) {
                 this.table.put(e.getKey(), e.getValue());
             }
         }
@@ -475,7 +470,9 @@ public class State {
     @NotNull
     public String extendPath(@NotNull String name, String sep) {
         name = _.mainName(name);
-        if (path.equals("")) {
+        if (Name.isSyntheticName(name)) {
+            return path;
+        } else if (path.equals("")) {
             return name;
         } else {
             return path + sep + name;
