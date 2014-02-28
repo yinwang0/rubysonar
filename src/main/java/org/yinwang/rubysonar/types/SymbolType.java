@@ -15,16 +15,12 @@ public class SymbolType extends Type {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof SymbolType) {
-            return this.name.equals(((SymbolType) other).name);
-        } else {
-            return false;
-        }
+        return other instanceof SymbolType;
     }
 
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        return ":" + name;
+        return "symbol";
     }
 }
