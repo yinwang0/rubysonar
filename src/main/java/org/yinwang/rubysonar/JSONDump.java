@@ -181,11 +181,11 @@ public class JSONDump {
 
 
     private static void usage() {
-        info("Usage: java org.yinwang.rubysonar.dump <source-path> <include-paths> <out-root> [verbose]");
-        info("  <source-path> is path to source unit (package directory or module file) that will be graphed");
+        info("Usage: java org.yinwang.rubysonar.dump <project-dir> <out-root> <include-paths> <source-paths>... ");
+        info("  <project-dir> is path to the project's root, used to determine whether symbols should be exported");
+        info("  <out-root> is the prefix of the output files.  There are 2 output files: <out-root>-sym, <out-root>-ref");
         info("  <include-paths> are colon-separated paths to included libs");
-        info("  <out-root> is the prefix of the output files.  There are 3 output files: <out-root>-doc, <out-root>-sym, <out-root>-ref");
-        info("  [verbose] if set, then verbose logging is used (optional)");
+        info("  <source-paths>... are space-separated paths to source units (.rb files) that will be graphed");
     }
 
 
