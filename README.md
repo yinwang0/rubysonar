@@ -54,7 +54,7 @@ the _html_ directory after this process.
 
 #### License (GPLv3)
 
-PySonar - a type inferencer and indexer for Python
+RubySonar - a type inferencer and indexer for Python
 
 Copyright (c) 2013-2014 Yin Wang
 
