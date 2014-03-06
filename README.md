@@ -54,10 +54,8 @@ the _html_ directory after this process.
 
 #### License (GPLv3)
 
-PySonar is licensed under GPLv3. Here is the reason for <a
-href="http://www.gnu.org/philosophy/why-not-lgpl.html">choosing it</a>.
-
 PySonar - a type inferencer and indexer for Python
+
 Copyright (c) 2013-2014 Yin Wang
 
 This program is free software: you can redistribute it and/or modify
