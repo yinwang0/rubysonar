@@ -52,7 +52,7 @@ the _html_ directory after this process.
 
 
 
-#### License (GPLv3)
+#### License (GNU AGPLv3)
 
 RubySonar - a type inferencer and indexer for Python
 
