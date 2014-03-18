@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.*;
 import org.yinwang.rubysonar.types.ClassType;
-import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
 
@@ -56,7 +55,7 @@ public class Class extends Node {
     public Type transform(@NotNull State s) {
         if (locator != null) {
             Type existing = transformExpr(locator, s);
-            if (existing instanceof ClassType || existing instanceof ModuleType) {
+            if (isStatic) {
                 if (body != null) {
                     boolean wasStatic = Analyzer.self.staticContext;
                     Analyzer.self.setStaticContext(true);
