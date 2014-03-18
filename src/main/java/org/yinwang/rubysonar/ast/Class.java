@@ -54,12 +54,12 @@ public class Class extends Node {
     @Override
     public Type transform(@NotNull State s) {
         if (locator != null) {
-            Type existing = transformExpr(locator, s);
+            Type reopened = transformExpr(locator, s);
             if (isStatic) {
                 if (body != null) {
                     boolean wasStatic = Analyzer.self.staticContext;
                     Analyzer.self.setStaticContext(true);
-                    transformExpr(body, existing.table);
+                    transformExpr(body, reopened.table);
                     Analyzer.self.setStaticContext(wasStatic);
                 }
                 return Type.CONT;
