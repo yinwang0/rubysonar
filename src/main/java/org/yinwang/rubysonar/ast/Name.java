@@ -51,8 +51,10 @@ public class Name extends Node {
             Type thisType = s.lookupType(Constants.INSTNAME);
             thisType = thisType != null ? thisType : s.lookupType(Constants.SELFNAME);
             if (thisType != null) {
-                b = s.lookupTagged(id, "class");
-                b = b != null ? b : thisType.table.lookup(id);
+                b = s.lookup(id);
+                if (b == null) {
+                    b = s.lookupTagged(id, "class");
+                }
             }
         } else if (Analyzer.self.staticContext) {
             b = s.lookupTagged(id, "class");
@@ -61,6 +63,9 @@ public class Name extends Node {
             }
         } else {
             b = s.lookup(id);
+            if (b == null) {
+                b = s.lookupTagged(id, "class");
+            }
         }
 
         if (b != null) {
