@@ -45,18 +45,9 @@ public class Name extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        List<Binding> b = null;
+        List<Binding> b;
 
-        if (isInstanceVar()) {
-            Type thisType = s.lookupType(Constants.INSTNAME);
-            thisType = thisType != null ? thisType : s.lookupType(Constants.SELFNAME);
-            if (thisType != null) {
-                b = s.lookup(id);
-                if (b == null) {
-                    b = s.lookupTagged(id, "class");
-                }
-            }
-        } else if (Analyzer.self.staticContext) {
+        if (Analyzer.self.staticContext) {
             b = s.lookupTagged(id, "class");
             if (b == null) {
                 b = s.lookup(id);
@@ -65,6 +56,17 @@ public class Name extends Node {
             b = s.lookup(id);
             if (b == null) {
                 b = s.lookupTagged(id, "class");
+            }
+        }
+
+        if (b == null) {
+            Type thisType = s.lookupType(Constants.INSTNAME);
+            thisType = thisType != null ? thisType : s.lookupType(Constants.SELFNAME);
+            if (thisType != null) {
+                b = thisType.table.lookup(id);
+                if (b == null) {
+                    b = thisType.table.lookupTagged(id, "class");
+                }
             }
         }
 
