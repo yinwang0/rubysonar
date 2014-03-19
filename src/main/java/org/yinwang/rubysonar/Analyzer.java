@@ -163,6 +163,7 @@ public class Analyzer {
     public List<String> getLoadPath() {
         List<String> loadPath = new ArrayList<>();
         loadPath.addAll(path);
+        loadPath.add("/Users/yinwang/.rvm/src/ruby-2.0.0-p247/lib");
 
         if (cwd != null) {
             loadPath.add(cwd);
