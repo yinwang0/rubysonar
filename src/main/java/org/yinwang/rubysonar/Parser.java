@@ -97,7 +97,7 @@ public class Parser {
 
             if (name instanceof Name) {
                 String id = ((Name) name).id;
-                if (id.startsWith("ClassMethods") || id.startsWith("InstanceMethods")) {
+                if (id.startsWith("InstanceMethods")) {
                     return body;
                 }
             }

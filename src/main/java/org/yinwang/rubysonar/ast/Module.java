@@ -1,10 +1,7 @@
 package org.yinwang.rubysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.rubysonar.Binding;
-import org.yinwang.rubysonar.Constants;
-import org.yinwang.rubysonar.State;
-import org.yinwang.rubysonar._;
+import org.yinwang.rubysonar.*;
 import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
@@ -36,10 +33,18 @@ public class Module extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        ModuleType mt = s.lookupOrCreateModule(locator, file);
-        mt.table.insert(Constants.SELFNAME, name, mt, Binding.Kind.SCOPE);
-        transformExpr(body, mt.table);
-        return mt;
+        if (name.id.equals("ClassMethods")) {
+            boolean saved = Analyzer.self.staticContext;
+            Analyzer.self.setStaticContext(true);
+            transformExpr(body, s);
+            Analyzer.self.setStaticContext(saved);
+            return Type.NIL;
+        } else {
+            ModuleType mt = s.lookupOrCreateModule(locator, file);
+            mt.table.insert(Constants.SELFNAME, name, mt, Binding.Kind.SCOPE);
+            transformExpr(body, mt.table);
+            return mt;
+        }
     }
 
 
