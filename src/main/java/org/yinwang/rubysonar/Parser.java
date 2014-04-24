@@ -26,7 +26,7 @@ public class Parser {
     @Nullable
     Process rubyProcess;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static final String dumpPythonResource = "org/yinwang/rubysonar/ruby/dump_ruby.rb";
+    private static final String dumpRubyResource = "org/yinwang/rubysonar/ruby/dump_ruby.rb";
     private String exchangeFile;
     private String endMark;
     private String jsonizer;
@@ -601,10 +601,10 @@ public class Parser {
             InputStream jsonize =
                     Thread.currentThread()
                             .getContextClassLoader()
-                            .getResourceAsStream(dumpPythonResource);
+                            .getResourceAsStream(dumpRubyResource);
             jsonizeStr = _.readWholeStream(jsonize);
         } catch (Exception e) {
-            _.die("Failed to open resource file:" + dumpPythonResource);
+            _.die("Failed to open resource file:" + dumpRubyResource);
             return null;
         }
 
