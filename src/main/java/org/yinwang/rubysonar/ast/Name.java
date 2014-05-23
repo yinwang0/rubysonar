@@ -33,6 +33,7 @@ public class Name extends Node {
     public Name(@NotNull String id, NameType type, String file, int start, int end) {
         super(file, start, end);
         this.id = id;
+        this.name = id;
         this.type = type;
     }
 
