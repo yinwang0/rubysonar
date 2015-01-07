@@ -100,6 +100,8 @@ public class Call extends Node {
                 } else {
                     return Type.UNKNOWN;
                 }
+            } else {
+                return transformExpr(func, s);
             }
         }
 
