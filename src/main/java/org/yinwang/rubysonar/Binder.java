@@ -43,6 +43,9 @@ public class Binder {
         Binding.Kind kind;
         if (s.getStateType() == State.StateType.FUNCTION) {
             kind = Binding.Kind.VARIABLE;
+        } else if (s.stateType == State.StateType.CLASS ||
+                s.stateType == State.StateType.INSTANCE) {
+          kind = Binding.Kind.ATTRIBUTE;
         } else {
             kind = Binding.Kind.SCOPE;
         }
