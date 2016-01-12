@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 
 /**
- * Provides a factory for python source ASTs.  Maintains configurable on-disk and
+ * Provides a factory for ruby source ASTs.  Maintains configurable on-disk and
  * in-memory caches to avoid re-parsing files during analysis.
  */
 public class AstCache {

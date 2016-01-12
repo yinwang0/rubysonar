@@ -882,13 +882,21 @@ class AstSimplifier
 
 end
 
+def hash_nest_max hash
+  if hash.is_a?(Array)
+    hash.map{ |e| (hash_nest_max e).to_i }.max.to_i + 1
+  elsif hash.is_a?(Hash)
+    hash.values.map{ |s| (hash_nest_max s).to_i }.max.to_i + 1
+  else
+    0
+  end
+end
 
 def parse_dump(input, output, endmark)
   begin
     simplifier = AstSimplifier.new(input)
     hash = simplifier.simplify
-
-    json_string = JSON.pretty_generate(hash)
+    json_string = JSON.pretty_generate(hash, max_nesting: (hash_nest_max hash))
     out = File.open(output, 'wb')
     out.write(json_string)
     out.close
