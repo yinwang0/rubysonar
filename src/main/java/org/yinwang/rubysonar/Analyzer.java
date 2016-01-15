@@ -328,11 +328,17 @@ public class Analyzer {
                 }
                 return type;
             }
-        } catch (OutOfMemoryError e) {
+        } catch (OutOfMemoryError | StackOverflowError e) {
             if (astCache != null) {
                 astCache.clear();
             }
             System.gc();
+            if(e instanceof OutOfMemoryError) {
+                _.msg("Skiping for memory size limit: " + file);
+            }
+            if(e instanceof StackOverflowError) {
+                _.msg("Skiping for stack size limit: " + file);
+            }
             return null;
         }
     }
