@@ -3,6 +3,7 @@ package org.yinwang.rubysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.ast.Class;
+import org.yinwang.rubysonar.ast.Module;
 import org.yinwang.rubysonar.ast.*;
 import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
