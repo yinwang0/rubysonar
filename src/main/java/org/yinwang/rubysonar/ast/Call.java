@@ -104,6 +104,22 @@ public class Call extends Node {
         }
 
         Type fun = transformExpr(func, s);
+        if (isSuperCall()) {
+            ClassType superCls = (ClassType) fun;
+            Function superFunc = getOutterFunction();
+            if (superFunc != null) {
+                if (superFunc.locator instanceof Name) {
+                    fun = transformExpr((Name) superFunc.locator, superCls.table);
+                } else if (superFunc.locator instanceof Attribute) {
+                    fun = transformExpr(((Attribute) superFunc.locator).attr, superCls.table);
+                } else {
+                    _.msg("\nUnknown type of locator: " + superFunc.locator);
+                }
+            } else {
+                _.msg("\nOutter function not found");
+            }
+        }
+
         List<Type> pos = resolveList(args, s);
         Map<String, Type> hash = new HashMap<>();
 
@@ -220,12 +236,8 @@ public class Call extends Node {
                 func.func.vararg, func.func.kwarg,
                 pTypes, func.defaultTypes, hash, kw, star, block);
 
-        Type cachedTo = func.getMapping(fromType);
-        if (cachedTo != null && !(call != null && (call instanceof Call) && ((Call) call).isSuperCall())) {
-            func.setSelfType(null);
-            return cachedTo;
-        } else {
-            Type toType;
+        Type toType = func.getMapping(fromType);
+        if (toType == null || (call != null && (call instanceof Call) && ((Call) call).isSuperCall())) {
             if (func.isClassMethod) {
                 boolean wasStatic = Analyzer.self.staticContext;
                 Analyzer.self.setStaticContext(true);
@@ -244,9 +256,14 @@ public class Call extends Node {
             }
 
             func.addMapping(fromType, toType);
-            func.setSelfType(null);
-            return toType;
         }
+
+        if (call != null) {
+            Analyzer.self.popStack(call);
+        }
+
+        func.setSelfType(null);
+        return toType;
     }
 
 
@@ -381,7 +398,6 @@ public class Call extends Node {
     public boolean isSuperCall() {
         return func instanceof Name && ((Name) func).id.equals("super");
     }
-
 
     @NotNull
     @Override

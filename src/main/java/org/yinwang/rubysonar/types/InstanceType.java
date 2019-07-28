@@ -3,6 +3,7 @@ package org.yinwang.rubysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.rubysonar.Analyzer;
 import org.yinwang.rubysonar.Binding;
+import org.yinwang.rubysonar.Constants;
 import org.yinwang.rubysonar.State;
 import org.yinwang.rubysonar.ast.Call;
 import org.yinwang.rubysonar.ast.Name;
@@ -34,12 +35,16 @@ public class InstanceType extends Type {
 
     public InstanceType(@NotNull Type c, Name newName, Call call, List<Type> args) {
         this(c);
-        Type initFunc = table.lookupAttrType("initialize");
-        if (initFunc != null && initFunc instanceof FunType && ((FunType) initFunc).func != null) {
-            List<Binding> bs = table.lookupAttr("initialize");   // can't be null
+        
+        if (newName.id.equals("new")) {
+            List<Binding> bs = table.lookupAttr(Constants.SELFNAME);
             if (newName != null) {
                 Analyzer.self.putRef(newName, bs);
             }
+        }
+        
+        Type initFunc = table.lookupAttrType("initialize");
+        if (initFunc != null && initFunc instanceof FunType && ((FunType) initFunc).func != null) {
             ((FunType) initFunc).setSelfType(this);
             Call.apply((FunType) initFunc, args, null, null, null, null, call);
             ((FunType) initFunc).setSelfType(null);
