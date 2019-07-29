@@ -20,6 +20,7 @@ public class InstanceType extends Type {
         table.setStateType(State.StateType.INSTANCE);
         table.setParent(c.table.parent);
         table.setPath(c.table.path);
+        table.setSuper(c.table);
         classType = c;
 
         for (Map.Entry<String, List<Binding>> e : c.table.table.entrySet()) {
