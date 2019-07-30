@@ -35,14 +35,14 @@ public class InstanceType extends Type {
 
     public InstanceType(@NotNull Type c, Name newName, Call call, List<Type> args) {
         this(c);
-        
-        if (newName.id.equals("new")) {
+
+        if (newName != null && newName.id.equals("new")) {
             List<Binding> bs = table.lookupAttr(Constants.SELFNAME);
             if (newName != null) {
                 Analyzer.self.putRef(newName, bs);
             }
         }
-        
+
         Type initFunc = table.lookupAttrType("initialize");
         if (initFunc != null && initFunc instanceof FunType && ((FunType) initFunc).func != null) {
             ((FunType) initFunc).setSelfType(this);
