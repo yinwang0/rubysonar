@@ -41,7 +41,6 @@ public class ClassType extends Type {
         this.superclass = superclass;
         table.setSuper(superclass.table);
         table.updateType("super", superclass);
-        table.setSuper(superclass.table);
     }
 
 
