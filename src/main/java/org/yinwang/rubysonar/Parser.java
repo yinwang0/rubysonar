@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.rubysonar.ast.*;
 import org.yinwang.rubysonar.ast.Class;
+import org.yinwang.rubysonar.ast.RbModule;
 import org.yinwang.rubysonar.ast.Void;
+import org.yinwang.rubysonar.ast.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -102,7 +103,7 @@ public class Parser {
                 }
             }
             Str docstring = (Str) convert(map.get("doc"));
-            return new Module(name, body, docstring, file, start, end);
+            return new RbModule(name, body, docstring, file, start, end);
         }
 
         if (type.equals("block")) {

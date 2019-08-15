@@ -6,7 +6,7 @@ import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
 
 
-public class Module extends Node {
+public class RbModule extends Node {
 
     public Node locator;
     public Name name;
@@ -14,7 +14,7 @@ public class Module extends Node {
     public Str docstring;
 
 
-    public Module(Node locator, Block body, Str docstring, String file, int start, int end) {
+    public RbModule(Node locator, Block body, Str docstring, String file, int start, int end) {
         super(file, start, end);
         this.locator = locator;
         this.body = body;

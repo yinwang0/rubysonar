@@ -1,6 +1,6 @@
-### RubySonar - a type inferencer and indexer for Ruby
+### RubySonar - an advanced semantic indexer for Ruby
 
-RubySonar is a type inferencer and indexer for Ruby, which does sophisticated
+RubySonar is a semantic indexer for Ruby, which does
 interprocedural analysis to infer types. It is one of the underlying
 technologies that powers the code search site <a
 href="https://sourcegraph.com/github.com/rails/rails">Sourcegraph</a>.
@@ -11,7 +11,6 @@ analysis for Python and has been in use by Sourcegraph and Google. To understand
 its technical properties, please refer to my blog posts:
 
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
-- http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
 
 #### Demo
@@ -54,9 +53,9 @@ the _html_ directory after this process.
 
 #### License (BSD Style)
 
-PySonar - a type inferencer and indexer for Python
+RubySonar - an advanced semantic indexer for Ruby
 
-Copyright (c) 2013-2016 Yin Wang
+Copyright (c) 2013-2019 Yin Wang
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:

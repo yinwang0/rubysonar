@@ -3,6 +3,7 @@ package org.yinwang.rubysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.rubysonar.ast.Class;
+import org.yinwang.rubysonar.ast.RbModule;
 import org.yinwang.rubysonar.ast.*;
 import org.yinwang.rubysonar.types.ModuleType;
 import org.yinwang.rubysonar.types.Type;
@@ -76,14 +77,14 @@ public class Binding implements Comparable<Object> {
         while (!(bodyNode == null ||
                 bodyNode instanceof Function ||
                 bodyNode instanceof Class ||
-                bodyNode instanceof Module))
+                bodyNode instanceof RbModule))
         {
             bodyNode = bodyNode.parent;
         }
 
         if ((bodyNode instanceof Function && ((Function) bodyNode).name == node) ||
                 (bodyNode instanceof Class && ((Class) bodyNode).name == node) ||
-                (bodyNode instanceof Module && ((Module) bodyNode).name == node))
+                (bodyNode instanceof RbModule && ((RbModule) bodyNode).name == node))
         {
             bodyStart = bodyNode.start;
             bodyEnd = bodyNode.end;
@@ -105,7 +106,7 @@ public class Binding implements Comparable<Object> {
                 fullNode = fullNode.parent;
             }
         } else if (kind == Kind.MODULE) {
-            while (fullNode != null && !(fullNode instanceof Module)) {
+            while (fullNode != null && !(fullNode instanceof RbModule)) {
                 fullNode = fullNode.parent;
             }
         }
@@ -115,8 +116,8 @@ public class Binding implements Comparable<Object> {
             return ((org.yinwang.rubysonar.ast.Class) fullNode).docstring;
         } else if (fullNode instanceof Function) {
             return ((Function) fullNode).docstring;
-        } else if (fullNode instanceof Module) {
-            return ((Module) fullNode).docstring;
+        } else if (fullNode instanceof RbModule) {
+            return ((RbModule) fullNode).docstring;
         } else {
             return null;
         }
