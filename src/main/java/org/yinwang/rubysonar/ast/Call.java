@@ -82,10 +82,13 @@ public class Call extends Node {
             }
         }
 
-        // Class.new
         Name newName = null;
+        Type clsType = null;
         if (func instanceof Attribute) {
             Attribute afun = (Attribute) func;
+            clsType = afun.target.transform(s);
+
+            // Class.new
             if (afun.attr.id.equals("new")) {
                 func = afun.target;
                 newName = afun.attr;
@@ -104,6 +107,13 @@ public class Call extends Node {
         }
 
         Type fun = transformExpr(func, s);
+
+        // `self` refers to current class
+        if (clsType != null && fun instanceof FunType) {
+            ((FunType) fun).env.update(
+                        Constants.SELFNAME, clsType.table.lookupAttr(Constants.SELFNAME));
+        }
+
         List<Type> pos = resolveList(args, s);
         Map<String, Type> hash = new HashMap<>();
 
