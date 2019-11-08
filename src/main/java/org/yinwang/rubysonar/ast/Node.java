@@ -121,6 +121,18 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
+    @Nullable
+    public Function getOutterFunction() {
+        if (parent == null) {
+            return null;
+        } else if (parent instanceof Function) {
+            return (Function) parent;
+        } else {
+            return parent.getOutterFunction();
+        }
+    }
+
+
     // nodes are equal if they are from the same file and same starting point
     @Override
     public boolean equals(Object obj) {
